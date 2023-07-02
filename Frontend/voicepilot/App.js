@@ -1,11 +1,16 @@
 import { StyleSheet, View } from 'react-native';
-import Main from './src/components/Main';
+import { NavigationContainer } from '@react-navigation/native';
+import Navigation from './src/Navigation';
+import HomeScreen from './src/components/HomeScreen';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Main/>
+      <HomeScreen/>
     </View>
+    /*<NavigationContainer>
+      <Navigation/>
+    </NavigationContainer>*/
   );
 }
 
