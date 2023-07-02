@@ -1,17 +1,57 @@
-import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from './components/HomeScreen';
-import LoginScreen from './components/LoginScreen';
-import SignInScreen from './components/SignInScreen';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
 
-const Stack = createStackNavigator();
+import HomeScreen from './components/userScreens/HomeScreen';
+import FilesScreen from './components/userScreens/FilesScreen';
+import ProfileScreen from './components/userScreens/ProfileScreen';
+
+const Tab = createBottomTabNavigator();
+
+const homeScreenName = 'Home';
+const filesScreenName = 'Files';
+const profileScreenName = 'Profile';
 
 const Navigation = () => {
   return (
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Sign In" component={SignInScreen} />
-      </Stack.Navigator>
+      <Tab.Navigator
+        initialRouteName={homeScreenName}
+        screenOptions={({route}) => ({
+          tabBarIcon: ({focused, color, size}) => {
+            let iconName;
+            let rn = route.name;
+
+            if(rn === homeScreenName){
+              iconName = focused ? 'home' : 'home-outline';
+            }else if (rn === filesScreenName){
+              iconName = focused ? 'document' : 'document-outline';
+            }else if (rn === profileScreenName){
+              iconName = focused ? 'person' : 'person-outline';
+            }
+
+            return <Ionicons name={iconName} size={size} color={color}/>
+          },
+        })}
+        
+        tabBarOtions={{
+          activeTintColor: 'blue',
+          inactiveTintColor: 'grey',
+          labelStyle: {
+            paddingBottom: 10,
+            fontSize: 10
+          },
+          style: {
+            padding: 10,
+            height: 70
+          }
+        }}
+      
+      >
+
+        <Tab.Screen name={filesScreenName} component={FilesScreen} />
+        <Tab.Screen name={homeScreenName} component={HomeScreen} />
+        <Tab.Screen name={profileScreenName} component={ProfileScreen} />
+      
+      </Tab.Navigator>
   );
 };
 
