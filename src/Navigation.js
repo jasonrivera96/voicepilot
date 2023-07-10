@@ -1,58 +1,92 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
+import { StyleSheet } from 'react-native-web';
 
-import HomeScreen from './components/userScreens/HomeScreen';
-import FilesScreen from './components/userScreens/FilesScreen';
-import ProfileScreen from './components/userScreens/ProfileScreen';
+import HomeScreen from './components/home/HomeScreen';
+import ProfileScreen from './components/home/ProfileScreen';
+import SearchScreen from './components/home/SearchScreen';
+import RecorderScreen from './components/home/RecorderScreen';
+import UploadScreen from './components/home/UploadScreen';
+
+import { 
+  homeScreenName, 
+  profileScreenName, 
+  recorderScreenName, 
+  searchScreenName, 
+  uploadScreenName 
+} from './constants';
 
 const Tab = createBottomTabNavigator();
 
-const homeScreenName = 'Home';
-const filesScreenName = 'Files';
-const profileScreenName = 'Profile';
+const getIconName = (routeName, focused) => {
+  switch (routeName) {
+    case homeScreenName:
+      return focused ? 'home' : 'home-outline';
+    case searchScreenName:
+      return focused ? 'search' : 'search-outline';
+    case recorderScreenName:
+      return 'mic';
+    case uploadScreenName:
+      return focused ? 'cloud-upload' : 'cloud-upload-outline';
+    case profileScreenName:
+      return focused ? 'person' : 'person-outline';
+    default:
+      return '';
+  }
+}
+
+const renderTabBarIcon = ({ route, focused, color, size }) => {
+  const iconName = getIconName(route.name, focused);
+  const isRecorderScreen = route.name === recorderScreenName;
+
+  return (
+    <Ionicons
+      name={iconName}
+      size={isRecorderScreen ? 45 : size}
+      color={isRecorderScreen ? '#FFFFFF' : color}
+      style={isRecorderScreen && styles.recorderIcon}
+    />
+  );
+};
 
 const Navigation = () => {
   return (
-      <Tab.Navigator
-        initialRouteName={homeScreenName}
-        screenOptions={({route}) => ({
-          tabBarIcon: ({focused, color, size}) => {
-            let iconName;
-            let rn = route.name;
+    <Tab.Navigator
+      initialRouteName={homeScreenName}
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarShowLabel: false,
+        tabBarActiveTintColor: '#323842FF',
+        tabBarStyle: styles.tabBarStyle,
+        tabBarIcon: ({ focused, color, size }) =>
+          renderTabBarIcon({ route, focused, color, size }),
+      })}
 
-            if(rn === homeScreenName){
-              iconName = focused ? 'home' : 'home-outline';
-            }else if (rn === filesScreenName){
-              iconName = focused ? 'document' : 'document-outline';
-            }else if (rn === profileScreenName){
-              iconName = focused ? 'person' : 'person-outline';
-            }
+    >
+      <Tab.Screen name={homeScreenName} component={HomeScreen} />
+      <Tab.Screen name={searchScreenName} component={SearchScreen} />
+      <Tab.Screen name={recorderScreenName} component={RecorderScreen} />
+      <Tab.Screen name={uploadScreenName} component={UploadScreen} />
+      <Tab.Screen name={profileScreenName} component={ProfileScreen} />
 
-            return <Ionicons name={iconName} size={size} color={color}/>
-          },
-        })}
-        
-        tabBarOtions={{
-          activeTintColor: 'blue',
-          inactiveTintColor: 'grey',
-          labelStyle: {
-            paddingBottom: 10,
-            fontSize: 10
-          },
-          style: {
-            padding: 10,
-            height: 70
-          }
-        }}
-      
-      >
-
-        <Tab.Screen name={filesScreenName} component={FilesScreen} />
-        <Tab.Screen name={homeScreenName} component={HomeScreen} />
-        <Tab.Screen name={profileScreenName} component={ProfileScreen} />
-      
-      </Tab.Navigator>
+    </Tab.Navigator>
   );
 };
 
 export default Navigation
+
+const styles = StyleSheet.create({
+  recorderIcon: {
+    borderRadius: 35,
+    backgroundColor: '#FF7700FF',
+    padding: 5,
+  },
+  tabBarStyle: {
+    height: 70,
+    borderTopWidth: 0,
+    position: 'absolute',
+    borderTopWidth: 0,
+    bottom: 0,
+    elevation: 0,
+  },
+});
