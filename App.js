@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Appearance, StyleSheet, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import Navigation from './src/Navigation';
 import MainScreen from './src/components/navigation/MainScreen';
 import * as NavigationBar from 'expo-navigation-bar';
 import { StatusBar } from 'expo-status-bar';
+import Navigation from './src/components/navigation/Navigation';
 
 export default function App() {
   const [statusBarColor, setStatusBarColor] = useState('dark');

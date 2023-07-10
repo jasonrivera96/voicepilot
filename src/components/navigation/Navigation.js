@@ -1,12 +1,12 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet } from 'react-native-web';
+import { StyleSheet } from 'react-native';
 
-import HomeScreen from './components/home/HomeScreen';
-import ProfileScreen from './components/home/ProfileScreen';
-import SearchScreen from './components/home/SearchScreen';
-import RecorderScreen from './components/home/RecorderScreen';
-import UploadScreen from './components/home/UploadScreen';
+import HomeScreen from '../home/HomeScreen';
+import ProfileScreen from '../home/ProfileScreen';
+import SearchScreen from '../home/SearchScreen';
+import RecorderScreen from '../home/RecorderScreen';
+import UploadScreen from '../home/UploadScreen';
 
 import { 
   homeScreenName, 
@@ -14,7 +14,7 @@ import {
   recorderScreenName, 
   searchScreenName, 
   uploadScreenName 
-} from './constants';
+} from '../../constants';
 
 const Tab = createBottomTabNavigator();
 
@@ -42,7 +42,7 @@ const renderTabBarIcon = ({ route, focused, color, size }) => {
   return (
     <Ionicons
       name={iconName}
-      size={isRecorderScreen ? 45 : size}
+      size={isRecorderScreen ? 35 : size}
       color={isRecorderScreen ? '#FFFFFF' : color}
       style={isRecorderScreen && styles.recorderIcon}
     />

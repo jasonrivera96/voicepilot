@@ -1,16 +1,17 @@
-import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Constants from "expo-constants";
+import { useState } from 'react';
+import HomeSkeleton from '../skeleton/HomeSkeleton';
+
 
 const HomeScreen = () => {
+  const [folders, setFolders] = useState([])
+
+  if (folders.length === 0) return (<HomeSkeleton/>)
   
   return (
     <View style={styles.container}>
-
-      <View style={styles.body}>
-        <Text style={styles.description}>First screen after login.</Text>
-      </View>
-
+      <Text>Mis folders</Text>
     </View>
   );
 };
@@ -20,7 +21,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: Constants.statusBarHeight,
     backgroundColor: '#fff',
-  }
+  }, 
 });
 
 export default HomeScreen
