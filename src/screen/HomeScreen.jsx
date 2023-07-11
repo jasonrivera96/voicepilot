@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, FlatList } from 'react-native'
 import Constants from 'expo-constants'
 import { Ionicons } from '@expo/vector-icons'
-import { FlatList } from 'react-native-gesture-handler'
 
 import { COLORS } from '../constants'
 import CustomModal from '../components/CustomModal'
@@ -53,6 +52,39 @@ const FolderItem = ({ item, index }) => {
   )
 }
 
+const ModalContent = ({ onClose, addFolderItem }) => {
+  const [folderName, setfolderName] = useState('')
+  const handleChange = (data) => {
+    setfolderName(data)
+  }
+
+  return (
+    <View>
+      <View style={stylesModalContent.contenet}>
+        <Text style={stylesModalContent.titleModal}>Create new folder</Text>
+      </View>
+      <View style={stylesModalContent.containerInput}>
+        <Text style={stylesModalContent.labelInput}>Folder Name</Text>
+        <TextInput onChangeText={(data) => handleChange(data)} style={stylesModalContent.textInput} placeholder='Folder Name' />
+      </View>
+      <View style={stylesModalContent.containerButtons}>
+        <TouchableOpacity
+          style={stylesModalContent.containerButtonCreate}
+          onPress={() => addFolderItem(folderName)}
+        >
+          <Text style={stylesModalContent.textButtonCreate}>Create</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={stylesModalContent.containerButtonCancelar}
+          onPress={onClose}
+        >
+          <Text style={stylesModalContent.textButtonCancelar}>Cancelar</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  )
+}
+
 const HomeScreen = () => {
   const [folders, setFolders] = useState([])
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -87,7 +119,9 @@ const HomeScreen = () => {
     <View style={styles.container}>
       <Header openModal={openModal} data={folders} />
       {renderContent()}
-      <CustomModal isVisible={isModalVisible} onClose={closeModal} addFolderItem={addFolderItem} />
+      <CustomModal isVisible={isModalVisible}>
+        <ModalContent onClose={closeModal} addFolderItem={addFolderItem} />
+      </CustomModal>
     </View>
   )
 }
@@ -177,6 +211,62 @@ const styles = StyleSheet.create({
   },
   textButton: {
     color: '#fff'
+  }
+})
+
+const stylesModalContent = StyleSheet.create({
+  titleModal: {
+    fontSize: 20,
+    fontWeight: 'bold'
+  },
+  containerInput: {
+    marginTop: 10,
+    gap: 2
+  },
+  labelInput: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333637'
+  },
+  containerButtons: {
+    flexDirection: 'row-reverse',
+    justifyContent: 'space-between',
+    marginTop: 20
+  },
+  containerButtonCreate: {
+    backgroundColor: COLORS.ORANGE,
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    width: '48%',
+    height: 44,
+    borderRadius: 8,
+    opacity: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  textButtonCreate: {
+    color: '#fff'
+  },
+  containerButtonCancelar: {
+    backgroundColor: COLORS.GRAY,
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    width: '48%',
+    height: 44,
+    borderRadius: 8,
+    opacity: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  textButtonCancelar: {
+    color: '#565E6CFF'
+  },
+  textInput: {
+    backgroundColor: COLORS.GRAY,
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    height: 44,
+    borderWidth: 0
   }
 })
 
