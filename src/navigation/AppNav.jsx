@@ -1,10 +1,20 @@
 import { NavigationContainer } from '@react-navigation/native'
 import { StatusBar } from 'expo-status-bar'
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import AuthStack from './AuthStack'
 import { AuthContext } from '../context/AuthContext'
 import LoginScreen from '../screen/LoginScreen'
 import { ActivityIndicator, View, StyleSheet } from 'react-native'
+import RegisterScreen from '../screen/RegisterScreen'
+
+const MainStack = () => {
+  const [registerUser, setRegisterUser] = useState(false)
+  return (
+    registerUser
+      ? <RegisterScreen setRegisterUser={setRegisterUser} />
+      : <LoginScreen setRegisterUser={setRegisterUser} />
+  )
+}
 
 const AppNav = () => {
   const { isLoading, userToken } = useContext(AuthContext)
@@ -20,7 +30,7 @@ const AppNav = () => {
   return (
     <NavigationContainer>
       <StatusBar style='dark' />
-      {userToken !== null ? <AuthStack /> : <LoginScreen />}
+      {userToken !== null ? <AuthStack /> : <MainStack />}
     </NavigationContainer>
   )
 }

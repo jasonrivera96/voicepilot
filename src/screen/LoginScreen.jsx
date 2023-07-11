@@ -5,7 +5,7 @@ import { FontAwesome, AntDesign } from '@expo/vector-icons'
 import Constants from 'expo-constants'
 import { AuthContext } from '../context/AuthContext'
 
-const LoginScreen = () => {
+const LoginScreen = ({ setRegisterUser }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const { login } = useContext(AuthContext)
@@ -46,7 +46,7 @@ const LoginScreen = () => {
       </View>
       <View style={styles.registerContainer}>
         <Text>¿No tienes una cuenta?
-          <Text style={styles.registerText}> Regístrate</Text>
+          <Text onPress={() => setRegisterUser(true)} style={[styles.registerText, { fontWeight: 'bold' }]}> Regístrate</Text>
         </Text>
       </View>
     </View>
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
   registerContainer: {
     flexDirection: 'row',
     marginBottom: 16,
-    marginTop: 150
+    marginTop: 110
   }
 })
 
