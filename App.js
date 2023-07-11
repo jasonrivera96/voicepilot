@@ -1,15 +1,9 @@
-import React, { useEffect, useState } from 'react'
-import { Appearance, StyleSheet, View } from 'react-native'
-import { NavigationContainer } from '@react-navigation/native'
-import MainScreen from './src/components/navigation/MainScreen'
+import React, { useEffect } from 'react'
 import * as NavigationBar from 'expo-navigation-bar'
-import { StatusBar } from 'expo-status-bar'
-import Navigation from './src/components/navigation/Navigation'
+import { AuthProvider } from './src/context/AuthContext'
+import AppNav from './src/navigation/AppNav'
 
 export default function App () {
-  const [statusBarColor, setStatusBarColor] = useState('dark')
-  const currentColorScheme = Appearance.getColorScheme()
-
   useEffect(() => {
     const changeStatusBarColor = async () => {
       NavigationBar.setBackgroundColorAsync('#FFFFFF')
@@ -19,21 +13,8 @@ export default function App () {
   }, [])
 
   return (
-    // <View style={styles.container}>
-    //   <MainScreen/>
-    // </View>
-    <NavigationContainer>
-      <StatusBar style={statusBarColor} />
-      <Navigation />
-    </NavigationContainer>
+    <AuthProvider>
+      <AppNav />
+    </AuthProvider>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center'
-  }
-})

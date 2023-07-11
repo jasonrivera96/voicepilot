@@ -1,9 +1,8 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import Constants from "expo-constants";
+import React from 'react'
+import { View, Text, StyleSheet } from 'react-native'
+import Constants from 'expo-constants'
 
 const UploadScreen = () => {
-  
   return (
     <View style={styles.container}>
 
@@ -12,15 +11,15 @@ const UploadScreen = () => {
       </View>
 
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: Constants.statusBarHeight,
-    backgroundColor: '#fff',
+    backgroundColor: '#fff'
   }
-});
+})
 
 export default UploadScreen

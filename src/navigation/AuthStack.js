@@ -3,11 +3,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { Ionicons } from '@expo/vector-icons'
 import { StyleSheet } from 'react-native'
 
-import HomeScreen from '../screen/home/HomeScreen'
-import ProfileScreen from '../screen/profile/ProfileScreen'
-import SearchScreen from '../screen/search/SearchScreen'
-import RecorderScreen from '../screen/recorder/RecorderScreen'
-import UploadScreen from '../screen/upload/UploadScreen'
+import HomeScreen from '../screen/HomeScreen'
+import ProfileScreen from '../screen/ProfileScreen'
+import SearchScreen from '../screen/SearchScreen'
+import RecorderScreen from '../screen/RecorderScreen'
+import UploadScreen from '../screen/UploadScreen'
 
 import {
   homeScreenName,
@@ -15,7 +15,7 @@ import {
   recorderScreenName,
   searchScreenName,
   uploadScreenName
-} from '../../constants'
+} from '../constants'
 
 const Tab = createBottomTabNavigator()
 
@@ -50,7 +50,7 @@ const renderTabBarIcon = ({ route, focused, color, size }) => {
   )
 }
 
-const Navigation = () => {
+const AuthStack = () => {
   return (
     <Tab.Navigator
       initialRouteName={homeScreenName}
@@ -74,7 +74,7 @@ const Navigation = () => {
   )
 }
 
-export default Navigation
+export default AuthStack
 
 const styles = StyleSheet.create({
   recorderIcon: {
@@ -87,6 +87,6 @@ const styles = StyleSheet.create({
     borderTopWidth: 0,
     position: 'absolute',
     bottom: 0,
-    elevation: 0,
+    elevation: 0
   }
 })
