@@ -1,11 +1,12 @@
 import { NavigationContainer } from '@react-navigation/native'
-import { StatusBar } from 'expo-status-bar'
 import React, { useContext, useState } from 'react'
+import { ActivityIndicator, View, StyleSheet } from 'react-native'
+
 import AuthStack from './AuthStack'
 import { AuthContext } from '../context/AuthContext'
 import LoginScreen from '../screen/LoginScreen'
-import { ActivityIndicator, View, StyleSheet } from 'react-native'
 import RegisterScreen from '../screen/RegisterScreen'
+import { COLORS } from '../constants'
 
 const MainStack = () => {
   const [registerUser, setRegisterUser] = useState(false)
@@ -22,14 +23,13 @@ const AppNav = () => {
   if (isLoading) {
     return (
       <View style={styles.activityIndicatorContainer}>
-        <ActivityIndicator size='large' />
+        <ActivityIndicator size='large' color={COLORS.ORANGE} />
       </View>
     )
   }
 
   return (
     <NavigationContainer>
-      <StatusBar style='dark' />
       {userToken !== null ? <AuthStack /> : <MainStack />}
     </NavigationContainer>
   )

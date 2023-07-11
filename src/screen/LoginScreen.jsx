@@ -14,14 +14,14 @@ const LoginScreen = ({ setRegisterUser }) => {
       <Text style={styles.title}>Iniciar Sesión</Text>
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Usuario</Text>
-        <TextInput onChangeText={(value) => setUsername(value)} style={styles.input} placeholder='Ingresa tu usuario' />
+        <TextInput onChangeText={(value) => setUsername(value)} style={styles.input} placeholder='Ingrese su usuario' />
         <Text style={styles.label}>Contraseña</Text>
-        <TextInput onChangeText={(value) => setPassword(value)} style={styles.input} placeholder='Ingresa tu contraseña' secureTextEntry />
+        <TextInput onChangeText={(value) => setPassword(value)} style={styles.input} placeholder='Ingrese su contraseña' secureTextEntry />
       </View>
       <View style={styles.bottomContainer}>
         <TouchableOpacity style={styles.rememberPasswordContainer}>
           <FontAwesome name='check' size={18} color={COLORS.ORANGE} />
-          <Text style={styles.rememberPasswordText}>Recuérdame</Text>
+          <Text style={styles.rememberMe}>Recuérdame</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.restablecerContrasenaContainer}>
           <Text style={styles.registerText}>¿Olvidaste tu contraseña?</Text>
@@ -139,10 +139,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 16
   },
-  rememberPasswordText: {
+  rememberMe: {
     marginLeft: 8,
-    fontSize: 14,
-    color: COLORS.GRAY_EXTRA_SOFT
+    fontSize: 14
   },
   restablecerContrasenaContainer: {
     flex: 1,

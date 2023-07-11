@@ -11,12 +11,16 @@ const folderIcon = <Ionicons name='folder-open-outline' size={25} />
 const folderIconEmpty = <Ionicons name='folder-open-outline' size={50} />
 const addIcon = <Ionicons name='add' size={30} color='white' />
 
-const Header = ({ openModal }) => {
+const Header = ({ openModal, data }) => {
   return (
     <View style={styles.contentContainer}>
-      <TouchableOpacity onPress={openModal} style={styles.addIcon}>
-        {addIcon}
-      </TouchableOpacity>
+      {data && data.length
+        ? (
+          <TouchableOpacity onPress={openModal} style={styles.addIcon}>
+            <Text>{addIcon}</Text>
+          </TouchableOpacity>
+          )
+        : (<View />)}
       <View style={styles.text}>
         <Text style={styles.titlePage}>My workspace</Text>
       </View>
@@ -50,7 +54,7 @@ const FolderItem = ({ item, index }) => {
 }
 
 const HomeScreen = () => {
-  const [folders, setFolders] = useState(['Matematicas', 'Español', 'Ciencias', 'Historia', 'Geografia', 'Ingles', 'Artes', 'Educacion Fisica'])
+  const [folders, setFolders] = useState([])
   const [isModalVisible, setIsModalVisible] = useState(false)
 
   const closeModal = () => {
@@ -81,7 +85,7 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Header openModal={openModal} />
+      <Header openModal={openModal} data={folders} />
       {renderContent()}
       <CustomModal isVisible={isModalVisible} onClose={closeModal} addFolderItem={addFolderItem} />
     </View>

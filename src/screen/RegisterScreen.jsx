@@ -13,15 +13,16 @@ const RegisterScreen = ({ setRegisterUser }) => {
     <View style={styles.container}>
       <Text style={styles.title}>Registrarse</Text>
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Nombre</Text>
-        <TextInput style={styles.input} placeholder='Ingrese su nombre' />
+        <Text style={styles.label}>Usuario</Text>
+        <TextInput style={styles.input} placeholder='Ingrese su usuario' />
         <Text style={styles.label}>Correo electrónico</Text>
-        <TextInput style={styles.input} placeholder='email@example.com' />
+        <TextInput style={styles.input} placeholder='alpala@kryptondev.com' />
         <Text style={styles.label}>Contraseña</Text>
         <View style={styles.passwordInputContainer}>
           <TextInput
             style={styles.passwordInput}
             placeholder='Ingrese su contraseña'
+            secureTextEntry
           />
         </View>
       </View>
@@ -97,14 +98,14 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: COLORS.ORANGE,
     shadowOffset: {
       width: 0,
       height: 2
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 5
+    elevation: 10
   },
   registerButtonText: {
     color: '#fff',
