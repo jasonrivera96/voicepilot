@@ -3,11 +3,14 @@ import { Button } from '@rneui/themed'
 import { View, Text, TextInput, StyleSheet, Pressable } from 'react-native'
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons'
 import { useTogglePasswordVisibility } from '../hooks/useTogglePassVisibility'
-import { Icon } from 'react-native-elements'
+import { Icon, CheckBox } from 'react-native-elements'
+import { COLORS } from '../constants';
 
-export default function RegisterScreen ({ setRegisterUser }) {
+export default function RegisterScreen({ setRegisterUser }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [isSelected, setSelection] = useState(true)
+  const toggleCheckbox = () => setSelection(!isSelected)
 
   const { passwordVisibility, rightIcon, handlePasswordVisibility } = useTogglePasswordVisibility()
 
@@ -17,11 +20,22 @@ export default function RegisterScreen ({ setRegisterUser }) {
   }
 
   return (
-  // Contenedor general
+    // Contenedor general
     <View style={styles.container}>
-      <Text style={{ color: 'black', fontSize: 32, fontWeight: 'bold' }}>Registrarse</Text>
+      <Text style={{ color: 'black', fontSize: 32, fontWeight: 'bold', marginBottom: "10%" }}>Registrarse</Text>
 
       <View style={styles.form}>
+
+        <Text style={{ fontWeight: 'bold' }}>Nombre</Text>
+        <View style={styles.inputContainer}>
+        <FontAwesome style={styles.searchIcon} name="user-o" size={20} color="black" />
+          <TextInput style={styles.input} placeholder='Ingrese su nombre' onChangeText={(text) => setEmail(text)} value={email} />
+        </View>
+        <Text style={{ fontWeight: 'bold' }}>Apellido</Text>
+        <View style={styles.inputContainer}>
+        <FontAwesome style={styles.searchIcon} name="user-o" size={20} color="black" />
+          <TextInput style={styles.input} placeholder='Ingrese su apellido' onChangeText={(text) => setEmail(text)} value={email} />
+        </View>
 
         <Text style={{ fontWeight: 'bold' }}>Correo</Text>
         <View style={styles.inputContainer}>
@@ -29,7 +43,7 @@ export default function RegisterScreen ({ setRegisterUser }) {
           <TextInput style={styles.input} placeholder='Ingrese su correo' onChangeText={(text) => setEmail(text)} value={email} />
         </View>
 
-        <Text style={{ fontWeight: 'bold' }}>Contraseña</Text>
+        <Text style={{ fontWeight: 'bold', marginTop: "3%" }}>Contraseña</Text>
         <View style={styles.inputContainer}>
           <Icon style={styles.searchIcon} name='lock-open' />
           <TextInput
@@ -47,7 +61,7 @@ export default function RegisterScreen ({ setRegisterUser }) {
           </Pressable>
         </View>
 
-        <Text style={{ fontWeight: 'bold' }}>Confirmación</Text>
+        {/* <Text style={{ fontWeight: 'bold', marginTop:"3%" }}>Confirmación</Text>
         <View style={styles.inputContainer}>
           <Icon style={styles.searchIcon} name='lock-open' />
           <TextInput
@@ -63,23 +77,49 @@ export default function RegisterScreen ({ setRegisterUser }) {
           <Pressable onPress={handlePasswordVisibility}>
             <MaterialCommunityIcons name={rightIcon} size={22} style={styles.icono} color='#232323' />
           </Pressable>
+        </View> */}
+        <View style={styles.condiciones}>
+          <CheckBox
+            checked={isSelected}
+            onPress={toggleCheckbox}
+            iconType='material-community'
+            checkedIcon='checkbox-marked'
+            uncheckedIcon='checkbox-blank-outline'
+            checkedColor='#E46B00FF'
+            style={styles.checkbox}
+          />
+          <Text style={{ paddingTop: 17, marginLeft: -15 }}>
+            Al registrarme, acepto los <Text style={{ color: COLORS.ORANGE, fontWeight: 'bold' }}>términos de uso</Text> y la <Text style={{ color: COLORS.ORANGE, fontWeight: 'bold' }}>política de privacidad</Text>
+          </Text>
+
+
+
         </View>
 
-        <Button color='#E46B00FF' onPress={() => handleRegister()}>Registrarse</Button>
+        <Button color='#E46B00FF' style={{ marginTop: "8%" }} onPress={() => handleRegister()}>Registrarse</Button>
       </View>
       {/* Iniciar sesion con redes sociales */}
-      <Text style={{ alignItems: 'center', marginTop: '5%' }}>O Registrarse con</Text>
+      {/* <Text style={{ alignItems: 'center', marginTop: '5%' }}>O Registrarse con</Text>
       <View style={styles.buttonContainer}>
-        <Button radius='sm' type='solid' color='#E7F1F8'>
-          <Icon name='facebook' color='darkblue' />
-        </Button>
-        <Button radius='sm' type='solid' color='#F8E7E8'>
-          <FontAwesome name='google' size={24} color='red' />
-        </Button>
-      </View>
-      <View>
-        <Text>Ya tienes una cuenta</Text>
-        <Text onPress={() => setRegisterUser(false)} style={styles.registrar}>Login</Text>
+        <View style={styles.buttonWrapper}>
+          <Button radius='sm' type='solid' color='#FEF1F1FF'>
+            <FontAwesome name='google' size={24} color='#C71610FF' />
+          </Button>
+        </View>
+        <View style={styles.buttonWrapper}>
+          <Button radius='sm' type='solid' color='#F3F6FBFF'>
+            <Icon name='facebook' size={24} color='#335CA6FF' />
+          </Button>
+        </View>
+        <View style={styles.buttonWrapper}>
+          <Button radius='sm' type='solid' color='#F3F4F6FF'>
+            <FontAwesome name='apple' size={24} color="#565E6CFF" />
+          </Button>
+        </View>
+      </View> */}
+      <View style={styles.final}>
+        <Text>¿Ya tienes una cuenta?</Text>
+        <Text onPress={() => setRegisterUser(false)} style={styles.registrar}>Iniciar Sesión</Text>
       </View>
 
     </View>
@@ -96,13 +136,17 @@ const styles = StyleSheet.create({
   },
   form: {
     gap: 10,
-    width: '80%'
+    width: '75%'
   },
   inputContainer: {
     backgroundColor: 'white',
     flexDirection: 'row',
     borderRadius: 4,
     borderWidth: 1
+  },
+  condiciones: {
+    marginLeft: -20,
+    flexDirection: 'row'
   },
   icono: {
     marginTop: '50%',
@@ -121,8 +165,22 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'row',
-    marginTop: 20,
-    width: '30%',
-    justifyContent: 'space-between'
+    justifyContent: 'center',
+    marginTop: "3%"
+
+  },
+  buttonWrapper: {
+    marginRight: 25,
+    borderRadius: 20,
+  },
+  final: {
+    flexDirection: 'row',
+    marginTop: '20%',
+    position: 'absolute',
+    bottom: 0
+  },
+  registrar: {
+    fontWeight: 'bold',
+    color: '#E46B00FF',
   }
 })
