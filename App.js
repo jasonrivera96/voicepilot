@@ -6,13 +6,13 @@ import AppNav from './src/navigation/AppNav'
 import { StatusBar } from 'expo-status-bar'
 
 export default function App () {
-  // useEffect(() => {
-  //   const changeStatusBarColor = async () => {
-  //     NavigationBar.setBackgroundColorAsync('#FFFFFF')
-  //     NavigationBar.setButtonStyleAsync('dark')
-  //   }
-  //   changeStatusBarColor()
-  // }, [])
+  useEffect(() => {
+    const changeStatusBarColor = async () => {
+      NavigationBar.setBackgroundColorAsync('#FFFFFF')
+      NavigationBar.setButtonStyleAsync('dark')
+    }
+    changeStatusBarColor()
+  }, [])
 
   return (
     <AuthProvider>

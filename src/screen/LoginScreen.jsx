@@ -7,7 +7,7 @@ import { Button } from '@rneui/themed'
 import { CheckBox, Icon } from 'react-native-elements'
 import { useTogglePasswordVisibility } from '../hooks/useTogglePassVisibility'
 
-export default function LoginScreen({ setRegisterUser }) {
+export default function LoginScreen ({ setRegisterUser }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
@@ -21,7 +21,7 @@ export default function LoginScreen({ setRegisterUser }) {
   return (
     // Contenedor general
     <View style={styles.container}>
-      <Text style={{ color: 'black', fontSize: 32, fontWeight: 'bold', marginBottom: "10%" }}>Iniciar Sesión</Text>
+      <Text style={{ color: 'black', fontSize: 32, fontWeight: 'bold', marginBottom: '10%' }}>Iniciar Sesión</Text>
 
       <View style={styles.form}>
 
@@ -31,7 +31,7 @@ export default function LoginScreen({ setRegisterUser }) {
           <TextInput style={styles.input} placeholder='Ingrese su correo' onChangeText={(text) => setEmail(text)} value={email} />
         </View>
 
-        <Text style={{ fontWeight: 'bold', marginTop: "3%" }}>Contraseña</Text>
+        <Text style={{ fontWeight: 'bold', marginTop: '3%' }}>Contraseña</Text>
         <View style={styles.inputContainer}>
           <Icon style={styles.searchIcon} name='lock-open' />
           <TextInput
@@ -80,7 +80,7 @@ export default function LoginScreen({ setRegisterUser }) {
         </View>
         <View style={styles.buttonWrapper}>
           <Button radius='sm' type='solid' color='#F3F4F6FF'>
-            <FontAwesome name='apple' size={24} color="#565E6CFF" />
+            <FontAwesome name='apple' size={24} color='#565E6CFF' />
           </Button>
         </View>
       </View>
@@ -135,12 +135,12 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: "3%"
+    marginTop: '3%'
 
   },
   buttonWrapper: {
     marginRight: 25,
-    borderRadius: 20,
+    borderRadius: 20
   },
   final: {
     flexDirection: 'row',
@@ -150,6 +150,6 @@ const styles = StyleSheet.create({
   },
   registrar: {
     fontWeight: 'bold',
-    color: '#E46B00FF',
+    color: '#E46B00FF'
   }
 })

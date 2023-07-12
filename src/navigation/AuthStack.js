@@ -10,6 +10,7 @@ import RecorderScreen from '../screen/RecorderScreen'
 import UploadScreen from '../screen/UploadScreen'
 
 import {
+  COLORS,
   homeScreenName,
   profileScreenName,
   recorderScreenName,
@@ -79,8 +80,11 @@ export default AuthStack
 const styles = StyleSheet.create({
   recorderIcon: {
     borderRadius: 35,
-    backgroundColor: '#FF7700FF',
-    padding: 5
+    backgroundColor: COLORS.ORANGE,
+    display: 'flex',
+    padding: 10,
+    textAlign: 'center',
+    width: 58
   },
   tabBarStyle: {
     height: 70,
