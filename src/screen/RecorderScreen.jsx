@@ -186,11 +186,12 @@ export default function RecorderScreen() {
                     />
 
                     <Text style={styles.label}>Seleccione la carpeta:</Text>
+                   {/* REVISAR PORQUE NO VALEN LOS ESTILOS */}
                     <Dropdown
                       // items={dropdownItems}
                       // defaultValue={selectedItem}
+                      style={styles.input}
                       label="Seleccione una opción"
-                      containerStyle={{ height: 40, width: "100%" }}
                     // onChangeItem={(item) => setSelectedItem(item.value)}
                     />
 
@@ -201,10 +202,22 @@ export default function RecorderScreen() {
                       onChangeText={setDescription}
                       multiline={true}
                     />
+                    <View style={styles.transcribir}>
+                    <TouchableOpacity
+                        style={[styles.button, { backgroundColor: '#F3F4F6FF' }]}
+                        onPress={() => setModalVisible(false)}
+                        color="#353536"
+                      >
+                        <Text style={styles.buttonText}>Cancelar</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={[styles.button, { backgroundColor: '#FF7700FF' }]}
 
-                    {/* <Button title="Transcribir" onPress={handleTranscribe} /> */}
-
-                    <Button title="Cerrar" onPress={() => setModalVisible(false)} />
+                      >
+                        <Text style={styles.buttonTextT}>Transcribir</Text>
+                      </TouchableOpacity>
+                   
+                    </View>
                   </View>
                 </View>
               </TouchableWithoutFeedback>
@@ -278,6 +291,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
     marginBottom: 5,
+    marginTop:15
   },
   input: {
     height: 40,
@@ -286,4 +300,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     backgroundColor: "#F3F4F6FF"
   },
+  transcribir: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  buttonText: {
+    color: '#353536',
+    fontSize: 16,
+  },
+  button: {
+    borderRadius: 12,
+    padding: 10,
+    marginRight: 20
+  },
+  buttonTextT: {
+    color: '#FFFFFF',
+    fontSize: 16,
+  }
+
 });
