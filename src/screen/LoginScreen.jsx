@@ -1,54 +1,86 @@
 import React, { useContext, useState } from 'react'
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
-import { COLORS } from '../constants'
-import { FontAwesome, AntDesign } from '@expo/vector-icons'
-import Constants from 'expo-constants'
+import { View, Text, TextInput, StyleSheet, Pressable } from 'react-native'
+import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons'
 import { AuthContext } from '../context/AuthContext'
+// Dome
+import { Button } from '@rneui/themed'
+import { CheckBox, Icon } from 'react-native-elements'
+import { useTogglePasswordVisibility } from '../hooks/useTogglePassVisibility'
 
-const LoginScreen = ({ setRegisterUser }) => {
-  const [username, setUsername] = useState('')
+export default function LoginScreen ({ setRegisterUser }) {
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+
   const { login } = useContext(AuthContext)
+
+  const [isSelected, setSelection] = useState(false)
+  const toggleCheckbox = () => setSelection(!isSelected)
+
+  const { passwordVisibility, rightIcon, handlePasswordVisibility } = useTogglePasswordVisibility()
+
   return (
+  // Contenedor general
     <View style={styles.container}>
-      <Text style={styles.title}>Iniciar Sesión</Text>
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Usuario</Text>
-        <TextInput onChangeText={(value) => setUsername(value)} style={styles.input} placeholder='Ingrese su usuario' />
-        <Text style={styles.label}>Contraseña</Text>
-        <TextInput onChangeText={(value) => setPassword(value)} style={styles.input} placeholder='Ingrese su contraseña' secureTextEntry />
+      <Text style={{ color: 'black', fontSize: 32, fontWeight: 'bold' }}>Iniciar Sesión</Text>
+
+      <View style={styles.form}>
+
+        <Text style={{ fontWeight: 'bold' }}>Correo</Text>
+        <View style={styles.inputContainer}>
+          <Icon style={styles.searchIcon} name='mail-outline' />
+          <TextInput style={styles.input} placeholder='Ingrese su correo' onChangeText={(text) => setEmail(text)} value={email} />
+        </View>
+
+        <Text style={{ fontWeight: 'bold' }}>Contraseña</Text>
+        <View style={styles.inputContainer}>
+          <Icon style={styles.searchIcon} name='lock-open' />
+          <TextInput
+            style={styles.input}
+            placeholder='Ingrese su contraseña'
+            autoCapitalize='none'
+            autoCorrect={false}
+            secureTextEntry={passwordVisibility}
+            value={password}
+            enablesReturnKeyAutomatically
+            onChangeText={text => setPassword(text)}
+          />
+          <Pressable onPress={handlePasswordVisibility}>
+            <MaterialCommunityIcons name={rightIcon} size={22} style={styles.icono} color='#232323' />
+          </Pressable>
+        </View>
+        {/* Contenedor Recuerdame */}
+        <View style={styles.recuerdo}>
+          <CheckBox
+            checked={isSelected}
+            onPress={toggleCheckbox}
+            iconType='material-community'
+            checkedIcon='checkbox-marked'
+            uncheckedIcon='checkbox-blank-outline'
+            checkedColor='#E46B00FF'
+            style={styles.checkbox}
+          />
+          <Text style={{ paddingTop: 17, marginLeft: -15 }}>Recuérdame</Text>
+          <Text style={{ color: '#E46B00FF', padding: 17, marginLeft: 35 }}>Olvidaste tu contraseña?</Text>
+
+        </View>
+        <Button color='#E46B00FF' onPress={() => login({ username: email, password })}>Iniciar Sesión</Button>
       </View>
-      <View style={styles.bottomContainer}>
-        <TouchableOpacity style={styles.rememberPasswordContainer}>
-          <FontAwesome name='check' size={18} color={COLORS.ORANGE} />
-          <Text style={styles.rememberMe}>Recuérdame</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.restablecerContrasenaContainer}>
-          <Text style={styles.registerText}>¿Olvidaste tu contraseña?</Text>
-        </TouchableOpacity>
+      {/* Iniciar sesion con redes sociales */}
+      <Text style={{ alignItems: 'center', marginTop: '5%' }}>O iniciar sesión con</Text>
+      <View style={styles.buttonContainer}>
+        <Button radius='sm' type='solid' color='#E7F1F8'>
+          <Icon name='facebook' color='darkblue' />
+        </Button>
+        <Button radius='sm' type='solid' color='#F8E7E8'>
+          <FontAwesome name='google' size={24} color='red' />
+        </Button>
       </View>
-      <TouchableOpacity style={styles.loginButton} onPress={() => login({ username, password })}>
-        <Text style={styles.loginButtonText}>Iniciar Sesión</Text>
-      </TouchableOpacity>
-      <View style={styles.separatorContainer}>
-        <Text style={styles.separatorText}>O Inicia Sesión con</Text>
+      {/* Ingresar a registro */}
+      <View style={styles.final}>
+        <Text>No tienes una cuenta?</Text>
+        <Text onPress={() => setRegisterUser(true)} style={styles.registrar}>Registrarse</Text>
       </View>
-      <View style={styles.socialLoginContainer}>
-        <TouchableOpacity style={styles.socialLoginButton}>
-          <FontAwesome name='facebook' size={24} color='#3b5998' />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.socialLoginButton}>
-          <AntDesign name='google' size={24} color='#db4a39' />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.socialLoginButton}>
-          <FontAwesome name='apple' size={24} color='#000000' />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.registerContainer}>
-        <Text>¿No tienes una cuenta?
-          <Text onPress={() => setRegisterUser(true)} style={[styles.registerText, { fontWeight: 'bold' }]}> Regístrate</Text>
-        </Text>
-      </View>
+
     </View>
   )
 }
@@ -56,106 +88,53 @@ const LoginScreen = ({ setRegisterUser }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: 'center',
-    marginTop: 150,
+    justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: Constants.statusBarHeight,
-    backgroundColor: '#fff'
+    backgroundColor: 'white',
+    width: '100%'
   },
-  title: {
-    fontSize: 30,
-    fontWeight: '900',
-    marginBottom: 24
+  form: {
+    gap: 10,
+    width: '80%'
   },
   inputContainer: {
-    width: '90%',
-    marginTop: 30
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    borderRadius: 4,
+    borderWidth: 1
   },
-  label: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: COLORS.GRAY_SOFT
+  icono: {
+    marginTop: '50%',
+    marginRight: '3%'
   },
   input: {
-    height: 48,
-    backgroundColor: '#F3F4F6FF',
-    marginBottom: 16,
-    paddingHorizontal: 12,
-    borderRadius: 8
-  },
-  loginButton: {
-    backgroundColor: COLORS.ORANGE,
-    width: '90%',
-    height: 48,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 20,
-    shadowColor: COLORS.ORANGE,
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 10
-  },
-  loginButtonText: {
-    color: '#fff',
-    fontSize: 16
-  },
-  separatorContainer: {
-    marginTop: 30,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16
-  },
-  separatorText: {
-    marginHorizontal: 8,
-    fontSize: 14,
-    color: COLORS.GRAY_EXTRA_SOFT
-  },
-  socialLoginContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 16
-  },
-  socialLoginButton: {
-    backgroundColor: '#F3F4F6FF',
-    width: 78,
-    height: 38,
-    borderRadius: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: 8
-  },
-  bottomContainer: {
-    flexDirection: 'row',
-    width: '90%',
-    marginBottom: 30
-  },
-  rememberPasswordContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 16
-  },
-  rememberMe: {
-    marginLeft: 8,
-    fontSize: 14
-  },
-  restablecerContrasenaContainer: {
     flex: 1,
-    alignItems: 'flex-end'
+    height: 44,
+    backgroundColor: '#fff'
+
   },
-  registerText: {
-    fontSize: 14,
-    color: COLORS.ORANGE
+  recuerdo: {
+    marginLeft: -20,
+    flexDirection: 'row'
   },
-  registerContainer: {
+  checkbox: {
+    paddingRight: 0
+  },
+  searchIcon: {
+    padding: 10
+  },
+  buttonContainer: {
     flexDirection: 'row',
-    marginBottom: 16,
-    marginTop: 110
+    marginTop: 20,
+    width: '30%',
+    justifyContent: 'space-between'
+  },
+  final: {
+    flexDirection: 'row',
+    marginTop: '20%'
+  },
+  registrar: {
+    fontWeight: 'bold',
+    color: '#E46B00FF'
   }
 })
-
-export default LoginScreen

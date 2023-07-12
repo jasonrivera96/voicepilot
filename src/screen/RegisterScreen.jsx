@@ -1,47 +1,87 @@
-import React from 'react'
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
-import { COLORS } from '../constants'
-import { FontAwesome } from '@expo/vector-icons'
-import Constants from 'expo-constants'
+import React, { useState } from 'react'
+import { Button } from '@rneui/themed'
+import { View, Text, TextInput, StyleSheet, Pressable } from 'react-native'
+import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons'
+import { useTogglePasswordVisibility } from '../hooks/useTogglePassVisibility'
+import { Icon } from 'react-native-elements'
 
-const RegisterScreen = ({ setRegisterUser }) => {
+export default function RegisterScreen ({ setRegisterUser }) {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+  const { passwordVisibility, rightIcon, handlePasswordVisibility } = useTogglePasswordVisibility()
+
   const handleRegister = () => {
-    // Aquí puedes implementar la lógica de registro
+    console.log('Registrarse')
+    console.log({ email, password })
   }
 
   return (
+  // Contenedor general
     <View style={styles.container}>
-      <Text style={styles.title}>Registrarse</Text>
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Usuario</Text>
-        <TextInput style={styles.input} placeholder='Ingrese su usuario' />
-        <Text style={styles.label}>Correo electrónico</Text>
-        <TextInput style={styles.input} placeholder='alpala@kryptondev.com' />
-        <Text style={styles.label}>Contraseña</Text>
-        <View style={styles.passwordInputContainer}>
-          <TextInput
-            style={styles.passwordInput}
-            placeholder='Ingrese su contraseña'
-            secureTextEntry
-          />
+      <Text style={{ color: 'black', fontSize: 32, fontWeight: 'bold' }}>Registrarse</Text>
+
+      <View style={styles.form}>
+
+        <Text style={{ fontWeight: 'bold' }}>Correo</Text>
+        <View style={styles.inputContainer}>
+          <Icon style={styles.searchIcon} name='mail-outline' />
+          <TextInput style={styles.input} placeholder='Ingrese su correo' onChangeText={(text) => setEmail(text)} value={email} />
         </View>
+
+        <Text style={{ fontWeight: 'bold' }}>Contraseña</Text>
+        <View style={styles.inputContainer}>
+          <Icon style={styles.searchIcon} name='lock-open' />
+          <TextInput
+            id='clave1'
+            style={styles.input}
+            placeholder='Ingrese su contraseña'
+            autoCapitalize='none'
+            autoCorrect={false}
+            secureTextEntry={passwordVisibility}
+            enablesReturnKeyAutomatically
+            onChangeText={text => setPassword(text)}
+          />
+          <Pressable onPress={handlePasswordVisibility}>
+            <MaterialCommunityIcons name={rightIcon} size={22} style={styles.icono} color='#232323' />
+          </Pressable>
+        </View>
+
+        <Text style={{ fontWeight: 'bold' }}>Confirmación</Text>
+        <View style={styles.inputContainer}>
+          <Icon style={styles.searchIcon} name='lock-open' />
+          <TextInput
+            id='clave'
+            style={styles.input}
+            placeholder='Confirme su contraseña'
+            autoCapitalize='none'
+            autoCorrect={false}
+            secureTextEntry={passwordVisibility}
+            enablesReturnKeyAutomatically
+            onChangeText={text => setPassword(text)}
+          />
+          <Pressable onPress={handlePasswordVisibility}>
+            <MaterialCommunityIcons name={rightIcon} size={22} style={styles.icono} color='#232323' />
+          </Pressable>
+        </View>
+
+        <Button color='#E46B00FF' onPress={() => handleRegister()}>Registrarse</Button>
       </View>
-      <TouchableOpacity style={styles.acceptPolicy}>
-        <FontAwesome name='check' size={18} color={COLORS.ORANGE} />
-        <Text style={styles.rememberPasswordText}>
-          Por registrarme, Acepto todos los
-          <Text style={styles.policyText}>Términos de uso </Text>
-          &
-          <Text style={styles.policyText}> Políticas de Privacidad</Text>
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
-        <Text style={styles.registerButtonText}>Registrarse</Text>
-      </TouchableOpacity>
-      <View style={styles.loginContainer}>
-        <Text>¿Ya tienes una cuenta? </Text>
-        <Text onPress={() => setRegisterUser(false)} style={styles.loginText}>Inicia sesión</Text>
+      {/* Iniciar sesion con redes sociales */}
+      <Text style={{ alignItems: 'center', marginTop: '5%' }}>O Registrarse con</Text>
+      <View style={styles.buttonContainer}>
+        <Button radius='sm' type='solid' color='#E7F1F8'>
+          <Icon name='facebook' color='darkblue' />
+        </Button>
+        <Button radius='sm' type='solid' color='#F8E7E8'>
+          <FontAwesome name='google' size={24} color='red' />
+        </Button>
       </View>
+      <View>
+        <Text>Ya tienes una cuenta</Text>
+        <Text onPress={() => setRegisterUser(false)} style={styles.registrar}>Login</Text>
+      </View>
+
     </View>
   )
 }
@@ -49,91 +89,40 @@ const RegisterScreen = ({ setRegisterUser }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: 'center',
-    marginTop: 150,
-    alignItems: 'center',
-    paddingTop: Constants.statusBarHeight,
-    backgroundColor: '#fff'
-  },
-  title: {
-    fontSize: 30,
-    fontWeight: '900',
-    marginBottom: 24
-  },
-  inputContainer: {
-    width: '90%',
-    marginTop: 30
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: COLORS.GRAY_SOFT
-  },
-  input: {
-    height: 48,
-    backgroundColor: '#F3F4F6FF',
-    marginBottom: 16,
-    paddingHorizontal: 12,
-    borderRadius: 8
-  },
-  passwordInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16
-  },
-  passwordInput: {
-    flex: 1,
-    height: 48,
-    backgroundColor: '#F3F4F6FF',
-    paddingHorizontal: 12,
-    borderRadius: 8
-  },
-  eyeIconContainer: {
-    marginHorizontal: 12
-  },
-  registerButton: {
-    backgroundColor: COLORS.ORANGE,
-    width: '90%',
-    height: 48,
-    borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: COLORS.ORANGE,
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 10
+    backgroundColor: 'white',
+    width: '100%'
   },
-  registerButtonText: {
-    color: '#fff',
-    fontSize: 16
+  form: {
+    gap: 10,
+    width: '80%'
   },
-  loginContainer: {
+  inputContainer: {
+    backgroundColor: 'white',
     flexDirection: 'row',
-    marginBottom: 16,
-    marginTop: 150
+    borderRadius: 4,
+    borderWidth: 1
   },
-  loginText: {
-    color: COLORS.ORANGE,
-    fontWeight: 'bold'
+  icono: {
+    marginTop: '50%',
+    marginRight: '3%'
   },
-  policyText: {
-    color: COLORS.ORANGE
+  input: {
+    flex: 1,
+    height: 44,
+    backgroundColor: '#fff'
   },
-  acceptPolicy: {
+  checkbox: {
+    paddingRight: 0
+  },
+  searchIcon: {
+    padding: 10
+  },
+  buttonContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 50,
-    marginBottom: 30
-  },
-  rememberPasswordText: {
-    marginLeft: 8,
-    fontSize: 14,
-    color: '#000'
+    marginTop: 20,
+    width: '30%',
+    justifyContent: 'space-between'
   }
 })
-
-export default RegisterScreen
