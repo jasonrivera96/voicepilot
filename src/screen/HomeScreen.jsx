@@ -85,6 +85,53 @@ const ModalContent = ({ onClose, addFolderItem }) => {
   )
 }
 
+const EditModal = ({ onClose, folder, deleteFolderItem, updateFolderItem }) => {
+  const [folderItem, setFolderItem] = useState(folder)
+  const handleChange = (data) => {
+    setFolderItem({ ...folderItem, item: data })
+  }
+
+  return (
+    <View>
+      <View style={stylesModalContent.contenet}>
+        <Text style={stylesModalContent.titleModal}>Acciones</Text>
+      </View>
+      <View style={stylesModalContent.containerInput}>
+        <Text style={stylesModalContent.labelInput}>Cambiar nombre</Text>
+        <TextInput
+          value={folderItem.item}
+          onChangeText={(data) => handleChange(data)}
+          style={stylesModalContent.textInput}
+        />
+      </View>
+
+      <View>
+        <TouchableOpacity
+          style={stylesModalContent.containerDeleteButton}
+          onPress={() => deleteFolderItem({ folderItem })}
+        >
+          <Text style={stylesModalContent.textDeleteButton}>Eliminar carpeta</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={stylesModalContent.containerButtons}>
+        <TouchableOpacity
+          style={stylesModalContent.containerButtonCreate}
+          onPress={() => updateFolderItem({ folderItem })}
+        >
+          <Text style={stylesModalContent.textButtonCreate}>Actualizar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={stylesModalContent.containerButtonCancelar}
+          onPress={onClose}
+        >
+          <Text style={stylesModalContent.textButtonCancelar}>Cancelar</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  )
+}
+
 const HomeScreen = () => {
   const [folders, setFolders] = useState(['Carpeta de prueba'])
   const [folder, setFolder] = useState({})
@@ -118,56 +165,18 @@ const HomeScreen = () => {
     setIsModalVisible(false)
   }
 
+  const deleteFolderItem = ({ folderItem }) => {
+    const foldersUpdated = folders.filter((item, index) => index !== folderItem.index)
+    setFolders(foldersUpdated)
+    setFolder({})
+    setIsEditModal(false)
+    setIsModalVisible(false)
+  }
+
   const openEditModal = ({ index, item }) => {
     setFolder({ index, item })
     setIsEditModal(true)
     setIsModalVisible(true)
-  }
-
-  const EditModal = ({ onClose, folder }) => {
-    const [folderItem, setFolderItem] = useState(folder)
-    const handleChange = (data) => {
-      setFolderItem({ ...folderItem, item: data })
-    }
-
-    return (
-      <View>
-        <View style={stylesModalContent.contenet}>
-          <Text style={stylesModalContent.titleModal}>Acciones</Text>
-        </View>
-        <View style={stylesModalContent.containerInput}>
-          <Text style={stylesModalContent.labelInput}>Cambiar nombre</Text>
-          <TextInput
-            value={folderItem.item}
-            onChangeText={(data) => handleChange(data)}
-            style={stylesModalContent.textInput}
-          />
-        </View>
-
-        <View>
-          <TouchableOpacity
-            style={stylesModalContent.containerDeleteButton}
-          >
-            <Text style={stylesModalContent.textDeleteButton}>Eliminar carpeta</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={stylesModalContent.containerButtons}>
-          <TouchableOpacity
-            style={stylesModalContent.containerButtonCreate}
-            onPress={() => updateFolderItem({ folderItem })}
-          >
-            <Text style={stylesModalContent.textButtonCreate}>Actualizar</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={stylesModalContent.containerButtonCancelar}
-            onPress={onClose}
-          >
-            <Text style={stylesModalContent.textButtonCancelar}>Cancelar</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    )
   }
 
   const renderContent = () => {
@@ -190,7 +199,12 @@ const HomeScreen = () => {
       <CustomModal isVisible={isModalVisible}>
         {!isEditModal
           ? <ModalContent onClose={closeModal} addFolderItem={addFolderItem} />
-          : <EditModal onClose={closeModal} folder={folder} updateFolderItem={updateFolderItem} />}
+          : <EditModal
+              onClose={closeModal}
+              folder={folder}
+              updateFolderItem={updateFolderItem}
+              deleteFolderItem={deleteFolderItem}
+            />}
       </CustomModal>
     </View>
   )
