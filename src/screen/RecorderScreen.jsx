@@ -22,7 +22,7 @@ import Constants from 'expo-constants'
 import CustomRecorderButton from '../components/CustomRecorderButton'
 import { COLORS } from '../constants'
 
-export default function RecorderScreen () {
+export default function RecorderScreen() {
   const [recording, setRecording] = useState()
   const [recordings, setRecordings] = useState([])
   const [message, setMessage] = useState('')
@@ -63,8 +63,8 @@ export default function RecorderScreen () {
       if (permission.status === 'granted') {
         await Audio.setAudioModeAsync({
           allowsRecordingIOS: true,
-          playsInSilentModeIOS: true
-        })
+          playsInSilentModeIOS: true,
+      })
 
         const { recording } = await Audio.Recording.createAsync(
           Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
@@ -156,7 +156,7 @@ export default function RecorderScreen () {
       behavior={Platform.OS === 'ios' ? 'padding' : null}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
     >
-      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss}>
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <View style={styles.container}>
           <Text style={styles.timer}>{`${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`}</Text>
           <Text>{message}</Text>
@@ -181,7 +181,7 @@ export default function RecorderScreen () {
               behavior={Platform.OS === 'ios' ? 'padding' : null}
               keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
             >
-              <TouchableWithoutFeedback onPress={() => Keyboard.dismiss}>
+              <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
                 <View style={styles.modalContainer}>
                   <View style={styles.modalContent}>
                     <Text style={styles.modalTitle}>Guardar Grabación</Text>
@@ -219,11 +219,9 @@ export default function RecorderScreen () {
                       </TouchableOpacity>
                       <TouchableOpacity
                         style={[styles.buttonModal, { backgroundColor: '#FF7700FF' }]}
-
                       >
                         <Text style={styles.buttonText}>Transcribir</Text>
                       </TouchableOpacity>
-
                     </View>
                   </View>
                 </View>
@@ -233,7 +231,6 @@ export default function RecorderScreen () {
         </View>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
-
   )
 }
 

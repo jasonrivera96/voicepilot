@@ -8,6 +8,7 @@ import { StatusBar } from 'expo-status-bar'
 export default function App () {
   useEffect(() => {
     const changeStatusBarColor = async () => {
+      //SOLO PARA ANDROID
       NavigationBar.setBackgroundColorAsync('#FFFFFF')
       NavigationBar.setButtonStyleAsync('dark')
     }

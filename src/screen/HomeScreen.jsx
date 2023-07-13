@@ -21,7 +21,7 @@ const Header = ({ openModal, data }) => {
           )
         : (<View />)}
       <View style={styles.text}>
-        <Text style={styles.titlePage}>My workspace</Text>
+        <Text style={styles.titlePage}>Mi Espacio de Trabajo</Text>
       </View>
     </View>
   )
@@ -31,13 +31,13 @@ const EmptyFolder = ({ openModal }) => {
   return (
     <View style={styles.container}>
       <View style={styles.iconEmpty}>{folderIconEmpty}</View>
-      <Text style={styles.message}>It's empty here</Text>
+      <Text style={styles.message}>Está vacío aquí</Text>
       <Text style={styles.description}>
         Ea ea occaecat labore labore proident fugiat sunt do in magna
       </Text>
       <TouchableOpacity onPress={openModal} style={styles.containerButton}>
         {addIcon}
-        <Text style={styles.textButton}>Create new</Text>
+        <Text style={styles.textButton}>Crear</Text>
       </TouchableOpacity>
     </View>
   )
@@ -61,18 +61,18 @@ const ModalContent = ({ onClose, addFolderItem }) => {
   return (
     <View>
       <View style={stylesModalContent.contenet}>
-        <Text style={stylesModalContent.titleModal}>Create new folder</Text>
+        <Text style={stylesModalContent.titleModal}>Crear nueva carpeta</Text>
       </View>
       <View style={stylesModalContent.containerInput}>
-        <Text style={stylesModalContent.labelInput}>Folder Name</Text>
-        <TextInput onChangeText={(data) => handleChange(data)} style={stylesModalContent.textInput} placeholder='Folder Name' />
+        <Text style={stylesModalContent.labelInput}>Nombre de carpeta</Text>
+        <TextInput onChangeText={(data) => handleChange(data)} style={stylesModalContent.textInput} placeholder='Nombre de carpeta' />
       </View>
       <View style={stylesModalContent.containerButtons}>
         <TouchableOpacity
           style={stylesModalContent.containerButtonCreate}
           onPress={() => addFolderItem(folderName)}
         >
-          <Text style={stylesModalContent.textButtonCreate}>Create</Text>
+          <Text style={stylesModalContent.textButtonCreate}>Crear</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={stylesModalContent.containerButtonCancelar}
