@@ -1,11 +1,11 @@
 import React, { useContext, useState } from 'react'
-import { View, Text, TextInput, StyleSheet, Pressable } from 'react-native'
+import { View, Text, TextInput, StyleSheet, Pressable, TouchableOpacity } from 'react-native'
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons'
 import { AuthContext } from '../context/AuthContext'
 // Dome
-import { Button } from '@rneui/themed'
 import { CheckBox, Icon } from 'react-native-elements'
 import { useTogglePasswordVisibility } from '../hooks/useTogglePassVisibility'
+import { COLORS } from '../constants'
 
 export default function LoginScreen ({ setRegisterUser }) {
   const [email, setEmail] = useState('')
@@ -56,37 +56,35 @@ export default function LoginScreen ({ setRegisterUser }) {
             iconType='material-community'
             checkedIcon='checkbox-marked'
             uncheckedIcon='checkbox-blank-outline'
-            checkedColor='#E46B00FF'
+            checkedColor={COLORS.ORANGE}
             style={styles.checkbox}
           />
           <Text style={{ paddingTop: 17, marginLeft: -15 }}>Recuérdame</Text>
-          <Text style={{ color: '#E46B00FF', padding: 17, marginLeft: 35 }}>Olvidaste tu contraseña?</Text>
+          <Text style={{ color: '#E46B00FF', padding: 17, marginLeft: "7%" }}>Olvidaste tu contraseña?</Text>
 
         </View>
-        <Button color='#E46B00FF' onPress={() => login({ username: email, password })}>Iniciar Sesión</Button>
+        <TouchableOpacity style={styles.biniciar} onPress={() => login({ username: email, password })}>
+          <Text style={{color:"white"}}>Iniciar Sesión</Text>
+        </TouchableOpacity>
       </View>
       {/* Iniciar sesion con redes sociales */}
       <Text style={{ alignItems: 'center', marginTop: '10%' }}>O iniciar sesión con</Text>
       <View style={styles.buttonContainer}>
-        <View style={styles.buttonWrapper}>
-          <Button radius='sm' type='solid' color='#FEF1F1FF'>
-            <FontAwesome name='google' size={24} color='#C71610FF' />
-          </Button>
-        </View>
-        <View style={styles.buttonWrapper}>
-          <Button radius='sm' type='solid' color='#F3F6FBFF'>
-            <Icon name='facebook' size={24} color='#335CA6FF' />
-          </Button>
-        </View>
-        <View style={styles.buttonWrapper}>
-          <Button radius='sm' type='solid' color='#F3F4F6FF'>
-            <FontAwesome name='apple' size={24} color='#565E6CFF' />
-          </Button>
-        </View>
+      <TouchableOpacity style={styles.buttonWrapperg}>
+        <FontAwesome name='google' size={24} color='#C71610FF' />
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.buttonWrapperf}>
+        <FontAwesome name='facebook' size={24} color='#335CA6FF' />
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.buttonWrappera} >
+        <FontAwesome name='apple' size={24} color='#565E6CFF' />
+      </TouchableOpacity>
+
+        
       </View>
       {/* Ingresar a registro */}
       <View style={styles.final}>
-        <Text>No tienes una cuenta?</Text>
+        <Text>No tienes una cuenta? </Text>
         <Text onPress={() => setRegisterUser(true)} style={styles.registrar}>Registrarse</Text>
       </View>
 
@@ -129,6 +127,17 @@ const styles = StyleSheet.create({
   checkbox: {
     paddingRight: 0
   },
+  biniciar:{
+    width: "90%",
+    backgroundColor: COLORS.ORANGE,
+    alignItems:'center',
+    justifyContent:'center',
+    padding: "5%",
+    borderRadius: 4,
+    alignSelf: 'center', // Agregado para centrar horizontalmente
+    marginVertical: 10,
+
+  },
   searchIcon: {
     padding: 10
   },
@@ -138,8 +147,28 @@ const styles = StyleSheet.create({
     marginTop: '3%'
 
   },
-  buttonWrapper: {
-    marginRight: 25,
+  buttonWrapperg: {
+    backgroundColor:"#FEF1F1FF",
+    alignItems:'center',
+    padding:"2%",
+    width: "18%",
+    marginRight: 10,
+    borderRadius: 20
+  },
+  buttonWrappera: {
+    backgroundColor:"#F3F4F6FF",
+    alignItems:'center',
+    padding:"2%",
+    width: "18%",
+    marginRight: 10,
+    borderRadius: 20
+  },
+  buttonWrapperf: {
+    backgroundColor:"#F3F6FBFF",
+    alignItems:'center',
+    padding:"2%",
+    width: "18%",
+    marginRight: 10,
     borderRadius: 20
   },
   final: {
@@ -150,6 +179,6 @@ const styles = StyleSheet.create({
   },
   registrar: {
     fontWeight: 'bold',
-    color: '#E46B00FF'
+    color: COLORS.ORANGE
   }
 })

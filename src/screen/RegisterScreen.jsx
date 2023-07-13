@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
-import { Button } from '@rneui/themed'
-import { View, Text, TextInput, StyleSheet, Pressable } from 'react-native'
+import { View, Text, TextInput, StyleSheet, Pressable, TouchableOpacity } from 'react-native'
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons'
 import { useTogglePasswordVisibility } from '../hooks/useTogglePassVisibility'
 import { Icon, CheckBox } from 'react-native-elements'
 import { COLORS } from '../constants'
 
-export default function RegisterScreen ({ setRegisterUser }) {
+export default function RegisterScreen({ setRegisterUser }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isSelected, setSelection] = useState(true)
@@ -61,23 +60,7 @@ export default function RegisterScreen ({ setRegisterUser }) {
           </Pressable>
         </View>
 
-        {/* <Text style={{ fontWeight: 'bold', marginTop:"3%" }}>Confirmación</Text>
-        <View style={styles.inputContainer}>
-          <Icon style={styles.searchIcon} name='lock-open' />
-          <TextInput
-            id='clave'
-            style={styles.input}
-            placeholder='Confirme su contraseña'
-            autoCapitalize='none'
-            autoCorrect={false}
-            secureTextEntry={passwordVisibility}
-            enablesReturnKeyAutomatically
-            onChangeText={text => setPassword(text)}
-          />
-          <Pressable onPress={handlePasswordVisibility}>
-            <MaterialCommunityIcons name={rightIcon} size={22} style={styles.icono} color='#232323' />
-          </Pressable>
-        </View> */}
+
         <View style={styles.condiciones}>
           <CheckBox
             checked={isSelected}
@@ -85,38 +68,22 @@ export default function RegisterScreen ({ setRegisterUser }) {
             iconType='material-community'
             checkedIcon='checkbox-marked'
             uncheckedIcon='checkbox-blank-outline'
-            checkedColor='#E46B00FF'
+            checkedColor={COLORS.ORANGE}
             style={styles.checkbox}
           />
-          <Text style={{ paddingTop: 17, marginLeft: -15 }}>
+          <Text style={{ paddingTop: 17, marginLeft: -15, marginRight: "20%" }}>
             Al registrarme, acepto los <Text style={{ color: COLORS.ORANGE, fontWeight: 'bold' }}>términos de uso</Text> y la <Text style={{ color: COLORS.ORANGE, fontWeight: 'bold' }}>política de privacidad</Text>
           </Text>
 
         </View>
-
-        <Button color='#E46B00FF' style={{ marginTop: '8%' }} onPress={() => handleRegister()}>Registrarse</Button>
+        <TouchableOpacity style={styles.bregistrarse} onPress={() => handleRegister()}>
+          <Text style={{ color: "white" }}>
+            Registrarse
+          </Text>
+        </TouchableOpacity>
       </View>
-      {/* Iniciar sesion con redes sociales */}
-      {/* <Text style={{ alignItems: 'center', marginTop: '5%' }}>O Registrarse con</Text>
-      <View style={styles.buttonContainer}>
-        <View style={styles.buttonWrapper}>
-          <Button radius='sm' type='solid' color='#FEF1F1FF'>
-            <FontAwesome name='google' size={24} color='#C71610FF' />
-          </Button>
-        </View>
-        <View style={styles.buttonWrapper}>
-          <Button radius='sm' type='solid' color='#F3F6FBFF'>
-            <Icon name='facebook' size={24} color='#335CA6FF' />
-          </Button>
-        </View>
-        <View style={styles.buttonWrapper}>
-          <Button radius='sm' type='solid' color='#F3F4F6FF'>
-            <FontAwesome name='apple' size={24} color="#565E6CFF" />
-          </Button>
-        </View>
-      </View> */}
       <View style={styles.final}>
-        <Text>¿Ya tienes una cuenta?</Text>
+        <Text>¿Ya tienes una cuenta? </Text>
         <Text onPress={() => setRegisterUser(false)} style={styles.registrar}>Iniciar Sesión</Text>
       </View>
 
@@ -158,6 +125,17 @@ const styles = StyleSheet.create({
   checkbox: {
     paddingRight: 0
   },
+  bregistrarse: {
+    width: "90%",
+    backgroundColor: COLORS.ORANGE,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: "5%",
+    borderRadius: 4,
+    alignSelf: 'center', // Agregado para centrar horizontalmente
+    marginVertical: 10,
+
+  },
   searchIcon: {
     padding: 10
   },
@@ -179,6 +157,6 @@ const styles = StyleSheet.create({
   },
   registrar: {
     fontWeight: 'bold',
-    color: '#E46B00FF'
+    color: COLORS.ORANGE
   }
 })
