@@ -21,7 +21,7 @@ const Header = ({ openModal, data }) => {
           )
         : (<View />)}
       <View style={styles.text}>
-        <Text style={styles.titlePage}>Mi Espacio de Trabajo</Text>
+        <Text style={styles.titlePage}>Portafolio</Text>
       </View>
     </View>
   )
@@ -31,21 +31,21 @@ const EmptyFolder = ({ openModal }) => {
   return (
     <View style={styles.container}>
       <View style={styles.iconEmpty}>{folderIconEmpty}</View>
-      <Text style={styles.message}>Está vacío aquí</Text>
+      <Text style={styles.message}>No hay carpetas</Text>
       <Text style={styles.description}>
-        Ea ea occaecat labore labore proident fugiat sunt do in magna
+        Las carpetas te permiten organizar tus transcripciones, crea una carpeta para cada proyecto.
       </Text>
       <TouchableOpacity onPress={openModal} style={styles.containerButton}>
         {addIcon}
-        <Text style={styles.textButton}>Crear</Text>
+        <Text style={styles.textButton}>Crear carpeta</Text>
       </TouchableOpacity>
     </View>
   )
 }
 
-const FolderItem = ({ item, index }) => {
+const FolderItem = ({ item, index, openEditModal }) => {
   return (
-    <TouchableOpacity key={index} style={styles.folderContainer}>
+    <TouchableOpacity key={index} style={styles.folderContainer} onLongPress={() => openEditModal({ index, item })}>
       <View style={styles.icon}>{folderIcon}</View>
       <Text>{item}</Text>
     </TouchableOpacity>
@@ -61,11 +61,11 @@ const ModalContent = ({ onClose, addFolderItem }) => {
   return (
     <View>
       <View style={stylesModalContent.contenet}>
-        <Text style={stylesModalContent.titleModal}>Crear nueva carpeta</Text>
+        <Text style={stylesModalContent.titleModal}>Nueva carpeta</Text>
       </View>
       <View style={stylesModalContent.containerInput}>
-        <Text style={stylesModalContent.labelInput}>Nombre de carpeta</Text>
-        <TextInput onChangeText={(data) => handleChange(data)} style={stylesModalContent.textInput} placeholder='Nombre de carpeta' />
+        <Text style={stylesModalContent.labelInput}>Nombre</Text>
+        <TextInput onChangeText={(data) => handleChange(data)} style={stylesModalContent.textInput} placeholder='Mis transcripciones' />
       </View>
       <View style={stylesModalContent.containerButtons}>
         <TouchableOpacity
@@ -86,11 +86,15 @@ const ModalContent = ({ onClose, addFolderItem }) => {
 }
 
 const HomeScreen = () => {
-  const [folders, setFolders] = useState([])
+  const [folders, setFolders] = useState(['Carpeta de prueba'])
+  const [folder, setFolder] = useState({})
   const [isModalVisible, setIsModalVisible] = useState(false)
+  const [isEditModal, setIsEditModal] = useState(false)
 
   const closeModal = () => {
     setIsModalVisible(false)
+    setIsEditModal(false)
+    setFolder({})
   }
 
   const openModal = () => {
@@ -102,6 +106,70 @@ const HomeScreen = () => {
     setFolders((prev) => [...prev, folderName])
   }
 
+  const updateFolderItem = ({ folderItem }) => {
+    console.log(folderItem)
+    const foldersUpdated = folders.map((item, index) => {
+      if (index === folder.index) {
+        return folderItem.item
+      }
+      return item
+    })
+    setFolders(foldersUpdated)
+    setIsModalVisible(false)
+  }
+
+  const openEditModal = ({ index, item }) => {
+    setFolder({ index, item })
+    setIsEditModal(true)
+    setIsModalVisible(true)
+  }
+
+  const EditModal = ({ onClose, folder }) => {
+    const [folderItem, setFolderItem] = useState(folder)
+    const handleChange = (data) => {
+      setFolderItem({ ...folderItem, item: data })
+    }
+
+    return (
+      <View>
+        <View style={stylesModalContent.contenet}>
+          <Text style={stylesModalContent.titleModal}>Acciones</Text>
+        </View>
+        <View style={stylesModalContent.containerInput}>
+          <Text style={stylesModalContent.labelInput}>Cambiar nombre</Text>
+          <TextInput
+            value={folderItem.item}
+            onChangeText={(data) => handleChange(data)}
+            style={stylesModalContent.textInput}
+          />
+        </View>
+
+        <View>
+          <TouchableOpacity
+            style={stylesModalContent.containerDeleteButton}
+          >
+            <Text style={stylesModalContent.textDeleteButton}>Eliminar carpeta</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={stylesModalContent.containerButtons}>
+          <TouchableOpacity
+            style={stylesModalContent.containerButtonCreate}
+            onPress={() => updateFolderItem({ folderItem })}
+          >
+            <Text style={stylesModalContent.textButtonCreate}>Actualizar</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={stylesModalContent.containerButtonCancelar}
+            onPress={onClose}
+          >
+            <Text style={stylesModalContent.textButtonCancelar}>Cancelar</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    )
+  }
+
   const renderContent = () => {
     if (folders.length === 0) {
       return <EmptyFolder openModal={openModal} />
@@ -110,7 +178,7 @@ const HomeScreen = () => {
       <FlatList
         style={styles.folderListContainer}
         data={folders}
-        renderItem={({ item, index }) => <FolderItem item={item} index={index} />}
+        renderItem={({ item, index }) => <FolderItem item={item} index={index} openEditModal={openEditModal} />}
       />
     )
   }
@@ -120,7 +188,9 @@ const HomeScreen = () => {
       <Header openModal={openModal} data={folders} />
       {renderContent()}
       <CustomModal isVisible={isModalVisible}>
-        <ModalContent onClose={closeModal} addFolderItem={addFolderItem} />
+        {!isEditModal
+          ? <ModalContent onClose={closeModal} addFolderItem={addFolderItem} />
+          : <EditModal onClose={closeModal} folder={folder} updateFolderItem={updateFolderItem} />}
       </CustomModal>
     </View>
   )
@@ -191,7 +261,7 @@ const styles = StyleSheet.create({
     marginTop: 30
   },
   description: {
-    fontSize: 18,
+    fontSize: 14,
     marginHorizontal: 40,
     textAlign: 'center',
     marginTop: 10,
@@ -243,6 +313,19 @@ const stylesModalContent = StyleSheet.create({
     opacity: 1,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  containerDeleteButton: {
+    backgroundColor: COLORS.DANGER_EXTRA_SOFT,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    height: 44,
+    borderRadius: 8,
+    opacity: 1,
+    marginTop: 60
+  },
+  textDeleteButton: {
+    color: COLORS.DANGER
   },
   textButtonCreate: {
     color: '#fff'

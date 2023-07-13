@@ -1,32 +1,28 @@
-import { Modal, View, StyleSheet } from 'react-native'
+import { Modal, View, StyleSheet, TouchableWithoutFeedback, KeyboardAvoidingView, Keyboard, Platform } from 'react-native'
 import React from 'react'
-import { TouchableWithoutFeedback } from 'react-native'
-import { KeyboardAvoidingView, Keyboard} from 'react-native'
 import Constants from 'expo-constants'
 import { COLORS } from '../constants'
 
-
-export default function CustomModal({ isVisible, children }) {
+export default function CustomModal ({ isVisible, children }) {
   return (
 
-<View style={styles.container}>
-    <Modal animationType='slide' transparent visible={isVisible}>
-      <KeyboardAvoidingView
-        style={styles.modalContainer}
-        behavior={Platform.OS === 'ios' ? 'padding' : null}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
-      >
-        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            {children}
-          </View>
-          </View>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
-    </Modal>
+    <View style={styles.container}>
+      <Modal animationType='slide' transparent visible={isVisible}>
+        <KeyboardAvoidingView
+          style={styles.modalContainer}
+          behavior={Platform.OS === 'ios' ? 'padding' : null}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+        >
+          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+                {children}
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
+      </Modal>
     </View>
-
 
   )
 }
@@ -48,7 +44,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 20,
     borderTopEndRadius: 15,
-    borderTopStartRadius: 16,
-    
-  },
+    borderTopStartRadius: 16
+
+  }
 })
