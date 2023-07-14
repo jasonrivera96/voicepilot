@@ -25,16 +25,12 @@ export default function RegisterScreen({ setRegisterUser }) {
 
       <View style={styles.form}>
 
-        <Text style={{ fontWeight: 'bold' }}>Nombre</Text>
+        <Text style={{ fontWeight: 'bold' }}>Usuario</Text>
         <View style={styles.inputContainer}>
           <FontAwesome style={styles.searchIcon} name='user-o' size={20} color='black' />
-          <TextInput style={styles.input} placeholder='Ingrese su nombre' onChangeText={(text) => setEmail(text)} value={email} />
+          <TextInput style={styles.input} placeholder='Ingrese su nombre de usuario' onChangeText={(text) => setEmail(text)} value={email} />
         </View>
-        <Text style={{ fontWeight: 'bold' }}>Apellido</Text>
-        <View style={styles.inputContainer}>
-          <FontAwesome style={styles.searchIcon} name='user-o' size={20} color='black' />
-          <TextInput style={styles.input} placeholder='Ingrese su apellido' onChangeText={(text) => setEmail(text)} value={email} />
-        </View>
+      
 
         <Text style={{ fontWeight: 'bold' }}>Correo</Text>
         <View style={styles.inputContainer}>
