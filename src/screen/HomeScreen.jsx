@@ -18,7 +18,7 @@ const Header = ({ openModal, data }) => {
           <TouchableOpacity onPress={openModal} style={styles.addIcon}>
             <Text>{addIcon}</Text>
           </TouchableOpacity>
-          )
+        )
         : (<View />)}
       <View style={styles.text}>
         <Text style={styles.titlePage}>Portafolio</Text>
@@ -33,7 +33,7 @@ const EmptyFolder = ({ openModal }) => {
       <View style={styles.iconEmpty}>{folderIconEmpty}</View>
       <Text style={styles.message}>No hay carpetas</Text>
       <Text style={styles.description}>
-        Las carpetas te permiten organizar tus transcripciones, crea una carpeta para cada proyecto.
+        Las carpetas te ayudan a organizar tus resúmenes, crea una carpeta para cada proyecto.
       </Text>
       <TouchableOpacity onPress={openModal} style={styles.containerButton}>
         {addIcon}
@@ -65,7 +65,8 @@ const ModalContent = ({ onClose, addFolderItem }) => {
       </View>
       <View style={stylesModalContent.containerInput}>
         <Text style={stylesModalContent.labelInput}>Nombre</Text>
-        <TextInput onChangeText={(data) => handleChange(data)} style={stylesModalContent.textInput} placeholder='Mis transcripciones' />
+        <TextInput onChangeText={(data) => handleChange(data)} style={stylesModalContent.textInput} placeholder='Mis resúmenes'
+          placeholderTextColor='#999999' />
       </View>
       <View style={stylesModalContent.containerButtons}>
         <TouchableOpacity
@@ -200,11 +201,11 @@ const HomeScreen = () => {
         {!isEditModal
           ? <ModalContent onClose={closeModal} addFolderItem={addFolderItem} />
           : <EditModal
-              onClose={closeModal}
-              folder={folder}
-              updateFolderItem={updateFolderItem}
-              deleteFolderItem={deleteFolderItem}
-            />}
+            onClose={closeModal}
+            folder={folder}
+            updateFolderItem={updateFolderItem}
+            deleteFolderItem={deleteFolderItem}
+          />}
       </CustomModal>
     </View>
   )

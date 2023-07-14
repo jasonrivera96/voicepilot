@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar'
 import React, { useState, useEffect } from 'react'
 import {
   StyleSheet,
@@ -13,9 +12,6 @@ import {
   Keyboard
 } from 'react-native'
 import { Audio } from 'expo-av'
-import * as Sharing from 'expo-sharing'
-import { FontAwesome } from '@expo/vector-icons'
-import axios from 'axios'
 import Dropdown from 'react-native-select-dropdown'
 import Constants from 'expo-constants'
 
@@ -26,8 +22,10 @@ export default function RecorderScreen() {
   const [recording, setRecording] = useState()
   const [recordings, setRecordings] = useState([])
   const [message, setMessage] = useState('')
+  //variables para el cronometro
   const [seconds, setSeconds] = useState(0)
   const [minutes, setMinutes] = useState(0)
+  const [hours, setHours] = useState(0);
   const [customInterval, setCustomInterval] = useState()
   // variables para el modal
   const [recordingName, setRecordingName] = useState('')
@@ -46,16 +44,6 @@ export default function RecorderScreen() {
     }
   }, [customInterval])
 
-  const sendRecordings = async () => {
-    try {
-      // Envía los archivos de audio al backend utilizando Axios
-      await axios.post('URL_DEL_BACKEND', { recordings })
-      // Limpia la lista de grabaciones después de enviarlas al backend
-      setRecordings([])
-    } catch (error) {
-      console.error('Failed to send recordings to backend', error)
-    }
-  }
 
   const startRecording = async () => {
     try {
@@ -64,7 +52,7 @@ export default function RecorderScreen() {
         await Audio.setAudioModeAsync({
           allowsRecordingIOS: true,
           playsInSilentModeIOS: true,
-      })
+        })
 
         const { recording } = await Audio.Recording.createAsync(
           Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
@@ -73,12 +61,18 @@ export default function RecorderScreen() {
         setRecording(recording)
         setCustomInterval(
           setInterval(() => {
-            setSeconds(prevSeconds => {
+            setSeconds((prevSeconds) => {
               if (prevSeconds + 1 === 60) {
-                setMinutes(prevMinutes => prevMinutes + 1)
-                return 0
+                setMinutes((prevMinutes) => {
+                  if (prevMinutes + 1 === 60) {
+                    setHours((prevHours) => prevHours + 1);
+                    return 0;
+                  }
+                  return prevMinutes + 1;
+                });
+                return 0;
               }
-              return prevSeconds + 1
+              return prevSeconds + 1;
             })
           }, 1000)
         )
@@ -91,6 +85,7 @@ export default function RecorderScreen() {
   }
 
   const stopRecording = async () => {
+
     if (recording) {
       setRecording(undefined)
       await recording.stopAndUnloadAsync()
@@ -100,137 +95,135 @@ export default function RecorderScreen() {
         duration: getDurationFormatted(status.durationMillis),
         file: recording.getURI()
       }]
+      { handleSendRecordings() }
       setRecordings(updatedRecordings)
       clearInterval(customInterval)
       setSeconds(0)
       setMinutes(0)
+
     }
   }
 
   const getDurationFormatted = (millis) => {
+    const hours = Math.floor(millis / 1000 / 60 / 60);
     const minutes = Math.floor(millis / 1000 / 60)
     const seconds = Math.round((millis / 1000) % 60)
+    const hoursDisplay = hours < 10 ? `0${hours}` : hours;
     const minutesDisplay = minutes < 10 ? `0${minutes}` : minutes
     const secondsDisplay = seconds < 10 ? `0${seconds}` : seconds
-    return `${minutesDisplay}:${secondsDisplay}`
+    return `${hoursDisplay}:${minutesDisplay}:${secondsDisplay}`
   }
 
-  const playRecording = async (sound) => {
-    await sound.setVolumeAsync(1.0)
-    await sound.replayAsync()
-  }
-
-  const shareRecording = async (file) => {
-    await Sharing.shareAsync(file)
-  }
-  // Abre la ventana emergente para ingresar los detalles del audio
   const handleSendRecordings = () => {
     setModalVisible(true)
   }
 
-  const renderRecordingLines = () => {
-    return recordings.map((recordingLine, index) => {
-      return (
-        <View key={index} style={styles.row}>
-          <Text style={styles.fill}>Grabación {index + 1} - {recordingLine.duration}</Text>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => playRecording(recordingLine.sound)}
-          >
-            <FontAwesome name='play' size={15} color='black' />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => shareRecording(recordingLine.file)}
-          >
-            <FontAwesome name='download' size={15} color='black' />
-          </TouchableOpacity>
-        </View>
-      )
-    })
-  }
+  //PARA LOS BOTONES DE REPRODUCIR EL AUDIO Y DESCARGAR 
+
+  // const playRecording = async (sound) => {
+  //   await sound.setVolumeAsync(1.0)
+  //   await sound.replayAsync()
+  // }
+
+  // const shareRecording = async (file) => {
+  //   await Sharing.shareAsync(file)
+  // }
+
+
+  // Abre la ventana emergente para ingresar los detalles del audio
+
+  //LISTADO DE GRABACIONES
+  // const renderRecordingLines = () => {
+  //   return recordings.map((recordingLine, index) => {
+  //     return (
+  //       <View key={index} style={styles.row}>
+  //         <Text style={styles.fill}>Grabación {index + 1} - {recordingLine.duration}</Text>
+  //         <TouchableOpacity
+  //           style={styles.button}
+  //           onPress={() => playRecording(recordingLine.sound)}
+  //         >
+  //           <FontAwesome name='play' size={15} color='black' />
+  //         </TouchableOpacity>
+  //         <TouchableOpacity
+  //           style={styles.button}
+  //           onPress={() => shareRecording(recordingLine.file)}
+  //         >
+  //           <FontAwesome name='download' size={15} color='black' />
+  //         </TouchableOpacity>
+  //       </View>
+  //     )
+  //   })
+  // }
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : null}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
-    >
-      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <View style={styles.container}>
-          <Text style={styles.timer}>{`${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`}</Text>
-          <Text>{message}</Text>
-          <Text style={styles.instructions}>Presiona para iniciar a grabar</Text>
 
-          <CustomRecorderButton stopRecording={stopRecording} startRecording={startRecording} />
+    <View style={styles.container}>
+      <Text style={styles.timer}>{`${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`}</Text>
+      <Text>{message}</Text>
+      <Text style={styles.instructions}>Presiona para iniciar a grabar</Text>
 
-          {renderRecordingLines()}
+      <CustomRecorderButton stopRecording={stopRecording} startRecording={startRecording} />
 
-          {recording && (
-            <TouchableOpacity
-              style={styles.stopButton}
-              onPress={handleSendRecordings}
-            >
-              <Text style={styles.textStopButton}>Stop</Text>
-            </TouchableOpacity>
-          )}
+      {/* {renderRecordingLines()} */}
 
-          <Modal visible={modalVisible} animationType='slide' transparent>
-            <KeyboardAvoidingView
-              style={styles.modalContainer}
-              behavior={Platform.OS === 'ios' ? 'padding' : null}
-              keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
-            >
-              <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-                <View style={styles.modalContainer}>
-                  <View style={styles.modalContent}>
-                    <Text style={styles.modalTitle}>Guardar Grabación</Text>
+      <Modal visible={modalVisible} animationType='slide' transparent>
+        <KeyboardAvoidingView
+          style={styles.modalContainer}
+          behavior={Platform.OS === 'ios' ? 'padding' : null}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+        >
+          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Guardar Grabación</Text>
 
-                    <Text style={styles.label}>Nombre del audio:</Text>
-                    <TextInput
-                      style={styles.input}
-                      value={recordingName}
-                      onChangeText={setRecordingName}
-                    />
+                <Text style={styles.label}>Nombre del audio:</Text>
+                <TextInput
+                  style={styles.input}
+                  value={recordingName}
+                  onChangeText={setRecordingName}
+                />
 
-                    <Text style={styles.label}>Seleccione la carpeta:</Text>
-                    {/* REVISAR PORQUE NO VALEN LOS ESTILOS */}
-                    <Dropdown
-                      // items={dropdownItems}
-                      // defaultValue={selectedItem}
-                      label='Seleccione una opción'
-                    // onChangeItem={(item) => setSelectedItem(item.value)}
-                    />
+                <Text style={styles.label}>Seleccione la carpeta:</Text>
+               {/* REVISAR POR QUE NO CAMBIA DE TAMAÑO */}
+                <Dropdown
+                  // items={dropdownItems}
+                  // defaultValue={selectedItem}
+                  defaultButtonText="Seleccione una opción"
+                  dropdownStyle={styles.dropdownStyle}
+                  containerStyle={styles.dropdownContainer}
+                  labelStyle={styles.dropdownLabel}
+                // onChangeItem={(item) => setSelectedItem(item.value)}
+                />
 
-                    <Text style={styles.label}>Descripción:</Text>
-                    <TextInput
-                      style={styles.input}
-                      value={description}
-                      onChangeText={setDescription}
-                      multiline
-                    />
-                    <View style={styles.transcribir}>
-                      <TouchableOpacity
-                        style={[styles.buttonModal, { backgroundColor: '#F3F4F6FF' }]}
-                        onPress={() => setModalVisible(false)}
-                        color='#353536'
-                      >
-                        <Text style={styles.buttonTextModal}>Cancelar</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={[styles.buttonModal, { backgroundColor: '#FF7700FF' }]}
-                      >
-                        <Text style={styles.buttonText}>Transcribir</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
+                <Text style={styles.label}>Descripción:</Text>
+                <TextInput
+                  style={styles.input}
+                  value={description}
+                  onChangeText={setDescription}
+                  multiline
+                />
+                <View style={styles.transcribir}>
+                  <TouchableOpacity
+                    style={[styles.buttonModal, { backgroundColor: '#F3F4F6FF' }]}
+                    onPress={() => setModalVisible(false)}
+                    color='#353536'
+                  >
+                    <Text style={styles.buttonTextModal}>Cancelar</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.buttonModal, { backgroundColor: '#FF7700FF' }]}
+                  >
+                    <Text style={styles.buttonText}>Transcribir</Text>
+                  </TouchableOpacity>
                 </View>
-              </TouchableWithoutFeedback>
-            </KeyboardAvoidingView>
-          </Modal>
-        </View>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
+      </Modal>
+    </View>
+
   )
 }
 
@@ -242,7 +235,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.WHITE
   },
   timer: {
-    fontSize: 60,
+    fontSize: 45,
     fontWeight: '500',
     marginBottom: 50,
     marginTop: 70,
@@ -250,28 +243,26 @@ const styles = StyleSheet.create({
   },
   instructions: {
     fontSize: 16,
-    marginBottom: 80,
+    marginBottom: 50,
     color: COLORS.GRAY_SOFT
   },
-  recordButton: {
-    marginBottom: 20
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10
-  },
-  fill: {
-    flex: 1
-  },
-  button: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.GRAY,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    marginRight: 10
-  },
+
+  // row: {
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  //   marginBottom: 10
+  // },
+  // fill: {
+  //   flex: 1
+  // },
+  // button: {
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  //   backgroundColor: COLORS.GRAY,
+  //   paddingHorizontal: 10,
+  //   paddingVertical: 5,
+  //   marginRight: 10
+  // },
   buttonText: {
     color: '#fff',
     marginLeft: 5,
@@ -299,8 +290,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
     marginBottom: 5,
-    marginTop: 15
+    marginTop: 15,
   },
+  dropdownStyle: {
+    width: "90%", // Ajusta el ancho según sea necesario
+  },
+  dropdownContainer: {
+    marginBottom: 10,
+  },
+  dropdownLabel: {
+    color: '#000',
+  },
+ 
   input: {
     height: 40,
     borderRadius: 10,
@@ -331,7 +332,5 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     marginTop: 80
   },
-  textStopButton: {
-    color: COLORS.WHITE
-  }
+
 })

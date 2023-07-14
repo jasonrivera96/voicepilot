@@ -1,6 +1,6 @@
 import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { Ionicons } from '@expo/vector-icons'
+import { Icon } from 'react-native-elements';
 import { StyleSheet } from 'react-native'
 
 import HomeScreen from '../screen/HomeScreen'
@@ -42,11 +42,12 @@ const renderTabBarIcon = ({ route, focused, color, size }) => {
   const isRecorderScreen = route.name === recorderScreenName
 
   return (
-    <Ionicons
+    <Icon
       name={iconName}
+      type="ionicon"
       size={isRecorderScreen ? 35 : size}
       color={isRecorderScreen ? '#FFFFFF' : color}
-      style={isRecorderScreen && styles.recorderIcon}
+      containerStyle={isRecorderScreen && styles.recorderIcon}
     />
   )
 }
@@ -79,15 +80,14 @@ export default AuthStack
 
 const styles = StyleSheet.create({
   recorderIcon: {
-    borderRadius: 35,
+    borderRadius: 50,
     backgroundColor: COLORS.ORANGE,
-    display: 'flex',
     padding: 10,
     textAlign: 'center',
     width: 58
   },
   tabBarStyle: {
-    height: 70,
+    height: 85,
     borderTopWidth: 0,
     position: 'absolute',
     bottom: 0,
