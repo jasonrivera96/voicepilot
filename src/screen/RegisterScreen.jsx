@@ -5,7 +5,7 @@ import { useTogglePasswordVisibility } from '../hooks/useTogglePassVisibility'
 import { Icon, CheckBox } from 'react-native-elements'
 import { COLORS } from '../constants'
 
-export default function RegisterScreen({ setRegisterUser }) {
+export default function RegisterScreen ({ setRegisterUser }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isSelected, setSelection] = useState(true)
@@ -30,7 +30,6 @@ export default function RegisterScreen({ setRegisterUser }) {
           <FontAwesome style={styles.searchIcon} name='user-o' size={20} color='black' />
           <TextInput style={styles.input} placeholder='Ingrese su nombre de usuario' onChangeText={(text) => setEmail(text)} value={email} />
         </View>
-      
 
         <Text style={{ fontWeight: 'bold' }}>Correo</Text>
         <View style={styles.inputContainer}>
@@ -56,7 +55,6 @@ export default function RegisterScreen({ setRegisterUser }) {
           </Pressable>
         </View>
 
-
         <View style={styles.condiciones}>
           <CheckBox
             checked={isSelected}
@@ -67,13 +65,13 @@ export default function RegisterScreen({ setRegisterUser }) {
             checkedColor={COLORS.ORANGE}
             style={styles.checkbox}
           />
-          <Text style={{ paddingTop: 17, marginLeft: -15, marginRight: "20%" }}>
+          <Text style={{ paddingTop: 17, marginLeft: -15, marginRight: '20%' }}>
             Al registrarme, acepto los <Text style={{ color: COLORS.ORANGE, fontWeight: 'bold' }}>términos de uso</Text> y la <Text style={{ color: COLORS.ORANGE, fontWeight: 'bold' }}>política de privacidad</Text>
           </Text>
 
         </View>
         <TouchableOpacity style={styles.bregistrarse} onPress={() => handleRegister()}>
-          <Text style={{ color: "white" }}>
+          <Text style={{ color: 'white' }}>
             Registrarse
           </Text>
         </TouchableOpacity>
@@ -90,7 +88,7 @@ export default function RegisterScreen({ setRegisterUser }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: "30%",
+    marginTop: '30%',
     alignItems: 'center',
     backgroundColor: 'white',
     width: '100%'
@@ -122,14 +120,14 @@ const styles = StyleSheet.create({
     paddingRight: 0
   },
   bregistrarse: {
-    width: "90%",
+    width: '90%',
     backgroundColor: COLORS.ORANGE,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: "5%",
+    padding: '5%',
     borderRadius: 4,
     alignSelf: 'center', // Agregado para centrar horizontalmente
-    marginVertical: 10,
+    marginVertical: 10
 
   },
   searchIcon: {

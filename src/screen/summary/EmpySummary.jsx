@@ -1,29 +1,38 @@
 import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
 import Constants from 'expo-constants'
 import { Ionicons } from '@expo/vector-icons'
-import { COLORS } from '../../constants'
+import { COLORS, recorderScreenName, uploadScreenName } from '../../constants'
+import { useNavigation } from '@react-navigation/native'
 
-const folderIconEmpty = <Ionicons name='folder-open-outline' size={50} />
-const addIcon = <Ionicons name='add' size={30} color='white' />
+const folderIconEmpty = <Ionicons name='file-tray-full-outline' size={50} />
 
-const EmptyFolder = ({ openModal }) => {
+const EmptySummary = () => {
+  const navigation = useNavigation()
+
   return (
     <View style={styles.container}>
       <View style={styles.iconEmpty}>{folderIconEmpty}</View>
-      <Text style={styles.message}>No hay carpetas</Text>
+      <Text style={styles.message}>No tienes resúmenes</Text>
       <Text style={styles.description}>
-        Las carpetas te ayudan a organizar tus resúmenes, crea una carpeta para cada proyecto.
+        Los resúmenes se crean al
+        <Text
+          onPress={() => navigation.navigate(uploadScreenName)} style={styles.textLink}
+        > subir un archivo
+        </Text>
+        o hacer una
+        <Text
+          onPress={() => navigation.navigate(recorderScreenName)}
+          style={styles.textLink}
+        > grabación
+        </Text>.
+        Empieza a crear tus resúmenes.
       </Text>
-      <TouchableOpacity onPress={openModal} style={styles.containerButton}>
-        {addIcon}
-        <Text style={styles.textButton}>Crear carpeta</Text>
-      </TouchableOpacity>
     </View>
   )
 }
 
-export default EmptyFolder
+export default EmptySummary
 
 const styles = StyleSheet.create({
   container: {
@@ -76,5 +85,8 @@ const styles = StyleSheet.create({
   },
   textButton: {
     color: COLORS.WHITE
+  },
+  textLink: {
+    color: COLORS.ORANGE
   }
 })

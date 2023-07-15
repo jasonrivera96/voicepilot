@@ -3,7 +3,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { Icon } from 'react-native-elements'
 import { StyleSheet } from 'react-native'
 
-import HomeScreen from '../screen/home/HomeScreen'
 import ProfileScreen from '../screen/ProfileScreen'
 import SearchScreen from '../screen/SearchScreen'
 import RecorderScreen from '../screen/RecorderScreen'
@@ -17,6 +16,7 @@ import {
   searchScreenName,
   uploadScreenName
 } from '../constants'
+import HomeStack from './HomeStack'
 
 const Tab = createBottomTabNavigator()
 
@@ -66,7 +66,7 @@ const AuthStack = () => {
       })}
 
     >
-      <Tab.Screen name={homeScreenName} component={HomeScreen} />
+      <Tab.Screen name={homeScreenName} component={HomeStack} />
       <Tab.Screen name={searchScreenName} component={SearchScreen} />
       <Tab.Screen name={recorderScreenName} component={RecorderScreen} />
       <Tab.Screen name={uploadScreenName} component={UploadScreen} />

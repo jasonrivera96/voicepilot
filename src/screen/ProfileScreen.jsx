@@ -1,30 +1,30 @@
-import React, { useContext, useState } from 'react';
-import { View, Text, StyleSheet, Switch, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
-import Constants from 'expo-constants';
-import { COLORS } from '../constants';
-import { Ionicons } from '@expo/vector-icons';
-import { AuthContext } from '../context/AuthContext';
+import React, { useContext, useState } from 'react'
+import { View, Text, StyleSheet, Switch, TouchableOpacity, Dimensions, ScrollView } from 'react-native'
+import Constants from 'expo-constants'
+import { COLORS } from '../constants'
+import { Ionicons } from '@expo/vector-icons'
+import { AuthContext } from '../context/AuthContext'
 
-const { width } = Dimensions.get('window');
-const statusBarHeight = Constants.statusBarHeight;
+const { width } = Dimensions.get('window')
+const statusBarHeight = Constants.statusBarHeight
 
 const ProfileScreen = () => {
-  const [isDarkModeEnabled, setIsDarkModeEnabled] = useState(true);
-  const [fontSize, setFontSize] = useState(16);
+  const [isDarkModeEnabled, setIsDarkModeEnabled] = useState(true)
+  const [fontSize, setFontSize] = useState(16)
 
   const toggleDarkMode = () => {
-    setIsDarkModeEnabled((prev) => !prev);
-  };
+    setIsDarkModeEnabled((prev) => !prev)
+  }
 
   const increaseFontSize = () => {
-    setFontSize((prevSize) => prevSize + 1);
-  };
+    setFontSize((prevSize) => prevSize + 1)
+  }
 
   const decreaseFontSize = () => {
-    setFontSize((prevSize) => prevSize - 1);
-  };
+    setFontSize((prevSize) => prevSize - 1)
+  }
 
-  const { logout } = useContext(AuthContext);
+  const { logout } = useContext(AuthContext)
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -38,11 +38,11 @@ const ProfileScreen = () => {
         <TouchableOpacity style={styles.izq}>
           <View style={styles.account}>
             <View style={styles.square}>
-              <Ionicons name="person-outline" size={20} color={COLORS.ORANGE} />
+              <Ionicons name='person-outline' size={20} color={COLORS.ORANGE} />
             </View>
             <Text style={styles.texto}>Información Personal</Text>
             <View style={styles.flecha}>
-              <Ionicons name="chevron-forward-outline" size={20} color={COLORS.GRAY_EXTRA_SOFT} />
+              <Ionicons name='chevron-forward-outline' size={20} color={COLORS.GRAY_EXTRA_SOFT} />
             </View>
           </View>
         </TouchableOpacity>
@@ -52,7 +52,7 @@ const ProfileScreen = () => {
         <Text style={styles.tit}>Apariencia</Text>
         <View style={styles.account}>
           <View style={styles.squareA}>
-            <Ionicons name="moon-outline" size={20} color={COLORS.GRAY_EXTRA_SOFT} />
+            <Ionicons name='moon-outline' size={20} color={COLORS.GRAY_EXTRA_SOFT} />
           </View>
           <Text style={styles.texto}>Modo Noche</Text>
           <View style={styles.flecha}>
@@ -61,16 +61,16 @@ const ProfileScreen = () => {
         </View>
         <View style={styles.account}>
           <View style={styles.squareA}>
-            <Ionicons name="text" size={20} color={COLORS.GRAY_EXTRA_SOFT} />
+            <Ionicons name='text' size={20} color={COLORS.GRAY_EXTRA_SOFT} />
           </View>
           <Text style={styles.texto}>Tamaño de letra</Text>
           <View style={styles.flecha1}>
             <TouchableOpacity onPress={decreaseFontSize}>
-              <Ionicons name="remove" size={15} color="black" />
+              <Ionicons name='remove' size={15} color='black' />
             </TouchableOpacity>
             <Text style={styles.fontSizeText}>{fontSize}</Text>
             <TouchableOpacity onPress={increaseFontSize}>
-              <Ionicons name="add" size={15} color="black" />
+              <Ionicons name='add' size={15} color='black' />
             </TouchableOpacity>
           </View>
         </View>
@@ -80,104 +80,103 @@ const ProfileScreen = () => {
         <TouchableOpacity style={styles.izq}>
           <View style={styles.account}>
             <View style={styles.squareB}>
-              <Ionicons name="lock-closed-outline" size={20} color={COLORS.GRAY_EXTRA_SOFT} />
+              <Ionicons name='lock-closed-outline' size={20} color={COLORS.GRAY_EXTRA_SOFT} />
             </View>
             <Text style={styles.texto}>Seguridad</Text>
             <View style={styles.flecha}>
-              <Ionicons name="chevron-forward-outline" size={20} color={COLORS.GRAY_EXTRA_SOFT} />
+              <Ionicons name='chevron-forward-outline' size={20} color={COLORS.GRAY_EXTRA_SOFT} />
             </View>
           </View>
         </TouchableOpacity>
         <TouchableOpacity style={styles.izq}>
           <View style={styles.account}>
             <View style={styles.squareB}>
-              <Ionicons name="shield-checkmark-outline" size={20} color={COLORS.GRAY_EXTRA_SOFT} />
+              <Ionicons name='shield-checkmark-outline' size={20} color={COLORS.GRAY_EXTRA_SOFT} />
             </View>
             <Text style={styles.texto}>Privacidad</Text>
-            <Ionicons name="alert-circle-outline" size={20} color={COLORS.ORANGE} style={styles.prueba} />
+            <Ionicons name='alert-circle-outline' size={20} color={COLORS.ORANGE} style={styles.prueba} />
             <View style={styles.flecha}>
-              <Ionicons name="chevron-forward-outline" size={20} color={COLORS.GRAY_EXTRA_SOFT} />
+              <Ionicons name='chevron-forward-outline' size={20} color={COLORS.GRAY_EXTRA_SOFT} />
             </View>
           </View>
         </TouchableOpacity>
         <TouchableOpacity style={styles.izq}>
           <View style={styles.account}>
             <View style={styles.squareB}>
-              <Ionicons name="notifications-outline" size={20} color={COLORS.GRAY_EXTRA_SOFT} />
+              <Ionicons name='notifications-outline' size={20} color={COLORS.GRAY_EXTRA_SOFT} />
             </View>
             <Text style={styles.texto}>Notificaciones</Text>
             <View style={styles.flecha}>
-              <Ionicons name="chevron-forward-outline" size={20} color={COLORS.GRAY_EXTRA_SOFT} />
+              <Ionicons name='chevron-forward-outline' size={20} color={COLORS.GRAY_EXTRA_SOFT} />
             </View>
           </View>
         </TouchableOpacity>
         <TouchableOpacity style={styles.izq}>
           <View style={styles.account}>
             <View style={styles.squareB}>
-              <Ionicons name="help-circle-outline" size={20} color={COLORS.GRAY_EXTRA_SOFT} />
+              <Ionicons name='help-circle-outline' size={20} color={COLORS.GRAY_EXTRA_SOFT} />
             </View>
             <Text style={styles.texto}>Ayuda y Soporte</Text>
             <View style={styles.flecha}>
-              <Ionicons name="chevron-forward-outline" size={20} color={COLORS.GRAY_EXTRA_SOFT} />
+              <Ionicons name='chevron-forward-outline' size={20} color={COLORS.GRAY_EXTRA_SOFT} />
             </View>
           </View>
         </TouchableOpacity>
         <TouchableOpacity style={styles.izq}>
           <View style={styles.account}>
             <View style={styles.squareB}>
-              <Ionicons name="chatbox-ellipses-outline" size={20} color={COLORS.GRAY_EXTRA_SOFT} />
+              <Ionicons name='chatbox-ellipses-outline' size={20} color={COLORS.GRAY_EXTRA_SOFT} />
             </View>
             <Text style={styles.texto}>Realimentación</Text>
             <View style={styles.flecha}>
-              <Ionicons name="chevron-forward-outline" size={20} color={COLORS.GRAY_EXTRA_SOFT} />
+              <Ionicons name='chevron-forward-outline' size={20} color={COLORS.GRAY_EXTRA_SOFT} />
             </View>
           </View>
         </TouchableOpacity>
-        
+
         <TouchableOpacity onPress={() => logout()} style={styles.logoutButton}>
-          <Ionicons name="log-out-outline" size={20} color="white" />
+          <Ionicons name='log-out-outline' size={20} color='white' />
           <Text style={styles.logoutButtonText}>Cerrar Sesión</Text>
         </TouchableOpacity>
-        
-       
+
       </View>
     </ScrollView>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     backgroundColor: '#fff',
     paddingTop: statusBarHeight,
-  
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   contentContainer: {
-    paddingHorizontal: '5%',
+    width: '90%'
   },
   section: {
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: 20,
-    marginTop: "5%"
+    fontSize: 20
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 30,
     fontWeight: 'bold',
-    marginBottom: '2%',
+    textAlign: 'center',
+    marginTop: 80
   },
   account: {
     flexDirection: 'row',
-    alignSelf: 'flex-start',
-    marginLeft: '7%',
+    alignSelf: 'flex-start'
+    // marginLeft: '7%'
   },
   tit: {
-    fontWeight: 'bold',
+    fontWeight: '500',
     fontSize: 16,
     color: COLORS.GRAY_EXTRA_SOFT,
     marginTop: '4%',
-    alignSelf: 'flex-start',
-    marginLeft: '7%',
+    alignSelf: 'flex-start'
   },
   square: {
     marginTop: '4%',
@@ -187,11 +186,11 @@ const styles = StyleSheet.create({
     borderColor: COLORS.ORANGE,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 4,
+    borderRadius: 4
   },
   texto: {
     padding: 20,
-    color: COLORS.GRAY_SOFT,
+    color: COLORS.GRAY_SOFT
   },
 
   flecha1: {
@@ -201,18 +200,19 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 2,
     paddingTop: 20,
-    marginLeft: '80%',
+    marginLeft: '80%'
   },
   flecha2: {
-    flexDirection: 'row',
+    flexDirection: 'row'
   },
   line: {
     width: width * 0.9,
-    borderWidth: 1,
-    borderColor: '#DEE1E6FF',
+    height: 2,
+    backgroundColor: COLORS.GRAY,
+    borderRadius: 2,
     marginTop: 10,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   squareA: {
     marginTop: '4%',
@@ -222,13 +222,13 @@ const styles = StyleSheet.create({
     borderColor: COLORS.GRAY_EXTRA_SOFT,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 4,
+    borderRadius: 4
   },
   prueba: {
     position: 'absolute',
     paddingTop: 20,
     marginLeft: '80%',
-    zIndex: 2,
+    zIndex: 2
   },
   squareB: {
     marginTop: '4%',
@@ -237,58 +237,56 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 4,
-    backgroundColor: COLORS.GRAY,
+    backgroundColor: COLORS.GRAY
   },
   izq: {
-    alignSelf: 'flex-start',
+    alignSelf: 'flex-start'
   },
   option: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 8,
+    marginBottom: 8
   },
   optionLabel: {
-    fontSize: 16,
+    fontSize: 16
   },
   fontSizeContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   fontSizeText: {
     fontSize: 16,
-    marginHorizontal: 8,
+    marginHorizontal: 8
   },
   flecha: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'flex-end',
-    paddingRight: 20,
+    paddingRight: 20
   },
   logoutButton: {
     flexDirection: 'row',
     backgroundColor: COLORS.ORANGE,
-    width: '90%',
     height: 48,
     borderRadius: 8,
-    marginLeft: "5%",
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: '5%',
-    marginBottom: "40%",
+    marginBottom: '40%',
     shadowColor: COLORS.ORANGE,
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 2
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 10,
+    elevation: 10
   },
   logoutButtonText: {
     color: '#fff',
-    fontSize: 16,
-  },
-});
+    fontSize: 16
+  }
+})
 
-export default ProfileScreen;
+export default ProfileScreen

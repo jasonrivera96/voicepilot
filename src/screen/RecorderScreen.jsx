@@ -18,14 +18,14 @@ import Constants from 'expo-constants'
 import CustomRecorderButton from '../components/CustomRecorderButton'
 import { COLORS } from '../constants'
 
-export default function RecorderScreen() {
+export default function RecorderScreen () {
   const [recording, setRecording] = useState()
   const [recordings, setRecordings] = useState([])
   const [message, setMessage] = useState('')
-  //variables para el cronometro
+  // variables para el cronometro
   const [seconds, setSeconds] = useState(0)
   const [minutes, setMinutes] = useState(0)
-  const [hours, setHours] = useState(0);
+  const [hours, setHours] = useState(0)
   const [customInterval, setCustomInterval] = useState()
   // variables para el modal
   const [recordingName, setRecordingName] = useState('')
@@ -44,14 +44,13 @@ export default function RecorderScreen() {
     }
   }, [customInterval])
 
-
   const startRecording = async () => {
     try {
       const permission = await Audio.requestPermissionsAsync()
       if (permission.status === 'granted') {
         await Audio.setAudioModeAsync({
           allowsRecordingIOS: true,
-          playsInSilentModeIOS: true,
+          playsInSilentModeIOS: true
         })
 
         const { recording } = await Audio.Recording.createAsync(
@@ -65,14 +64,14 @@ export default function RecorderScreen() {
               if (prevSeconds + 1 === 60) {
                 setMinutes((prevMinutes) => {
                   if (prevMinutes + 1 === 60) {
-                    setHours((prevHours) => prevHours + 1);
-                    return 0;
+                    setHours((prevHours) => prevHours + 1)
+                    return 0
                   }
-                  return prevMinutes + 1;
-                });
-                return 0;
+                  return prevMinutes + 1
+                })
+                return 0
               }
-              return prevSeconds + 1;
+              return prevSeconds + 1
             })
           }, 1000)
         )
@@ -85,7 +84,6 @@ export default function RecorderScreen() {
   }
 
   const stopRecording = async () => {
-
     if (recording) {
       setRecording(undefined)
       await recording.stopAndUnloadAsync()
@@ -95,20 +93,19 @@ export default function RecorderScreen() {
         duration: getDurationFormatted(status.durationMillis),
         file: recording.getURI()
       }]
-      { handleSendRecordings() }
+      handleSendRecordings()
       setRecordings(updatedRecordings)
       clearInterval(customInterval)
       setSeconds(0)
       setMinutes(0)
-
     }
   }
 
   const getDurationFormatted = (millis) => {
-    const hours = Math.floor(millis / 1000 / 60 / 60);
+    const hours = Math.floor(millis / 1000 / 60 / 60)
     const minutes = Math.floor(millis / 1000 / 60)
     const seconds = Math.round((millis / 1000) % 60)
-    const hoursDisplay = hours < 10 ? `0${hours}` : hours;
+    const hoursDisplay = hours < 10 ? `0${hours}` : hours
     const minutesDisplay = minutes < 10 ? `0${minutes}` : minutes
     const secondsDisplay = seconds < 10 ? `0${seconds}` : seconds
     return `${hoursDisplay}:${minutesDisplay}:${secondsDisplay}`
@@ -118,7 +115,7 @@ export default function RecorderScreen() {
     setModalVisible(true)
   }
 
-  //PARA LOS BOTONES DE REPRODUCIR EL AUDIO Y DESCARGAR 
+  // PARA LOS BOTONES DE REPRODUCIR EL AUDIO Y DESCARGAR
 
   // const playRecording = async (sound) => {
   //   await sound.setVolumeAsync(1.0)
@@ -129,10 +126,9 @@ export default function RecorderScreen() {
   //   await Sharing.shareAsync(file)
   // }
 
-
   // Abre la ventana emergente para ingresar los detalles del audio
 
-  //LISTADO DE GRABACIONES
+  // LISTADO DE GRABACIONES
   // const renderRecordingLines = () => {
   //   return recordings.map((recordingLine, index) => {
   //     return (
@@ -160,7 +156,8 @@ export default function RecorderScreen() {
     <View style={styles.container}>
       <Text style={styles.timer}>{`${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`}</Text>
       <Text>{message}</Text>
-      <Text style={styles.instructions}>Presiona para iniciar a grabar</Text>
+      {/* <Text style={styles.instructions}>Presiona para iniciar a grabar</Text> */}
+      <Text style={styles.instructions} />
 
       <CustomRecorderButton stopRecording={stopRecording} startRecording={startRecording} />
 
@@ -185,11 +182,11 @@ export default function RecorderScreen() {
                 />
 
                 <Text style={styles.label}>Seleccione la carpeta:</Text>
-               {/* REVISAR POR QUE NO CAMBIA DE TAMAÑO */}
+                {/* REVISAR POR QUE NO CAMBIA DE TAMAÑO */}
                 <Dropdown
                   // items={dropdownItems}
                   // defaultValue={selectedItem}
-                  defaultButtonText="Seleccione una opción"
+                  defaultButtonText='Seleccione una opción'
                   dropdownStyle={styles.dropdownStyle}
                   containerStyle={styles.dropdownContainer}
                   labelStyle={styles.dropdownLabel}
@@ -291,18 +288,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
     marginBottom: 5,
-    marginTop: 15,
+    marginTop: 15
   },
   dropdownStyle: {
-    width: "90%", // Ajusta el ancho según sea necesario
+    width: '90%' // Ajusta el ancho según sea necesario
   },
   dropdownContainer: {
-    marginBottom: 10,
+    marginBottom: 10
   },
   dropdownLabel: {
-    color: '#000',
+    color: '#000'
   },
- 
+
   input: {
     height: 40,
     borderRadius: 10,
@@ -332,6 +329,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 35,
     borderRadius: 50,
     marginTop: 80
-  },
+  }
 
 })

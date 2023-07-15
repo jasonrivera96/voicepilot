@@ -1,21 +1,11 @@
 import { NavigationContainer } from '@react-navigation/native'
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import { ActivityIndicator, View, StyleSheet } from 'react-native'
 
 import AuthStack from './AuthStack'
 import { AuthContext } from '../context/AuthContext'
-import LoginScreen from '../screen/LoginScreen'
-import RegisterScreen from '../screen/RegisterScreen'
 import { COLORS } from '../constants'
-
-const MainStack = () => {
-  const [registerUser, setRegisterUser] = useState(false)
-  return (
-    registerUser
-      ? <RegisterScreen setRegisterUser={setRegisterUser} />
-      : <LoginScreen setRegisterUser={setRegisterUser} />
-  )
-}
+import MainStack from './MainStack'
 
 const AppNav = () => {
   const { isLoading, userToken } = useContext(AuthContext)

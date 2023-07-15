@@ -2,8 +2,9 @@ import React, { useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native'
 import Constants from 'expo-constants'
 import { Ionicons } from '@expo/vector-icons'
+import { useNavigation } from '@react-navigation/native'
 
-import { COLORS } from '../../constants'
+import { COLORS, summaryScreenName } from '../../constants'
 import CustomModal from '../../components/CustomModal'
 import Header from './Header'
 import EmptyFolder from './EmptyFolder'
@@ -13,8 +14,14 @@ import EditModal from './EditModal'
 const folderIcon = <Ionicons name='folder-open-outline' size={25} />
 
 const FolderItem = ({ item, index, openEditModal }) => {
+  const navigation = useNavigation()
+
   return (
-    <TouchableOpacity key={index} style={styles.folderContainer} onLongPress={() => openEditModal({ index, item })}>
+    <TouchableOpacity
+      key={index} style={styles.folderContainer}
+      onPress={() => navigation.navigate(summaryScreenName, { folderName: item })}
+      onLongPress={() => openEditModal({ index, item })}
+    >
       <View style={styles.icon}>{folderIcon}</View>
       <Text>{item}</Text>
     </TouchableOpacity>
@@ -22,7 +29,8 @@ const FolderItem = ({ item, index, openEditModal }) => {
 }
 
 const HomeScreen = () => {
-  const [folders, setFolders] = useState(['Carpeta de prueba'])
+  // const [folders, setFolders] = useState([])
+  const [folders, setFolders] = useState(['Software', 'Conferencias', 'Tesis', 'Talleres', 'Cursos', 'Libros', 'Artículos', 'Tutoriales', 'Proyectos', 'Otros'])
   const [folder, setFolder] = useState({})
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [isEditModal, setIsEditModal] = useState(false)
