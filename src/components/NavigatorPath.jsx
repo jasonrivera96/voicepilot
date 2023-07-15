@@ -6,11 +6,7 @@ import { COLORS } from '../constants'
 
 const arrowForwardIcon = (
   <MaterialIcons
-    name='arrow-forward-ios' size={14} color='black' style={{
-      spacing: {
-        marginHorizontal: 5
-      }
-    }}
+    name='arrow-forward-ios' size={14} color='black' style={{ marginHorizontal: 5 }}
   />
 )
 
