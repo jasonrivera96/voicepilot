@@ -7,7 +7,7 @@ import HomeScreen from '../screen/home/HomeScreen'
 import ProfileScreen from '../screen/ProfileScreen'
 import SearchScreen from '../screen/SearchScreen'
 import RecorderScreen from '../screen/RecorderScreen'
-import UploadScreen from '../screen/UploadScreen'
+import UploadScreen from '../screen/upload/UploadScreen'
 
 import {
   COLORS,

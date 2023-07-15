@@ -211,6 +211,7 @@ export default function RecorderScreen() {
                   >
                     <Text style={styles.buttonTextModal}>Cancelar</Text>
                   </TouchableOpacity>
+                  {/* DIRIGIR A LA PANTALLA DE NOTIFICACION */}
                   <TouchableOpacity
                     style={[styles.buttonModal, { backgroundColor: '#FF7700FF' }]}
                   >
