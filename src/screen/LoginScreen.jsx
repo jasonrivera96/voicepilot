@@ -7,7 +7,7 @@ import { CheckBox, Icon } from 'react-native-elements'
 import { useTogglePasswordVisibility } from '../hooks/useTogglePassVisibility'
 import { COLORS } from '../constants'
 
-export default function LoginScreen ({ setRegisterUser }) {
+export default function LoginScreen({ setRegisterUser }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
@@ -64,23 +64,23 @@ export default function LoginScreen ({ setRegisterUser }) {
 
         </View>
         <TouchableOpacity style={styles.biniciar} onPress={() => login({ username: email, password })}>
-          <Text style={{color:"white"}}>Iniciar Sesión</Text>
+          <Text style={{ color: "white" }}>Iniciar Sesión</Text>
         </TouchableOpacity>
       </View>
       {/* Iniciar sesion con redes sociales */}
       <Text style={{ alignItems: 'center', marginTop: '10%' }}>O iniciar sesión con</Text>
       <View style={styles.buttonContainer}>
-      <TouchableOpacity style={styles.buttonWrapperg}>
-        <FontAwesome name='google' size={24} color='#C71610FF' />
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.buttonWrapperf}>
-        <FontAwesome name='facebook' size={24} color='#335CA6FF' />
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.buttonWrappera} >
-        <FontAwesome name='apple' size={24} color='#565E6CFF' />
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.buttonWrapperg}>
+          <FontAwesome name='google' size={24} color='#C71610FF' />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.buttonWrapperf}>
+          <FontAwesome name='facebook' size={24} color='#335CA6FF' />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.buttonWrappera} >
+          <FontAwesome name='apple' size={24} color='#565E6CFF' />
+        </TouchableOpacity>
 
-        
+
       </View>
       {/* Ingresar a registro */}
       <View style={styles.final}>
@@ -95,7 +95,8 @@ export default function LoginScreen ({ setRegisterUser }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    height: "100%",
+    marginTop: "30%",
     alignItems: 'center',
     backgroundColor: 'white',
     width: '100%'
@@ -127,11 +128,11 @@ const styles = StyleSheet.create({
   checkbox: {
     paddingRight: 0
   },
-  biniciar:{
+  biniciar: {
     width: "90%",
     backgroundColor: COLORS.ORANGE,
-    alignItems:'center',
-    justifyContent:'center',
+    alignItems: 'center',
+    justifyContent: 'center',
     padding: "5%",
     borderRadius: 4,
     alignSelf: 'center', // Agregado para centrar horizontalmente
@@ -148,25 +149,25 @@ const styles = StyleSheet.create({
 
   },
   buttonWrapperg: {
-    backgroundColor:"#FEF1F1FF",
-    alignItems:'center',
-    padding:"2%",
+    backgroundColor: "#FEF1F1FF",
+    alignItems: 'center',
+    padding: "2%",
     width: "18%",
     marginRight: 10,
     borderRadius: 20
   },
   buttonWrappera: {
-    backgroundColor:"#F3F4F6FF",
-    alignItems:'center',
-    padding:"2%",
+    backgroundColor: "#F3F4F6FF",
+    alignItems: 'center',
+    padding: "2%",
     width: "18%",
     marginRight: 10,
     borderRadius: 20
   },
   buttonWrapperf: {
-    backgroundColor:"#F3F6FBFF",
-    alignItems:'center',
-    padding:"2%",
+    backgroundColor: "#F3F6FBFF",
+    alignItems: 'center',
+    padding: "2%",
     width: "18%",
     marginRight: 10,
     borderRadius: 20
@@ -174,7 +175,6 @@ const styles = StyleSheet.create({
   final: {
     flexDirection: 'row',
     marginTop: '20%',
-    position: 'absolute',
     bottom: 0
   },
   registrar: {

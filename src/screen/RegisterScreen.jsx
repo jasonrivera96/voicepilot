@@ -90,7 +90,7 @@ export default function RegisterScreen({ setRegisterUser }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    marginTop: "30%",
     alignItems: 'center',
     backgroundColor: 'white',
     width: '100%'
@@ -148,7 +148,6 @@ const styles = StyleSheet.create({
   final: {
     flexDirection: 'row',
     marginTop: '20%',
-    position: 'absolute',
     bottom: 0
   },
   registrar: {
