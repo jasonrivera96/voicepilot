@@ -1,9 +1,9 @@
 import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { Icon } from 'react-native-elements';
+import { Icon } from 'react-native-elements'
 import { StyleSheet } from 'react-native'
 
-import HomeScreen from '../screen/HomeScreen'
+import HomeScreen from '../screen/home/HomeScreen'
 import ProfileScreen from '../screen/ProfileScreen'
 import SearchScreen from '../screen/SearchScreen'
 import RecorderScreen from '../screen/RecorderScreen'
@@ -44,7 +44,7 @@ const renderTabBarIcon = ({ route, focused, color, size }) => {
   return (
     <Icon
       name={iconName}
-      type="ionicon"
+      type='ionicon'
       size={isRecorderScreen ? 35 : size}
       color={isRecorderScreen ? '#FFFFFF' : color}
       containerStyle={isRecorderScreen && styles.recorderIcon}
