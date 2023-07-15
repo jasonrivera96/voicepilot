@@ -1,41 +1,51 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native'
+import * as Yup from 'yup'
+import { Formik } from 'formik'
 
 import { COLORS } from '../../constants'
 
-const ModalContent = ({ onClose, addFolderItem }) => {
-  const [folderName, setfolderName] = useState('')
-  const handleChange = (data) => {
-    setfolderName(data)
-  }
+const ModalSchema = Yup.object().shape({
+  folderName: Yup.string().required('Campo requerido')
+})
 
+const ModalContent = ({ onClose, addFolderItem }) => {
   return (
-    <View>
-      <View style={styles.contenet}>
-        <Text style={styles.titleModal}>Nueva carpeta</Text>
-      </View>
-      <View style={styles.containerInput}>
-        <Text style={styles.labelInput}>Nombre</Text>
-        <TextInput
-          onChangeText={(data) => handleChange(data)} style={styles.textInput} placeholder='Mis resúmenes'
-          placeholderTextColor='#999999'
-        />
-      </View>
-      <View style={styles.containerButtons}>
-        <TouchableOpacity
-          style={styles.containerButtonCreate}
-          onPress={() => addFolderItem(folderName)}
-        >
-          <Text style={styles.textButtonCreate}>Crear</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.containerButtonCancelar}
-          onPress={onClose}
-        >
-          <Text style={styles.textButtonCancelar}>Cancelar</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    <Formik
+      initialValues={{ folderName: '' }}
+      validationSchema={ModalSchema}
+      onSubmit={(values) => addFolderItem(values.folderName)}
+    >
+      {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+        <View>
+          <View style={styles.contenet}>
+            <Text style={styles.titleModal}>Nueva carpeta</Text>
+          </View>
+          <View style={styles.containerInput}>
+            <Text style={styles.labelInput}>Nombre</Text>
+            <TextInput
+              onChangeText={handleChange('folderName')}
+              onBlur={handleBlur('folderName')}
+              style={styles.textInput}
+              placeholder='Mis resúmenes'
+              placeholderTextColor='#999999'
+              value={values.folderName}
+            />
+            {touched.folderName && errors.folderName && (
+              <Text style={styles.errorText}>* {errors.folderName}</Text>
+            )}
+          </View>
+          <View style={styles.containerButtons}>
+            <TouchableOpacity style={styles.containerButtonCreate} onPress={handleSubmit}>
+              <Text style={styles.textButtonCreate}>Crear</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.containerButtonCancelar} onPress={onClose}>
+              <Text style={styles.textButtonCancelar}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+    </Formik>
   )
 }
 
@@ -107,5 +117,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     height: 44,
     borderWidth: 0
+  },
+  errorText: {
+    marginTop: 5,
+    color: COLORS.ORANGE
   }
 })

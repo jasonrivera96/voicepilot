@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native'
 import Constants from 'expo-constants'
 import { Ionicons } from '@expo/vector-icons'
@@ -34,6 +34,11 @@ const HomeScreen = () => {
   const [folder, setFolder] = useState({})
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [isEditModal, setIsEditModal] = useState(false)
+  const flatList = useRef(null)
+
+  useEffect(() => {
+    flatList.current.scrollToEnd({ animated: true })
+  }, [folders])
 
   const closeModal = () => {
     setIsModalVisible(false)
@@ -50,8 +55,7 @@ const HomeScreen = () => {
     setFolders((prev) => [...prev, folderName])
   }
 
-  const updateFolderItem = ({ folderItem }) => {
-    console.log(folderItem)
+  const updateFolderItem = ({ item: folderItem }) => {
     const foldersUpdated = folders.map((item, index) => {
       if (index === folder.index) {
         return folderItem.item
@@ -62,7 +66,8 @@ const HomeScreen = () => {
     setIsModalVisible(false)
   }
 
-  const deleteFolderItem = ({ folderItem }) => {
+  const deleteFolderItem = ({ item: folderItem }) => {
+    console.log(folderItem)
     const foldersUpdated = folders.filter((item, index) => index !== folderItem.index)
     setFolders(foldersUpdated)
     setFolder({})
@@ -82,6 +87,7 @@ const HomeScreen = () => {
     }
     return (
       <FlatList
+        ref={flatList}
         style={styles.folderListContainer}
         data={folders}
         renderItem={({ item, index }) => <FolderItem item={item} index={index} openEditModal={openEditModal} />}
@@ -97,10 +103,11 @@ const HomeScreen = () => {
         {!isEditModal
           ? <ModalContent onClose={closeModal} addFolderItem={addFolderItem} />
           : <EditModal
+              titleButton='carpeta'
               onClose={closeModal}
-              folder={folder}
-              updateFolderItem={updateFolderItem}
-              deleteFolderItem={deleteFolderItem}
+              data={folder}
+              updateItem={updateFolderItem}
+              deleteItem={deleteFolderItem}
             />}
       </CustomModal>
     </View>
@@ -125,7 +132,8 @@ const styles = StyleSheet.create({
   folderListContainer: {
     alignSelf: 'flex-start',
     marginTop: 30,
-    marginHorizontal: 30
+    marginHorizontal: 30,
+    height: 550
   },
   icon: {
     backgroundColor: COLORS.GRAY,
