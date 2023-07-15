@@ -30,13 +30,16 @@ const UploadScreen = () => {
       <View style={styles.boxContainer}>
       <Icon name='cloud-upload' size={80} ></Icon>
       <Text style={styles.fileName}>Formatos soportados MP3, MP4</Text>
+      {/* DAR FUNCIONALIDAD PARA SUBIR ARCHIVOS (API) */}
       <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Seleccionar Archivo</Text>
+        <Text style={styles.buttonText} onPress={handleUpload}>Seleccionar Archivo</Text>
       </TouchableOpacity>
       <Text style={styles.fileName}>{file ? file.name : 'Ningún archivo seleccionado'}</Text>
            
       </View>
-      <TouchableOpacity style={styles.uploadButton} onPress={handleUpload}>
+      {/* DIRIGIR A LA PANTALLA SEGUN MP3SCREEN O MP4SCREEN EL TIPO DE ARCHIVO */}
+      <TouchableOpacity style={styles.uploadButton} >
+
         <Text style={styles.buttonText1}>Subir</Text>
       </TouchableOpacity>
     </View>

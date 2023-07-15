@@ -40,6 +40,7 @@ export default function SearchScreen() {
         </TouchableOpacity>
       </View>
       <View style={styles.recentSearchesContainer}>
+        {/* SOLO TRABAJAN EN LOCAL */}
         <Text style={styles.recentSearchesTitle}>Búsquedas recientes:</Text>
         <FlatList
           data={recentSearches}
@@ -58,6 +59,7 @@ export default function SearchScreen() {
         />
       </View>
       {/* AGREGAR RESULTADOS DE LA BUSQUEDA */}
+      {/* DAR FUNCIONALIDAD PARA QUE AL SELECCIONAR UN RESULTADO SE CAMBIE DE PANTALLA */}
     </View>
   )
 }
