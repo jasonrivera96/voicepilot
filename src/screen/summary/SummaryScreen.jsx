@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginTop: 30,
     marginHorizontal: 30,
-    height: 550
+    height: '70%'
   },
   icon: {
     backgroundColor: COLORS.GRAY,
