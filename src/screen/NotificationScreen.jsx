@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.WHITE,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: 40,  // Agrega padding superior
+   
   },
   
   loadingGif: {
