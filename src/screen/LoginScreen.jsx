@@ -15,7 +15,7 @@ const validationSchema = yup.object().shape({
   password: yup.string().required('La contraseña es requerida')
 })
 
-export default function LoginScreen({ setRegisterUser }) {
+export default function LoginScreen ({ setRegisterUser }) {
   const { login } = useContext(AuthContext)
   const { passwordVisibility, rightIcon, handlePasswordVisibility } = useTogglePasswordVisibility()
   const [isSelected, setSelection] = useState(true)
@@ -34,8 +34,8 @@ export default function LoginScreen({ setRegisterUser }) {
   })
 
   const handleLoginButtonPress = () => {
-    Keyboard.dismiss();
-    formik.handleSubmit();
+    Keyboard.dismiss()
+    formik.handleSubmit()
   }
 
   return (
@@ -128,11 +128,10 @@ export default function LoginScreen({ setRegisterUser }) {
   )
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: "20%",
+    marginTop: '20%',
     alignItems: 'center',
     paddingTop: Constants.statusBarHeight,
     backgroundColor: COLORS.WHITE
@@ -162,7 +161,8 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     height: 44,
-    backgroundColor: COLORS.GRAY
+    backgroundColor: COLORS.GRAY,
+    borderRadius: 4
   },
   containerRecuerdame: {
     flexDirection: 'row',

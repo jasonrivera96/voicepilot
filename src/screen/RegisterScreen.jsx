@@ -47,8 +47,8 @@ const RegisterScreen = ({ setRegisterUser }) => {
   }
 
   const handleRegisterButtonPress = () => {
-    Keyboard.dismiss();
-    handleSubmit();
+    Keyboard.dismiss()
+    handleSubmit()
   }
 
   return (
@@ -141,13 +141,12 @@ const RegisterScreen = ({ setRegisterUser }) => {
   )
 }
 
-
 export default RegisterScreen
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: "20%",
+    marginTop: '20%',
     alignItems: 'center',
     paddingTop: Constants.statusBarHeight,
     backgroundColor: '#fff'
@@ -181,7 +180,8 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     height: 44,
-    backgroundColor: COLORS.GRAY
+    backgroundColor: COLORS.GRAY,
+    borderRadius: 4
   },
   checkbox: {
     paddingRight: 0
