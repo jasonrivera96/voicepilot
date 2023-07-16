@@ -136,7 +136,7 @@ const ProfileScreen = () => {
 
         <TouchableOpacity onPress={() => logout()} style={styles.logoutButton}>
           <Ionicons name='log-out-outline' size={20} color='white' />
-          <Text style={styles.logoutButtonText}>Cerrar Sesión</Text>
+          <Text style={styles.logoutButtonText}> Cerrar Sesión</Text>
         </TouchableOpacity>
 
       </View>
@@ -284,8 +284,8 @@ const styles = StyleSheet.create({
     elevation: 10
   },
   logoutButtonText: {
-    color: '#fff',
-    fontSize: 16
+    color: '#fff'
+    // fontSize: 16
   }
 })
 

@@ -26,7 +26,7 @@ export function AuthProvider ({ children }) {
       AsyncStorage.setItem('userInfo', JSON.stringify(userInfo))
       AsyncStorage.setItem('userToken', token)
     } catch (error) {
-      console.log('login error: ', error)
+      console.log('Login error: ', error)
     } finally {
       setIsLoading(false)
     }
@@ -58,12 +58,32 @@ export function AuthProvider ({ children }) {
     }
   }
 
+  const register = async ({ username, password, email }) => {
+    setIsLoading(true)
+
+    try {
+      const request = await AuthApi.post('/auth/register', {
+        username,
+        password,
+        email
+      })
+
+      const data = await request.data
+
+      console.log(data)
+    } catch (error) {
+      console.log('Register error: ', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   useEffect(() => {
     isLoggedIn()
   }, [])
 
   return (
-    <AuthContext.Provider value={{ login, logout, isLoading, userToken, userData }}>
+    <AuthContext.Provider value={{ login, logout, register, isLoading, userToken, userData }}>
       {children}
     </AuthContext.Provider>
   )
