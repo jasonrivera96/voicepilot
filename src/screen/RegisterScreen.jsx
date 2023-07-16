@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { View, Text, TextInput, StyleSheet, Pressable, TouchableOpacity } from 'react-native'
+import { View, Text, TextInput, StyleSheet, Pressable, TouchableOpacity, Keyboard } from 'react-native'
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons'
 import { Icon, CheckBox } from 'react-native-elements'
 import Constants from 'expo-constants'
@@ -44,6 +44,11 @@ const RegisterScreen = ({ setRegisterUser }) => {
 
   const toggleCheckbox = () => {
     formik.setFieldValue('isSelected', !values.isSelected)
+  }
+
+  const handleRegisterButtonPress = () => {
+    Keyboard.dismiss();
+    handleSubmit();
   }
 
   return (
@@ -115,7 +120,7 @@ const RegisterScreen = ({ setRegisterUser }) => {
           />
         </View>
 
-        <TouchableOpacity style={styles.bregistrarse} onPress={handleSubmit}>
+        <TouchableOpacity style={styles.bregistrarse} onPress={handleRegisterButtonPress}>
           <Text style={{ color: 'white' }}>Registrarse</Text>
         </TouchableOpacity>
       </View>
@@ -135,6 +140,7 @@ const RegisterScreen = ({ setRegisterUser }) => {
     </View>
   )
 }
+
 
 export default RegisterScreen
 

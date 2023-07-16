@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { View, Text, TextInput, StyleSheet, Pressable, TouchableOpacity } from 'react-native'
+import { View, Text, TextInput, StyleSheet, Pressable, TouchableOpacity, Keyboard } from 'react-native'
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons'
 import { CheckBox, Icon } from 'react-native-elements'
 import Constants from 'expo-constants'
@@ -15,7 +15,7 @@ const validationSchema = yup.object().shape({
   password: yup.string().required('La contraseña es requerida')
 })
 
-export default function LoginScreen ({ setRegisterUser }) {
+export default function LoginScreen({ setRegisterUser }) {
   const { login } = useContext(AuthContext)
   const { passwordVisibility, rightIcon, handlePasswordVisibility } = useTogglePasswordVisibility()
   const [isSelected, setSelection] = useState(true)
@@ -27,11 +27,16 @@ export default function LoginScreen ({ setRegisterUser }) {
       password: ''
     },
     validationSchema,
-    
+
     onSubmit: (values) => {
       login({ username: values.username, password: values.password })
     }
   })
+
+  const handleLoginButtonPress = () => {
+    Keyboard.dismiss();
+    formik.handleSubmit();
+  }
 
   return (
     <View style={styles.container}>
@@ -87,7 +92,7 @@ export default function LoginScreen ({ setRegisterUser }) {
           </View>
         </View>
 
-        <TouchableOpacity style={styles.biniciar} onPress={formik.handleSubmit}>
+        <TouchableOpacity style={styles.biniciar} onPress={handleLoginButtonPress}>
           <Text style={{ color: 'white' }}>Iniciar Sesión</Text>
         </TouchableOpacity>
       </View>
@@ -123,13 +128,14 @@ export default function LoginScreen ({ setRegisterUser }) {
   )
 }
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: "20%",
     alignItems: 'center',
     paddingTop: Constants.statusBarHeight,
-    backgroundColor: '#fff'
+    backgroundColor: COLORS.WHITE
   },
   form: {
     width: '90%',
