@@ -27,6 +27,7 @@ export default function LoginScreen ({ setRegisterUser }) {
       password: ''
     },
     validationSchema,
+    
     onSubmit: (values) => {
       login({ username: values.username, password: values.password })
     }
@@ -125,7 +126,7 @@ export default function LoginScreen ({ setRegisterUser }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 150,
+    marginTop: "20%",
     alignItems: 'center',
     paddingTop: Constants.statusBarHeight,
     backgroundColor: '#fff'
@@ -252,6 +253,6 @@ const styles = StyleSheet.create({
     marginLeft: 20
   },
   error: {
-    color: COLORS.ORANGE
+    color: COLORS.DANGER
   }
 })
