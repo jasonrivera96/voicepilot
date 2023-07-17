@@ -13,20 +13,19 @@ const EmptySummary = () => {
   return (
     <View style={styles.container}>
       <View style={styles.iconEmpty}>{folderIconEmpty}</View>
-      <Text style={styles.message}>No tienes resúmenes</Text>
+      <Text style={styles.message}>No hay resúmenes</Text>
       <Text style={styles.description}>
         Los resúmenes se crean al
         <Text
           onPress={() => navigation.navigate(uploadScreenName)} style={styles.textLink}
         > subir un archivo
         </Text>
-        o hacer una
+        <Text> o al hacer una</Text>
         <Text
           onPress={() => navigation.navigate(recorderScreenName)}
           style={styles.textLink}
         > grabación
         </Text>.
-        Empieza a crear tus resúmenes.
       </Text>
     </View>
   )

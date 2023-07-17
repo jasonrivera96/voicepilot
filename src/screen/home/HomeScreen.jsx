@@ -1,10 +1,7 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native'
+import { View, StyleSheet, FlatList } from 'react-native'
 import Constants from 'expo-constants'
-import { Ionicons } from '@expo/vector-icons'
-import { useNavigation } from '@react-navigation/native'
 
-import { COLORS, summaryScreenName } from '../../constants'
 import CustomModal from '../../components/CustomModal'
 import Header from './Header'
 import EmptyFolder from './EmptyFolder'
@@ -12,24 +9,7 @@ import ModalContent from './ModalContent'
 import EditModal from './EditModal'
 import { AuthContext } from '../../context/AuthContext'
 import { createFolder, deleteFolder, loadFolders, updateFolder } from '../../services/FolderService'
-
-const folderIcon = <Ionicons name='folder-open-outline' size={25} />
-
-const FolderItem = ({ item, openEditModal }) => {
-  const navigation = useNavigation()
-  const { id, name } = item
-
-  return (
-    <TouchableOpacity
-      key={id} style={styles.folderContainer}
-      onPress={() => navigation.navigate(summaryScreenName, { folderName: name })}
-      onLongPress={() => openEditModal({ id, name })}
-    >
-      <View style={styles.icon}>{folderIcon}</View>
-      <Text>{name}</Text>
-    </TouchableOpacity>
-  )
-}
+import FolderItem from './FolderItem'
 
 const HomeScreen = () => {
   const [folders, setFolders] = useState([])
@@ -144,24 +124,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center'
   },
-  folderContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    gap: 10,
-    width: 350,
-    marginBottom: 10
-  },
   folderListContainer: {
     alignSelf: 'flex-start',
     marginTop: 30,
     marginHorizontal: 30,
     height: '50%'
-  },
-  icon: {
-    backgroundColor: COLORS.GRAY,
-    padding: 10,
-    borderRadius: 50
   }
 })
 

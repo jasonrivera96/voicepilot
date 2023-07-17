@@ -1,45 +1,42 @@
-import React, { useState } from 'react'
-import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
+import { StyleSheet, Text, View, FlatList } from 'react-native'
 
-import { COLORS, summaryItemScreenName } from '../../constants'
+import { COLORS } from '../../constants'
 import NavigatorPath from '../../components/NavigatorPath'
 import EmptySummary from './EmpySummary'
-import { Ionicons } from '@expo/vector-icons'
-import { useNavigation } from '@react-navigation/native'
 import CustomModal from '../../components/CustomModal'
 import EditModal from '../home/EditModal'
-
-const folderIconEmpty = <Ionicons name='file-tray-full-outline' size={25} />
-
-const SummaryItem = ({ item, index, openModal, folderName }) => {
-  const navigation = useNavigation()
-
-  return (
-    <TouchableOpacity
-      key={index} style={styles.summaryContainer}
-      onPress={() => navigation.navigate(summaryItemScreenName, { folderName, summaryName: item })}
-      onLongPress={() => openModal({ index, item })}
-    >
-      <View style={styles.icon}>{folderIconEmpty}</View>
-      <Text>{item}</Text>
-    </TouchableOpacity>
-  )
-}
+import { loadSummaries } from '../../services/SummaryService'
+import { AuthContext } from '../../context/AuthContext'
+import SummaryItem from './SummaryItem'
 
 const SummaryScreen = ({ route }) => {
-  const [summaries, setSummaries] = useState(['SCRUM', 'Kanban', 'XP', 'Lean', 'Agile', 'Otros', 'Otros', 'Otros', 'Otros', 'Otros', 'Otros'])
+  const [summaries, setSummaries] = useState([])
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [summary, setSummary] = useState({})
+  const { userData } = useContext(AuthContext)
+  const { folderId, folderName } = route.params
 
-  const { folderName } = route.params
+  const fetchData = useCallback(async () => {
+    try {
+      const response = await loadSummaries(userData, folderId)
+      setSummaries(response)
+    } catch (error) {
+      console.error('Error al obtener las carpetas:', error.message)
+    }
+  }, [userData, folderId])
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
 
   const closeModal = () => {
     setIsModalVisible(false)
     setSummary({})
   }
 
-  const openModal = ({ index, item }) => {
-    setSummary({ index, item })
+  const openModal = ({ id, name }) => {
+    setSummary({ id, name })
     setIsModalVisible(true)
   }
 
@@ -69,10 +66,9 @@ const SummaryScreen = ({ route }) => {
       <FlatList
         style={styles.summaryListContainer}
         data={summaries}
-        renderItem={({ item, index }) =>
+        renderItem={({ item }) =>
           <SummaryItem
             item={item}
-            index={index}
             folderName={folderName}
             openModal={openModal}
           />}
@@ -119,24 +115,11 @@ const styles = StyleSheet.create({
   spacing: {
     marginHorizontal: 5
   },
-  summaryContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    gap: 10,
-    width: 350,
-    marginBottom: 10
-  },
   summaryListContainer: {
     alignSelf: 'flex-start',
     marginTop: 30,
     marginHorizontal: 30,
     height: '70%'
-  },
-  icon: {
-    backgroundColor: COLORS.GRAY,
-    padding: 10,
-    borderRadius: 50
   },
   contentContainer: {
     alignItems: 'center',

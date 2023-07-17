@@ -2,7 +2,6 @@ import { VoicePilotApi } from '../api/VoicePilotApi'
 
 export async function loadFolders (userData) {
   const { id, token } = userData
-  console.log(token)
   try {
     const response = await VoicePilotApi.get(`/api/folder/all/${id}`, {
       headers: {
