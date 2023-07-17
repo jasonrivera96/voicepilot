@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native'
 import Constants from 'expo-constants'
 import { Ionicons } from '@expo/vector-icons'
@@ -10,35 +10,46 @@ import Header from './Header'
 import EmptyFolder from './EmptyFolder'
 import ModalContent from './ModalContent'
 import EditModal from './EditModal'
+import { AuthContext } from '../../context/AuthContext'
+import { loadFolders } from '../../services/FolderService'
 
 const folderIcon = <Ionicons name='folder-open-outline' size={25} />
 
-const FolderItem = ({ item, index, openEditModal }) => {
+const FolderItem = ({ item, openEditModal }) => {
   const navigation = useNavigation()
+  const { id, name } = item
 
   return (
     <TouchableOpacity
-      key={index} style={styles.folderContainer}
-      onPress={() => navigation.navigate(summaryScreenName, { folderName: item })}
-      onLongPress={() => openEditModal({ index, item })}
+      key={id} style={styles.folderContainer}
+      onPress={() => navigation.navigate(summaryScreenName, { folderName: name })}
+      onLongPress={() => openEditModal({ id, name })}
     >
       <View style={styles.icon}>{folderIcon}</View>
-      <Text>{item}</Text>
+      <Text>{name}</Text>
     </TouchableOpacity>
   )
 }
 
 const HomeScreen = () => {
-  // const [folders, setFolders] = useState([])
-  const [folders, setFolders] = useState(['Software', 'Conferencias', 'Tesis', 'Talleres', 'Cursos', 'Libros', 'Artículos', 'Tutoriales', 'Proyectos', 'Otros'])
+  const [folders, setFolders] = useState([])
   const [folder, setFolder] = useState({})
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [isEditModal, setIsEditModal] = useState(false)
   const flatList = useRef(null)
+  const { userData } = useContext(AuthContext)
 
   useEffect(() => {
-    flatList.current.scrollToEnd({ animated: true })
+    folders.length > 0 && flatList.current.scrollToEnd({ animated: true })
   }, [folders])
+
+  useEffect(() => {
+    const loadFoldersOnInit = async () => {
+      const response = await loadFolders(userData)
+      setFolders(response)
+    }
+    loadFoldersOnInit()
+  }, [userData])
 
   const closeModal = () => {
     setIsModalVisible(false)
@@ -90,7 +101,7 @@ const HomeScreen = () => {
         ref={flatList}
         style={styles.folderListContainer}
         data={folders}
-        renderItem={({ item, index }) => <FolderItem item={item} index={index} openEditModal={openEditModal} />}
+        renderItem={({ item }) => <FolderItem item={item} openEditModal={openEditModal} />}
       />
     )
   }
