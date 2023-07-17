@@ -9,6 +9,7 @@ import * as yup from 'yup'
 import { AuthContext } from '../context/AuthContext'
 import { useTogglePasswordVisibility } from '../hooks/useTogglePassVisibility'
 import { COLORS } from '../constants'
+import { StatusBar } from 'expo-status-bar'
 
 const validationSchema = yup.object().shape({
   username: yup.string().required('El usuario es requerido'),
@@ -40,8 +41,8 @@ export default function LoginScreen ({ setRegisterUser }) {
 
   return (
     <View style={styles.container}>
+      <StatusBar style='dark' backgroundColor='white' />
       <Text style={styles.title}>Iniciar Sesión</Text>
-
       <View style={styles.form}>
         <Text style={{ fontWeight: 'bold' }}>Usuario</Text>
         <View style={styles.inputContainer}>

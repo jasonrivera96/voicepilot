@@ -5,6 +5,7 @@ import { Icon } from 'react-native-elements'
 import Constants from 'expo-constants'
 
 import { COLORS } from '../../constants'
+import { StatusBar } from 'expo-status-bar'
 
 const UploadScreen = () => {
   const [file, setFile] = useState(null)
@@ -24,6 +25,7 @@ const UploadScreen = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar style='dark' backgroundColor='white' />
       <Text style={styles.title}>Subir Archivo</Text>
       <View style={styles.boxContainer}>
         <Icon name='cloud-upload' size={80} />

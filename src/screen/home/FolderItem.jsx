@@ -9,7 +9,6 @@ const folderIcon = <Ionicons name='folder-open-outline' size={25} />
 const FolderItem = ({ item, openEditModal }) => {
   const navigation = useNavigation()
   const { id, name } = item
-
   return (
     <TouchableOpacity
       key={id} style={styles.folderContainer}
@@ -17,7 +16,7 @@ const FolderItem = ({ item, openEditModal }) => {
       onLongPress={() => openEditModal({ id, name })}
     >
       <View style={styles.icon}>{folderIcon}</View>
-      <Text>{name}</Text>
+      <Text style={styles.folderName}>{name.length > 85 ? name.substring(0, 85) + '...' : name}</Text>
     </TouchableOpacity>
   )
 }
@@ -37,5 +36,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.GRAY,
     padding: 10,
     borderRadius: 50
+  },
+  folderName: {
+    maxWidth: '85%'
   }
 })

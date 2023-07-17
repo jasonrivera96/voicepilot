@@ -10,6 +10,7 @@ import EditModal from './EditModal'
 import { AuthContext } from '../../context/AuthContext'
 import { createFolder, deleteFolder, loadFolders, updateFolder } from '../../services/FolderService'
 import FolderItem from './FolderItem'
+import { StatusBar } from 'expo-status-bar'
 
 const HomeScreen = () => {
   const [folders, setFolders] = useState([])
@@ -69,7 +70,7 @@ const HomeScreen = () => {
 
   const deleteFolderItem = async ({ item: folderItem }) => {
     const response = await deleteFolder(userData, folderItem.id)
-    if (response) {
+    if (response.status === 200) {
       const newFolders = folders.filter((folder) => folder.id !== folderItem.id)
       setFolders(newFolders)
     }
@@ -100,6 +101,7 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar style='dark' backgroundColor='white' />
       <Header openModal={openModal} data={folders} />
       {renderContent()}
       <CustomModal isVisible={isModalVisible}>

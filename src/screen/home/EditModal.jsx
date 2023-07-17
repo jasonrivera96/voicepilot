@@ -28,6 +28,7 @@ const EditModal = ({ onClose, data, deleteItem, updateItem, titleButton }) => {
               onChangeText={handleChange('name')}
               onBlur={handleBlur('name')}
               style={styles.textInput}
+              multiline
             />
             {touched.name && errors.name && (
               <Text style={styles.errorText}>* {errors.name}</Text>
@@ -123,7 +124,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.GRAY,
     borderRadius: 8,
     paddingHorizontal: 15,
-    height: 44,
+    minHeight: 44,
+    maxHeight: 200,
     borderWidth: 0
   },
   errorText: {

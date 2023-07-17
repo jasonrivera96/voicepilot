@@ -12,11 +12,16 @@ const SummaryItem = ({ item, openModal, folderName }) => {
   return (
     <TouchableOpacity
       key={id} style={styles.summaryContainer}
-      onPress={() => navigation.navigate(summaryItemScreenName, { folderName, summaryName: name })}
+      onPress={() => navigation.navigate(summaryItemScreenName, { folderName, summaryName: name, summaryId: id })}
       onLongPress={() => openModal({ id, name })}
     >
-      <View style={styles.icon}>{folderIconEmpty}</View>
-      <Text>{name}</Text>
+      <View style={styles.principal}>
+        <View style={styles.icon}>{folderIconEmpty}</View>
+        <Text style={styles.summaryName}>{name.length > 50 ? name.substring(0, 50) + '...' : name}</Text>
+      </View>
+      <View style={styles.secondary}>
+        <Text style={styles.estado}>Leer</Text>
+      </View>
     </TouchableOpacity>
   )
 }
@@ -28,14 +33,35 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    gap: 10,
     width: 350,
-    marginBottom: 10,
-    backgroundColor: COLORS.ORANGE
+    marginBottom: 10
+  },
+  principal: {
+    flexDirection: 'row',
+    gap: 10,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    width: '80%'
+  },
+  secondary: {
+    width: '20%',
+    height: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 15,
+    backgroundColor: COLORS.GREEN_SOFT
   },
   icon: {
     backgroundColor: COLORS.GRAY,
     padding: 10,
-    borderRadius: 50
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  summaryName: {
+    maxWidth: '80%'
+  },
+  estado: {
+    color: COLORS.GREEN
   }
 })

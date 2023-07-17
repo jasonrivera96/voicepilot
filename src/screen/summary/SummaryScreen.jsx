@@ -6,9 +6,10 @@ import NavigatorPath from '../../components/NavigatorPath'
 import EmptySummary from './EmpySummary'
 import CustomModal from '../../components/CustomModal'
 import EditModal from '../home/EditModal'
-import { loadSummaries } from '../../services/SummaryService'
+import { deleteSummary, loadSummaries, updateSummary } from '../../services/SummaryService'
 import { AuthContext } from '../../context/AuthContext'
 import SummaryItem from './SummaryItem'
+import { StatusBar } from 'expo-status-bar'
 
 const SummaryScreen = ({ route }) => {
   const [summaries, setSummaries] = useState([])
@@ -40,20 +41,27 @@ const SummaryScreen = ({ route }) => {
     setIsModalVisible(true)
   }
 
-  const updateFolderItem = ({ item: summaryItem }) => {
-    const summariesUpdated = summaries.map((item, index) => {
-      if (index === summary.index) {
-        return summaryItem.item
-      }
-      return item
-    })
-    setSummaries(summariesUpdated)
+  const updateSummaryItem = async ({ item: summaryItem }) => {
+    const response = await updateSummary(userData, summaryItem)
+    if (response) {
+      const summariesUpdated = summaries.map((summary) => {
+        if (summary.id === summaryItem.id) {
+          return { ...summary, titulo: summaryItem.name }
+        }
+        return summary
+      })
+      setSummaries(summariesUpdated)
+    }
     setIsModalVisible(false)
   }
 
-  const deleteFolderItem = ({ item: summaryItem }) => {
-    const summariesUpdated = summaries.filter((item, index) => index !== summaryItem.index)
-    setSummaries(summariesUpdated)
+  const deleteSummaryItem = async ({ item: summaryItem }) => {
+    const { id: summaryId } = summaryItem
+    const response = await deleteSummary(userData, summaryId)
+    if (response.status === 200) {
+      const summariesUpdated = summaries.filter((summary) => summary.id !== summaryItem.id)
+      setSummaries(summariesUpdated)
+    }
     setSummary({})
     setIsModalVisible(false)
   }
@@ -78,6 +86,7 @@ const SummaryScreen = ({ route }) => {
 
   return (
     <View style={styles.container}>
+      <StatusBar style='dark' backgroundColor='white' />
       <NavigatorPath route={route} />
       <View style={styles.contentContainer}>
         <View style={styles.text}>
@@ -90,8 +99,8 @@ const SummaryScreen = ({ route }) => {
           titleButton='resumen'
           onClose={closeModal}
           data={summary}
-          updateItem={updateFolderItem}
-          deleteItem={deleteFolderItem}
+          updateItem={updateSummaryItem}
+          deleteItem={deleteSummaryItem}
         />
       </CustomModal>
     </View>

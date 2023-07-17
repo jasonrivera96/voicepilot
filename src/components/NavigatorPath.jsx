@@ -11,7 +11,12 @@ const arrowForwardIcon = (
 )
 
 const NavigatorPath = ({ route }) => {
-  const { folderName, summaryName } = route.params
+  let { folderName, summaryName } = route.params
+  if (folderName.length > 40) folderName = folderName.substring(0, 40) + '...'
+  if (summaryName?.length > 16) {
+    summaryName = summaryName.substring(0, 16) + '...'
+    if (folderName.length > 16) folderName = folderName.substring(0, 16) + '...'
+  }
   return (
     <View style={styles.containerPath}>
       <Text style={styles.textPath}>Portafolio</Text>

@@ -30,6 +30,7 @@ const ModalContent = ({ onClose, addFolderItem }) => {
               placeholder='Mis resúmenes'
               placeholderTextColor='#999999'
               value={values.folderName}
+              multiline
             />
             {touched.folderName && errors.folderName && (
               <Text style={styles.errorText}>* {errors.folderName}</Text>
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
   containerButtons: {
     flexDirection: 'row-reverse',
     justifyContent: 'space-between',
-    marginTop: 20
+    marginTop: 60
   },
   containerButtonCreate: {
     backgroundColor: COLORS.ORANGE,
@@ -115,7 +116,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.GRAY,
     borderRadius: 8,
     paddingHorizontal: 15,
-    height: 44,
+    minHeight: 44,
+    maxHeight: 200,
     borderWidth: 0
   },
   errorText: {

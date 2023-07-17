@@ -4,6 +4,7 @@ import Constants from 'expo-constants'
 import { COLORS } from '../constants'
 import { Ionicons } from '@expo/vector-icons'
 import { AuthContext } from '../context/AuthContext'
+import { StatusBar } from 'expo-status-bar'
 
 const { width } = Dimensions.get('window')
 const statusBarHeight = Constants.statusBarHeight
@@ -28,6 +29,7 @@ const ProfileScreen = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <StatusBar style='dark' backgroundColor='white' />
       <View style={styles.contentContainer}>
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Configuración</Text>
