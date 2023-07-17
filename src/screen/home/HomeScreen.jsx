@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native'
 import Constants from 'expo-constants'
 import { Ionicons } from '@expo/vector-icons'
@@ -11,7 +11,7 @@ import EmptyFolder from './EmptyFolder'
 import ModalContent from './ModalContent'
 import EditModal from './EditModal'
 import { AuthContext } from '../../context/AuthContext'
-import { loadFolders } from '../../services/FolderService'
+import { createFolder, deleteFolder, loadFolders, updateFolder } from '../../services/FolderService'
 
 const folderIcon = <Ionicons name='folder-open-outline' size={25} />
 
@@ -39,17 +39,18 @@ const HomeScreen = () => {
   const flatList = useRef(null)
   const { userData } = useContext(AuthContext)
 
-  useEffect(() => {
-    folders.length > 0 && flatList.current.scrollToEnd({ animated: true })
-  }, [folders])
-
-  useEffect(() => {
-    const loadFoldersOnInit = async () => {
+  const fetchData = useCallback(async () => {
+    try {
       const response = await loadFolders(userData)
       setFolders(response)
+    } catch (error) {
+      console.error('Error al obtener las carpetas:', error.message)
     }
-    loadFoldersOnInit()
   }, [userData])
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
 
   const closeModal = () => {
     setIsModalVisible(false)
@@ -61,33 +62,44 @@ const HomeScreen = () => {
     setIsModalVisible(true)
   }
 
-  const addFolderItem = (folderName) => {
-    setIsModalVisible(false)
-    setFolders((prev) => [...prev, folderName])
-  }
-
-  const updateFolderItem = ({ item: folderItem }) => {
-    const foldersUpdated = folders.map((item, index) => {
-      if (index === folder.index) {
-        return folderItem.item
-      }
-      return item
-    })
-    setFolders(foldersUpdated)
+  const addFolderItem = async (folderName) => {
+    const response = await createFolder(userData, folderName)
+    if (response) {
+      const { id, name } = response
+      setFolders((prev) => [...prev, { id, name }])
+    }
+    folders.length > 0 && flatList.current.scrollToEnd({ animated: true })
     setIsModalVisible(false)
   }
 
-  const deleteFolderItem = ({ item: folderItem }) => {
-    console.log(folderItem)
-    const foldersUpdated = folders.filter((item, index) => index !== folderItem.index)
-    setFolders(foldersUpdated)
+  const updateFolderItem = async ({ item: folderItem }) => {
+    const response = await updateFolder(userData, folderItem)
+    if (response) {
+      const newFolders = folders.map((folder) => {
+        if (folder.id === folderItem.id) {
+          return { ...folder, name: folderItem.name }
+        }
+        return folder
+      })
+      setFolders(newFolders)
+    }
+    setFolder({})
+    setIsModalVisible(false)
+  }
+
+  const deleteFolderItem = async ({ item: folderItem }) => {
+    const response = await deleteFolder(userData, folderItem.id)
+    if (response) {
+      const newFolders = folders.filter((folder) => folder.id !== folderItem.id)
+      setFolders(newFolders)
+    }
     setFolder({})
     setIsEditModal(false)
     setIsModalVisible(false)
   }
 
-  const openEditModal = ({ index, item }) => {
-    setFolder({ index, item })
+  const openEditModal = ({ id, name }) => {
+    setFolder({ id, name })
     setIsEditModal(true)
     setIsModalVisible(true)
   }

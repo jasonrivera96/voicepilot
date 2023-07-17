@@ -6,7 +6,7 @@ import { COLORS } from '../../constants'
 import { Formik } from 'formik'
 
 const EditSchema = Yup.object().shape({
-  item: Yup.string().required('Campo requerido')
+  name: Yup.string().required('Campo requerido')
 })
 
 const EditModal = ({ onClose, data, deleteItem, updateItem, titleButton }) => {
@@ -24,13 +24,13 @@ const EditModal = ({ onClose, data, deleteItem, updateItem, titleButton }) => {
           <View style={styles.containerInput}>
             <Text style={styles.labelInput}>Cambiar nombre</Text>
             <TextInput
-              value={values.item}
-              onChangeText={handleChange('item')}
-              onBlur={handleBlur('item')}
+              value={values.name}
+              onChangeText={handleChange('name')}
+              onBlur={handleBlur('name')}
               style={styles.textInput}
             />
-            {touched.item && errors.item && (
-              <Text style={styles.errorText}>* {errors.item}</Text>
+            {touched.name && errors.name && (
+              <Text style={styles.errorText}>* {errors.name}</Text>
             )}
           </View>
 

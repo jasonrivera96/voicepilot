@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import React, { createContext, useEffect, useState } from 'react'
-import { AuthApi } from '../api/AuthApi'
+import { VoicePilotApi } from '../api/VoicePilotApi'
 
 export const AuthContext = createContext()
 
@@ -13,7 +13,7 @@ export function AuthProvider ({ children }) {
     setIsLoading(true)
 
     try {
-      const request = await AuthApi.post('/auth/login', {
+      const request = await VoicePilotApi.post('/auth/login', {
         username,
         password
       })
@@ -23,6 +23,7 @@ export function AuthProvider ({ children }) {
       const { token } = userInfo
 
       setUserToken(token)
+      setUserData(userInfo)
       AsyncStorage.setItem('userInfo', JSON.stringify(userInfo))
       AsyncStorage.setItem('userToken', token)
     } catch (error) {
@@ -62,7 +63,7 @@ export function AuthProvider ({ children }) {
     setIsLoading(true)
 
     try {
-      const request = await AuthApi.post('/auth/register', {
+      const request = await VoicePilotApi.post('/auth/register', {
         username,
         password,
         email
