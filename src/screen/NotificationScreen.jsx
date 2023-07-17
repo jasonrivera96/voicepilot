@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { COLORS } from '../constants';
+import { Feather } from '@expo/vector-icons';
 
 const NotificationScreen = () => {
   return (
@@ -10,12 +11,18 @@ const NotificationScreen = () => {
         style={styles.loadingGif}
       />
       <Text style={styles.processingText}>Procesando...</Text>
-      <Text style={styles.messageText}>Estamos realizando tu resumen. Esto podría tomar unos minutos</Text>
+      <Text style={styles.messageText}>Estamos realizando tu resumen. Esto podría tardar unos minutos</Text>
+      {/* REGRESAR A LA VENTANA RECORDER */}
       <TouchableOpacity
         style={[styles.buttonModal, { backgroundColor: COLORS.WHITE }]}
       >
-        {/* DIRECCIONAR A LA PANTALLA DE SUMMARY */}
         <Text style={styles.buttonText}>OK</Text>
+      </TouchableOpacity>
+
+      {/*DIRIGIR A LA VENTANA DE HOME" */}
+      <TouchableOpacity style={styles.summariesButton}>
+        <Text style={styles.summariesButtonText}>Summaries</Text>
+        <Feather name="arrow-right" size={20} color={COLORS.ORANGE} />
       </TouchableOpacity>
     </View>
   );
@@ -27,20 +34,21 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.WHITE,
     justifyContent: 'center',
     alignItems: 'center',
+   
   },
+  
   loadingGif: {
     width: 120,
     height: 120,
     marginBottom: 20,
   },
   buttonModal: {
-    marginTop: "30%",
+    marginTop: "20%",
     borderRadius: 4,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
     borderColor: COLORS.ORANGE,
-
   },
   buttonText: {
     width: 82,
@@ -65,7 +73,23 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingHorizontal: 40,
     color: COLORS.ORANGE,
-    marginTop: "20%"
+    marginTop: "15%"
+  },
+  summariesButton: {
+    position: 'absolute',
+    bottom: "10%",  
+    right: "2%",
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 4,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+  },
+  
+  summariesButtonText: {
+    color: COLORS.ORANGE,
+    fontSize: 16,
+    marginRight: 8,
   },
 });
 

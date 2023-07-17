@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
 import { COLORS } from '../../constants';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Constants from 'expo-constants'
 
 
 
@@ -58,7 +59,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
     backgroundColor: COLORS.WHITE
   },
   boxContainer: {

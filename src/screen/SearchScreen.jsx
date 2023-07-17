@@ -42,7 +42,7 @@ export default function SearchScreen () {
       </View>
       <View style={styles.recentSearchesContainer}>
         {/* SOLO TRABAJAN EN LOCAL */}
-        <Text style={styles.recentSearchesTitle}>Recientes</Text>
+        <Text style={styles.recentSearchesTitle}>Búsquedas Recientes</Text>
         <FlatList
           data={recentSearches}
           renderItem={({ item }) => (
