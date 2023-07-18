@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import {
   StyleSheet,
   View,
@@ -14,12 +14,15 @@ import {
 import { Audio } from 'expo-av'
 import Dropdown from 'react-native-select-dropdown'
 import Constants from 'expo-constants'
+import { loadFolders } from '../services/FolderService'
 
 import CustomRecorderButton from '../components/CustomRecorderButton'
 import { COLORS } from '../constants'
 import { StatusBar } from 'expo-status-bar'
 
-export default function RecorderScreen () {
+import { AuthContext } from '../context/AuthContext'
+
+export default function RecorderScreen() {
   const [recording, setRecording] = useState()
   const [recordings, setRecordings] = useState([])
   const [message, setMessage] = useState('')
@@ -30,12 +33,31 @@ export default function RecorderScreen () {
   const [customInterval, setCustomInterval] = useState()
   // variables para el modal
   const [recordingName, setRecordingName] = useState('')
-  const [selectedFolder, setSelectedFolder] = useState('')
   const [description, setDescription] = useState('')
   const [modalVisible, setModalVisible] = useState(false)
   // variable para obtener las carpetas
-  const [dropdownItems, setDropdownItems] = useState([])
+  const [dropdownItems, setDropdownItems] = useState("[]")
   const [selectedItem, setSelectedItem] = useState(null)
+
+  const [folders, setFolders] = useState([])
+  const { userData } = useContext(AuthContext)
+
+  const fetchData = useCallback(async () => {
+    try {
+      const response = await loadFolders(userData)
+      setFolders(response)
+
+      // Obtener los nombres de las carpetas
+      const folderNames = response.map((folder) => folder.name);
+      setDropdownItems(folderNames);
+
+    } catch (error) {
+      console.error('Error al obtener las carpetas:', error.message)
+    }
+  }, [userData])
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
 
   useEffect(() => {
     return () => {
@@ -184,15 +206,12 @@ export default function RecorderScreen () {
                 />
 
                 <Text style={styles.label}>Seleccione la carpeta:</Text>
-                {/* REVISAR POR QUE NO CAMBIA DE TAMAÑO */}
+                {/* REVISAR COMO DAR ESTILOS */}
                 <Dropdown
-                  // items={dropdownItems}
-                  // defaultValue={selectedItem}
-                  defaultButtonText='Seleccione una opción'
+                  data={dropdownItems}
+                  onSelect={(item) => setSelectedItem(item)}
+                  defaultButtonText={dropdownItems.length > 0 ? 'Seleccione una opción' : 'Vacío'}
                   dropdownStyle={styles.dropdownStyle}
-                  containerStyle={styles.dropdownContainer}
-                  labelStyle={styles.dropdownLabel}
-                // onChangeItem={(item) => setSelectedItem(item.value)}
                 />
 
                 <Text style={styles.label}>Descripción:</Text>
@@ -275,7 +294,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.307)'
   },
   modalContent: {
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.WHITE,
     padding: 20,
     borderTopEndRadius: 15,
     borderTopStartRadius: 16,
@@ -293,21 +312,18 @@ const styles = StyleSheet.create({
     marginTop: 15
   },
   dropdownStyle: {
-    width: '90%' // Ajusta el ancho según sea necesario
+    width: '90%',
+    height: "15%",
+    borderRadius: 10,
   },
-  dropdownContainer: {
-    marginBottom: 10
-  },
-  dropdownLabel: {
-    color: '#000'
-  },
+
 
   input: {
     height: 40,
     borderRadius: 10,
     marginBottom: 10,
     paddingHorizontal: 5,
-    backgroundColor: '#F3F4F6FF'
+    backgroundColor: COLORS.GRAY_LIGHT
   },
   transcribir: {
     flexDirection: 'row',
