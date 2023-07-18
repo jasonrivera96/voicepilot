@@ -8,15 +8,16 @@ import { AuthContext } from '../context/AuthContext'
 import { loadFolders } from '../services/FolderService'
 import { getSummary } from '../services/SummaryService'
 import { useNavigation } from '@react-navigation/native'
+import { makeQuery } from '../services/SearchService'
 
-export default function SearchScreen({ item }) {
+export default function SearchScreen ({ item }) {
   const [searchQuery, setSearchQuery] = useState('')
+  const [focus, setFocus] = useState()
   const [recentSearches, setRecentSearches] = useState([])
   const [folders, setFolders] = useState([])
   const [summaries, setSummaries] = useState([])
   const { userData } = useContext(AuthContext)
   const navigation = useNavigation()
-  
 
   const fetchData = useCallback(async () => {
     try {
@@ -27,19 +28,24 @@ export default function SearchScreen({ item }) {
     }
   }, [userData])
 
-  const fetchSummaries = useCallback(async () => {
-    try {
-      const response = await getSummary(userData)
-      setSummaries(response)
-    } catch (error) {
-      console.error('Error al obtener los resúmenes:', error.message)
-    }
-  }, [userData])
+  // const fetchSummaries = useCallback(async () => {
+  //   try {
+  //     const response = await getSummary(userData)
+  //     setSummaries(response)
+  //   } catch (error) {
+  //     console.error('Error al obtener los resúmenes:', error.message)
+  //   }
+  // }, [userData])
 
-  useEffect(() => {
-    fetchData()
-    fetchSummaries()
-  }, [fetchData, fetchSummaries])
+  // useEffect(() => {
+  //   fetchData()
+  //   fetchSummaries()
+  // }, [fetchData, fetchSummaries])
+
+  async function searchQueryTest (query) {
+    const response = await makeQuery(userData, query)
+    console.log(response)
+  }
 
   const handleSearch = () => {
     if (searchQuery.trim() === '') {
@@ -63,50 +69,63 @@ export default function SearchScreen({ item }) {
       key={item.id}
       style={styles.searchResultContainer}
       onPress={() =>
-        navigation.navigate(summaryScreenName, { folderId: item.id, folderName: item.name })
-      }
+        navigation.navigate(summaryScreenName, { folderId: item.id, folderName: item.name })}
     >
       <View style={styles.resultTextContainer}>
-        {isFolder ? (
-          <FontAwesome name='folder-o' size={16} color={COLORS.GRAY_EXTRA_SOFT} style={styles.resultIcon} />
-        ) : (
-          <FontAwesome name='file-text-o' size={16} color={COLORS.GRAY_EXTRA_SOFT} style={styles.resultIcon} />
-        )}
+        {isFolder
+          ? (
+            <FontAwesome name='folder-o' size={16} color={COLORS.GRAY_EXTRA_SOFT} style={styles.resultIcon} />
+            )
+          : (
+            <FontAwesome name='file-text-o' size={16} color={COLORS.GRAY_EXTRA_SOFT} style={styles.resultIcon} />
+            )}
         <Text style={styles.searchResultText}>
           {item.name.length > 85 ? item.name.substring(0, 85) + '...' : item.name}
         </Text>
       </View>
       <Text style={styles.searchResultType}>
-        {isFolder ? (
-          <View style={styles.secondary}>
-            <Text style={styles.estado}>Carpeta</Text>
-          </View>
-        ) : (
-          <View style={styles.secondary1}>
-            <Text style={styles.estado1}>Resumen</Text>
-          </View>
-        )}
+        {isFolder
+          ? (
+            <View style={styles.secondary}>
+              <Text style={styles.estado}>Carpeta</Text>
+            </View>
+            )
+          : (
+            <View style={styles.secondary1}>
+              <Text style={styles.estado1}>Resumen</Text>
+            </View>
+            )}
       </Text>
     </TouchableOpacity>
   )
+
+  const onFocus = () => {
+    setFocus(true)
+  }
+
+  const onBlur = () => {
+    setFocus(false)
+  }
 
   return (
     <View style={styles.container}>
       <StatusBar style='dark' backgroundColor='white' />
       <Text style={styles.title}>Buscar</Text>
-      <View style={styles.searchContainer}>
+      <View style={[styles.searchContainer, focus ? { borderColor: COLORS.ORANGE } : { borderColor: COLORS.GRAY_EXTRA_SOFT }]}>
         <TextInput
           style={styles.searchInput}
+          onFocus={() => onFocus()}
+          onBlur={() => onBlur()}
           placeholder='Ingrese su búsqueda'
           onChangeText={text => setSearchQuery(text)}
           value={searchQuery}
         />
         <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
-          <FontAwesome name='search' size={18} color={COLORS.ORANGE} />
+          <FontAwesome name='search' size={18} color={searchQuery === '' ? COLORS.GRAY_EXTRA_SOFT : COLORS.ORANGE} />
         </TouchableOpacity>
       </View>
       <View style={styles.searchResultsContainer}>
-        <Text style={styles.searchResultsTitle}>Resultados de la Búsqueda</Text>
+        <Text style={styles.searchResultsTitle}>Resultados</Text>
         <FlatList
           data={folders.filter(folder => folder.name.toLowerCase().includes(searchQuery.toLowerCase()))}
           renderItem={({ item }) => renderSearchResult({ item, isFolder: true })}
@@ -141,7 +160,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: COLORS.ORANGE,
     borderRadius: 50,
     paddingHorizontal: 10,
     width: '90%',
@@ -149,12 +167,13 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    height: 40
+    height: 40,
+    borderRadius: 50
   },
   searchButton: {
     backgroundColor: COLORS.WHITE,
     padding: 10,
-    borderRadius: 4,
+    borderRadius: 50,
     marginLeft: 10
   },
   searchResultsContainer: {
@@ -179,24 +198,24 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: COLORS.GRAY_LIGHT,
     marginBottom: 10,
-    width: '95%',
+    width: '95%'
   },
   resultTextContainer: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'flex-start'
   },
   resultIcon: {
     marginRight: 10
   },
   searchResultText: {
-    fontSize: 16,
+    fontSize: 16
   },
   searchResultType: {
     marginLeft: 'auto',
     height: 25,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 15,
+    borderRadius: 15
   },
   secondary: {
     width: '20%',
