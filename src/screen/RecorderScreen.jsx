@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import {
   StyleSheet,
   View,
@@ -36,7 +36,7 @@ export default function RecorderScreen() {
   const [description, setDescription] = useState('')
   const [modalVisible, setModalVisible] = useState(false)
   // variable para obtener las carpetas
-  const [dropdownItems, setDropdownItems] = useState("[]")
+  const [dropdownItems, setDropdownItems] = useState([])
   const [selectedItem, setSelectedItem] = useState(null)
 
   const [folders, setFolders] = useState([])
@@ -206,12 +206,12 @@ export default function RecorderScreen() {
                 />
 
                 <Text style={styles.label}>Seleccione la carpeta:</Text>
-                {/* REVISAR COMO DAR ESTILOS */}
+                {/* REVISAR POR QUE NO CAMBIA DE TAMAÑO */}
                 <Dropdown
                   data={dropdownItems}
                   onSelect={(item) => setSelectedItem(item)}
-                  defaultButtonText={dropdownItems.length > 0 ? 'Seleccione una opción' : 'Vacío'}
-                  dropdownStyle={styles.dropdownStyle}
+                  defaultButtonText='Seleccione una opción'
+                                   dropdownStyle={styles.dropdownStyle}
                 />
 
                 <Text style={styles.label}>Descripción:</Text>
@@ -323,7 +323,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 10,
     paddingHorizontal: 5,
-    backgroundColor: COLORS.GRAY_LIGHT
+    backgroundColor: COLORS.GRAY
   },
   transcribir: {
     flexDirection: 'row',
