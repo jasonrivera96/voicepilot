@@ -132,7 +132,6 @@ export default function LoginScreen ({ setRegisterUser }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: '20%',
     alignItems: 'center',
     paddingTop: Constants.statusBarHeight,
     backgroundColor: COLORS.WHITE
@@ -144,6 +143,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     fontWeight: '900',
+    marginTop: '20%',
     marginBottom: 24
   },
   inputContainer: {

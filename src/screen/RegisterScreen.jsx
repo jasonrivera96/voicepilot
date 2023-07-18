@@ -147,7 +147,6 @@ export default RegisterScreen
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: '20%',
     alignItems: 'center',
     paddingTop: Constants.statusBarHeight,
     backgroundColor: '#fff'
@@ -159,6 +158,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     fontWeight: '900',
+    marginTop: '20%',
     marginBottom: 24
   },
   iconEyeButton: {
