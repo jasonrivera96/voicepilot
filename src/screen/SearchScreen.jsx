@@ -1,31 +1,94 @@
-import React, { useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, FlatList } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import Constants from 'expo-constants'
-
-import { COLORS } from '../constants'
+import { COLORS, summaryScreenName } from '../constants'
 import { StatusBar } from 'expo-status-bar'
+import { AuthContext } from '../context/AuthContext'
+import { loadFolders } from '../services/FolderService'
+import { getSummary } from '../services/SummaryService'
+import { useNavigation } from '@react-navigation/native'
 
-export default function SearchScreen () {
+export default function SearchScreen({ item }) {
   const [searchQuery, setSearchQuery] = useState('')
-  // busquedas recientes
   const [recentSearches, setRecentSearches] = useState([])
-  // AGREGAR VARIABLES DE RESULTADOS DE BUSQUEDA
+  const [folders, setFolders] = useState([])
+  const [summaries, setSummaries] = useState([])
+  const { userData } = useContext(AuthContext)
+  const navigation = useNavigation()
+  
+
+  const fetchData = useCallback(async () => {
+    try {
+      const response = await loadFolders(userData)
+      setFolders(response)
+    } catch (error) {
+      console.error('Error al obtener las carpetas:', error.message)
+    }
+  }, [userData])
+
+  const fetchSummaries = useCallback(async () => {
+    try {
+      const response = await getSummary(userData)
+      setSummaries(response)
+    } catch (error) {
+      console.error('Error al obtener los resúmenes:', error.message)
+    }
+  }, [userData])
+
+  useEffect(() => {
+    fetchData()
+    fetchSummaries()
+  }, [fetchData, fetchSummaries])
 
   const handleSearch = () => {
     if (searchQuery.trim() === '') {
       return
     }
 
-    // Agrega la búsqueda actual al inicio del array de búsquedas recientes
+    const filteredFolders = folders.filter(folder =>
+      folder.name.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+
+    const filteredSummaries = summaries.filter(summary =>
+      summary.name.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+
     setRecentSearches([{ query: searchQuery, id: Date.now() }, ...recentSearches])
     setSearchQuery('')
   }
 
-  const handleRecentSearchSelect = (query) => {
-    setSearchQuery(query)
-    handleSearch()
-  }
+  const renderSearchResult = ({ item, isFolder }) => (
+    <TouchableOpacity
+      key={item.id}
+      style={styles.searchResultContainer}
+      onPress={() =>
+        navigation.navigate(summaryScreenName, { folderId: item.id, folderName: item.name })
+      }
+    >
+      <View style={styles.resultTextContainer}>
+        {isFolder ? (
+          <FontAwesome name='folder-o' size={16} color={COLORS.GRAY_EXTRA_SOFT} style={styles.resultIcon} />
+        ) : (
+          <FontAwesome name='file-text-o' size={16} color={COLORS.GRAY_EXTRA_SOFT} style={styles.resultIcon} />
+        )}
+        <Text style={styles.searchResultText}>
+          {item.name.length > 85 ? item.name.substring(0, 85) + '...' : item.name}
+        </Text>
+      </View>
+      <Text style={styles.searchResultType}>
+        {isFolder ? (
+          <View style={styles.secondary}>
+            <Text style={styles.estado}>Carpeta</Text>
+          </View>
+        ) : (
+          <View style={styles.secondary1}>
+            <Text style={styles.estado1}>Resumen</Text>
+          </View>
+        )}
+      </Text>
+    </TouchableOpacity>
+  )
 
   return (
     <View style={styles.container}>
@@ -42,26 +105,21 @@ export default function SearchScreen () {
           <FontAwesome name='search' size={18} color={COLORS.ORANGE} />
         </TouchableOpacity>
       </View>
-      <View style={styles.recentSearchesContainer}>
-        {/* SOLO TRABAJAN EN LOCAL */}
-        <Text style={styles.recentSearchesTitle}>Búsquedas Recientes</Text>
+      <View style={styles.searchResultsContainer}>
+        <Text style={styles.searchResultsTitle}>Resultados de la Búsqueda</Text>
         <FlatList
-          data={recentSearches}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={styles.recentSearchContainer}
-              onPress={() => handleRecentSearchSelect(item.query)}
-            >
-              <FontAwesome name='search' size={16} color='#888' style={styles.recentSearchIcon} />
-              <Text style={styles.recentSearchText}>{item.query}</Text>
-            </TouchableOpacity>
-          )}
+          data={folders.filter(folder => folder.name.toLowerCase().includes(searchQuery.toLowerCase()))}
+          renderItem={({ item }) => renderSearchResult({ item, isFolder: true })}
           keyExtractor={item => item.id.toString()}
-          contentContainerStyle={styles.recentSearchesList}
+          contentContainerStyle={styles.searchResultsList}
+        />
+        <FlatList
+          data={summaries.filter(summary => summary.name.toLowerCase().includes(searchQuery.toLowerCase()))}
+          renderItem={({ item }) => renderSearchResult({ item, isFolder: false })}
+          keyExtractor={item => item.id.toString()}
+          contentContainerStyle={styles.searchResultsList}
         />
       </View>
-      {/* AGREGAR RESULTADOS DE LA BUSQUEDA */}
-      {/* DAR FUNCIONALIDAD PARA QUE AL SELECCIONAR UN RESULTADO SE CAMBIE DE PANTALLA */}
     </View>
   )
 }
@@ -99,33 +157,67 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginLeft: 10
   },
-  recentSearchesContainer: {
-    alignSelf: 'flex-start',
-
+  searchResultsContainer: {
+    flex: 1,
+    alignSelf: 'stretch',
     marginTop: 20
   },
-  recentSearchesTitle: {
+  searchResultsTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
     marginLeft: 20
   },
-  recentSearchesList: {
-
-    alignItems: 'flex-start'
+  searchResultsList: {
+    alignItems: 'flex-start',
+    paddingHorizontal: 20
   },
-
-  recentSearchContainer: {
-    padding: 5,
+  searchResultContainer: {
     flexDirection: 'row',
+    paddingVertical: 7,
+    paddingHorizontal: '5%',
+    borderRadius: 8,
+    backgroundColor: COLORS.GRAY_LIGHT,
+    marginBottom: 10,
+    width: '95%',
+  },
+  resultTextContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  resultIcon: {
+    marginRight: 10
+  },
+  searchResultText: {
+    fontSize: 16,
+  },
+  searchResultType: {
+    marginLeft: 'auto',
+    height: 25,
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 5
+    borderRadius: 15,
   },
-  recentSearchIcon: {
-    marginRight: 5
+  secondary: {
+    width: '20%',
+    height: 25,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    borderRadius: 15,
+    backgroundColor: COLORS.GREEN_SOFT
   },
-  recentSearchText: {
-    fontSize: 16
+  estado: {
+    color: COLORS.GREEN
+  },
+  secondary1: {
+    width: '20%',
+    height: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 15,
+    backgroundColor: '#FFF9E9FF'
+  },
+  estado1: {
+    color: '#876500FF'
   }
-
 })

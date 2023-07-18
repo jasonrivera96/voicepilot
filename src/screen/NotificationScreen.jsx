@@ -1,9 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { COLORS } from '../constants';
+import { COLORS, homeScreenName, recorderScreenName } from '../constants';
 import { Feather } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native'
+
 
 const NotificationScreen = () => {
+  const navigation = useNavigation()
   return (
     <View style={styles.container}>
       <Image
@@ -15,13 +18,13 @@ const NotificationScreen = () => {
       {/* REGRESAR A LA VENTANA RECORDER */}
       <TouchableOpacity
         style={[styles.buttonModal, { backgroundColor: COLORS.WHITE }]}
+        onPress={()=>navigation.navigate(recorderScreenName)}
       >
         <Text style={styles.buttonText}>OK</Text>
       </TouchableOpacity>
 
-      {/*DIRIGIR A LA VENTANA DE HOME" */}
-      <TouchableOpacity style={styles.summariesButton}>
-        <Text style={styles.summariesButtonText}>Summaries</Text>
+      <TouchableOpacity style={styles.summariesButton} onPress={()=>navigation.navigate(homeScreenName)}>
+        <Text style={styles.summariesButtonText} >Summaries</Text>
         <Feather name="arrow-right" size={20} color={COLORS.ORANGE} />
       </TouchableOpacity>
     </View>
