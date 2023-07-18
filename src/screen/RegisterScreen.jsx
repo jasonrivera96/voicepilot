@@ -1,40 +1,84 @@
-import React, { useState } from 'react'
-import { View, Text, TextInput, StyleSheet, Pressable, TouchableOpacity } from 'react-native'
+import React, { useContext } from 'react'
+import { View, Text, TextInput, StyleSheet, Pressable, TouchableOpacity, Keyboard } from 'react-native'
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons'
-import { useTogglePasswordVisibility } from '../hooks/useTogglePassVisibility'
 import { Icon, CheckBox } from 'react-native-elements'
-import { COLORS } from '../constants'
+import Constants from 'expo-constants'
+import { useFormik } from 'formik'
+import * as yup from 'yup'
 
-export default function RegisterScreen ({ setRegisterUser }) {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [isSelected, setSelection] = useState(true)
-  const toggleCheckbox = () => setSelection(!isSelected)
+import { useTogglePasswordVisibility } from '../hooks/useTogglePassVisibility'
+import { COLORS } from '../constants'
+import { AuthContext } from '../context/AuthContext'
+import { StatusBar } from 'expo-status-bar'
+
+const validationSchema = yup.object().shape({
+  username: yup.string().required('El usuario es requerido'),
+  email: yup.string().email('Correo electrónico inválido').required('El correo electrónico es requerido'),
+  password: yup.string().min(6, 'La contraseña debe tener al menos 6 caracteres').required('La contraseña es requerida')
+})
+
+const RegisterScreen = ({ setRegisterUser }) => {
+  const { register } = useContext(AuthContext)
+
+  const formik = useFormik({
+    initialValues: {
+      username: '',
+      email: '',
+      password: '',
+      isSelected: true
+    },
+    validationSchema,
+    onSubmit: values => {
+      register(
+        {
+          username: values.username,
+          email: values.email,
+          password: values.password
+        }
+      )
+    }
+  })
 
   const { passwordVisibility, rightIcon, handlePasswordVisibility } = useTogglePasswordVisibility()
 
-  const handleRegister = () => {
-    console.log('Registrarse')
-    console.log({ email, password })
+  const { handleChange, handleBlur, handleSubmit, values, errors, touched } = formik
+
+  const toggleCheckbox = () => {
+    formik.setFieldValue('isSelected', !values.isSelected)
+  }
+
+  const handleRegisterButtonPress = () => {
+    Keyboard.dismiss()
+    handleSubmit()
   }
 
   return (
-    // Contenedor general
     <View style={styles.container}>
-      <Text style={{ color: 'black', fontSize: 32, fontWeight: 'bold', marginBottom: '10%' }}>Registrarse</Text>
-
+      <StatusBar style='dark' backgroundColor='white' />
+      <Text style={styles.title}>Registrarse</Text>
       <View style={styles.form}>
-
         <Text style={{ fontWeight: 'bold' }}>Usuario</Text>
         <View style={styles.inputContainer}>
           <FontAwesome style={styles.searchIcon} name='user-o' size={20} color='black' />
-          <TextInput style={styles.input} placeholder='Ingrese su nombre de usuario' onChangeText={(text) => setEmail(text)} value={email} />
+          <TextInput
+            style={styles.input}
+            placeholder='Ingrese un nombre de usuario'
+            onChangeText={handleChange('username')}
+            onBlur={handleBlur('username')}
+            value={values.username}
+          />
         </View>
 
-        <Text style={{ fontWeight: 'bold' }}>Correo</Text>
+        <Text style={{ fontWeight: 'bold', marginTop: '3%' }}>Correo</Text>
         <View style={styles.inputContainer}>
           <Icon style={styles.searchIcon} name='mail-outline' />
-          <TextInput style={styles.input} placeholder='Ingrese su correo' onChangeText={(text) => setEmail(text)} value={email} />
+          <TextInput
+            style={styles.input}
+            placeholder='Ingrese su correo'
+            onChangeText={handleChange('email')}
+            onBlur={handleBlur('email')}
+            value={values.email}
+          />
         </View>
 
         <Text style={{ fontWeight: 'bold', marginTop: '3%' }}>Contraseña</Text>
@@ -48,86 +92,123 @@ export default function RegisterScreen ({ setRegisterUser }) {
             autoCorrect={false}
             secureTextEntry={passwordVisibility}
             enablesReturnKeyAutomatically
-            onChangeText={text => setPassword(text)}
+            onChangeText={handleChange('password')}
+            onBlur={handleBlur('password')}
+            value={values.password}
           />
-          <Pressable onPress={handlePasswordVisibility}>
+          <Pressable style={styles.iconEyeButton} onPress={handlePasswordVisibility}>
             <MaterialCommunityIcons name={rightIcon} size={22} style={styles.icono} color='#232323' />
           </Pressable>
         </View>
 
         <View style={styles.condiciones}>
           <CheckBox
-            checked={isSelected}
+            checked={values.isSelected}
             onPress={toggleCheckbox}
             iconType='material-community'
             checkedIcon='checkbox-marked'
+            titleProps={{ style: { color: 'black', backgroundColor: 'white' } }}
+            containerStyle={{ backgroundColor: 'white', borderWidth: 0, padding: 0, margin: 0, marginLeft: 0 }}
             uncheckedIcon='checkbox-blank-outline'
             checkedColor={COLORS.ORANGE}
-            style={styles.checkbox}
+            title={
+              <Text style={{ color: 'black' }}>
+                Acepto los{' '}
+                <Text style={{ color: COLORS.ORANGE, fontWeight: 'bold' }}>términos de uso</Text> y la{' '}
+                <Text style={{ color: COLORS.ORANGE, fontWeight: 'bold' }}>política de privacidad</Text>
+              </Text>
+            }
           />
-          <Text style={{ paddingTop: 17, marginLeft: -15, marginRight: '20%' }}>
-            Al registrarme, acepto los <Text style={{ color: COLORS.ORANGE, fontWeight: 'bold' }}>términos de uso</Text> y la <Text style={{ color: COLORS.ORANGE, fontWeight: 'bold' }}>política de privacidad</Text>
-          </Text>
-
         </View>
-        <TouchableOpacity style={styles.bregistrarse} onPress={() => handleRegister()}>
-          <Text style={{ color: 'white' }}>
-            Registrarse
-          </Text>
+
+        <TouchableOpacity style={styles.bregistrarse} onPress={handleRegisterButtonPress}>
+          <Text style={{ color: 'white' }}>Registrarse</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.final}>
-        <Text>¿Ya tienes una cuenta? </Text>
-        <Text onPress={() => setRegisterUser(false)} style={styles.registrar}>Iniciar Sesión</Text>
+
+      <View style={styles.errorContainer}>
+        {touched.username && errors.username && <Text style={styles.error}>* {errors.username}</Text>}
+        {touched.email && errors.email && <Text style={styles.error}>* {errors.email}</Text>}
+        {touched.password && errors.password && <Text style={styles.error}>* {errors.password}</Text>}
       </View>
 
+      <View style={styles.final}>
+        <Text>¿Ya tienes una cuenta? </Text>
+        <Text onPress={() => setRegisterUser(false)} style={styles.registrar}>
+          Inicia Sesión
+        </Text>
+      </View>
     </View>
   )
 }
 
+export default RegisterScreen
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: '30%',
+    marginTop: '20%',
     alignItems: 'center',
-    backgroundColor: 'white',
-    width: '100%'
+    paddingTop: Constants.statusBarHeight,
+    backgroundColor: '#fff'
   },
   form: {
-    gap: 10,
-    width: '75%'
+    marginTop: 30,
+    width: '90%'
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: '900',
+    marginBottom: 24
+  },
+  iconEyeButton: {
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   inputContainer: {
-    backgroundColor: 'white',
+    backgroundColor: COLORS.GRAY,
     flexDirection: 'row',
     borderRadius: 4,
-    borderWidth: 1
+    borderWidth: 0
   },
   condiciones: {
-    marginLeft: -20,
-    flexDirection: 'row'
+    marginTop: 20,
+    width: '95%'
   },
   icono: {
-    marginTop: '50%',
-    marginRight: '3%'
+    padding: 10
   },
   input: {
     flex: 1,
     height: 44,
-    backgroundColor: '#fff'
+    backgroundColor: COLORS.GRAY,
+    borderRadius: 4
   },
   checkbox: {
     paddingRight: 0
   },
+  terminos: {
+    // flexDirection: 'row',
+    // alignItems: 'center',
+    marginTop: 20
+  },
   bregistrarse: {
-    width: '90%',
+    marginTop: 20,
     backgroundColor: COLORS.ORANGE,
-    alignItems: 'center',
+    width: '100%',
+    height: 48,
+    borderRadius: 8,
     justifyContent: 'center',
-    padding: '5%',
-    borderRadius: 4,
-    alignSelf: 'center', // Agregado para centrar horizontalmente
-    marginVertical: 10
+    alignItems: 'center',
+    marginBottom: 20,
+    shadowColor: COLORS.ORANGE,
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 10
 
   },
   searchIcon: {
@@ -145,11 +226,20 @@ const styles = StyleSheet.create({
   },
   final: {
     flexDirection: 'row',
-    marginTop: '20%',
-    bottom: 0
+    justifyContent: 'center',
+    marginTop: 93
   },
   registrar: {
     fontWeight: 'bold',
     color: COLORS.ORANGE
+  },
+  errorContainer: {
+    height: 50,
+    marginTop: 10,
+    alignSelf: 'flex-start',
+    marginLeft: 20
+  },
+  error: {
+    color: COLORS.DANGER
   }
 })

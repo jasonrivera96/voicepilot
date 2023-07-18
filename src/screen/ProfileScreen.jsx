@@ -4,6 +4,7 @@ import Constants from 'expo-constants'
 import { COLORS } from '../constants'
 import { Ionicons } from '@expo/vector-icons'
 import { AuthContext } from '../context/AuthContext'
+import { StatusBar } from 'expo-status-bar'
 
 const { width } = Dimensions.get('window')
 const statusBarHeight = Constants.statusBarHeight
@@ -28,6 +29,7 @@ const ProfileScreen = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <StatusBar style='dark' backgroundColor='white' />
       <View style={styles.contentContainer}>
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Configuración</Text>
@@ -136,7 +138,7 @@ const ProfileScreen = () => {
 
         <TouchableOpacity onPress={() => logout()} style={styles.logoutButton}>
           <Ionicons name='log-out-outline' size={20} color='white' />
-          <Text style={styles.logoutButtonText}>Cerrar Sesión</Text>
+          <Text style={styles.logoutButtonText}> Cerrar Sesión</Text>
         </TouchableOpacity>
 
       </View>
@@ -284,8 +286,8 @@ const styles = StyleSheet.create({
     elevation: 10
   },
   logoutButtonText: {
-    color: '#fff',
-    fontSize: 16
+    color: '#fff'
+    // fontSize: 16
   }
 })
 

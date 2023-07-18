@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import React, { createContext, useEffect, useState } from 'react'
-import { AuthApi } from '../api/AuthApi'
+import { VoicePilotApi } from '../api/VoicePilotApi'
 
 export const AuthContext = createContext()
 
@@ -13,7 +13,7 @@ export function AuthProvider ({ children }) {
     setIsLoading(true)
 
     try {
-      const request = await AuthApi.post('/auth/login', {
+      const request = await VoicePilotApi.post('/auth/login', {
         username,
         password
       })
@@ -23,10 +23,11 @@ export function AuthProvider ({ children }) {
       const { token } = userInfo
 
       setUserToken(token)
+      setUserData(userInfo)
       AsyncStorage.setItem('userInfo', JSON.stringify(userInfo))
       AsyncStorage.setItem('userToken', token)
     } catch (error) {
-      console.log('login error: ', error)
+      console.log('Login error: ', error)
     } finally {
       setIsLoading(false)
     }
@@ -58,12 +59,32 @@ export function AuthProvider ({ children }) {
     }
   }
 
+  const register = async ({ username, password, email }) => {
+    setIsLoading(true)
+
+    try {
+      const request = await VoicePilotApi.post('/auth/register', {
+        username,
+        password,
+        email
+      })
+
+      const data = await request.data
+
+      console.log(data)
+    } catch (error) {
+      console.log('Register error: ', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   useEffect(() => {
     isLoggedIn()
   }, [])
 
   return (
-    <AuthContext.Provider value={{ login, logout, isLoading, userToken, userData }}>
+    <AuthContext.Provider value={{ login, logout, register, isLoading, userToken, userData }}>
       {children}
     </AuthContext.Provider>
   )

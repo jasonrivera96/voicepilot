@@ -4,6 +4,7 @@ import { FontAwesome } from '@expo/vector-icons'
 import Constants from 'expo-constants'
 
 import { COLORS } from '../constants'
+import { StatusBar } from 'expo-status-bar'
 
 export default function SearchScreen () {
   const [searchQuery, setSearchQuery] = useState('')
@@ -28,6 +29,7 @@ export default function SearchScreen () {
 
   return (
     <View style={styles.container}>
+      <StatusBar style='dark' backgroundColor='white' />
       <Text style={styles.title}>Buscar</Text>
       <View style={styles.searchContainer}>
         <TextInput
@@ -42,7 +44,7 @@ export default function SearchScreen () {
       </View>
       <View style={styles.recentSearchesContainer}>
         {/* SOLO TRABAJAN EN LOCAL */}
-        <Text style={styles.recentSearchesTitle}>Recientes</Text>
+        <Text style={styles.recentSearchesTitle}>Búsquedas Recientes</Text>
         <FlatList
           data={recentSearches}
           renderItem={({ item }) => (

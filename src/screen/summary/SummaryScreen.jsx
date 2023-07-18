@@ -1,33 +1,70 @@
-import React, { useState } from 'react'
-import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
+import { StyleSheet, Text, View, FlatList } from 'react-native'
 
-import { COLORS, summaryItemScreenName } from '../../constants'
+import { COLORS } from '../../constants'
 import NavigatorPath from '../../components/NavigatorPath'
 import EmptySummary from './EmpySummary'
-import { Ionicons } from '@expo/vector-icons'
-import { useNavigation } from '@react-navigation/native'
-
-const folderIconEmpty = <Ionicons name='file-tray-full-outline' size={25} />
-
-const SummaryItem = ({ item, index, openEditModal, folderName }) => {
-  const navigation = useNavigation()
-
-  return (
-    <TouchableOpacity
-      key={index} style={styles.summaryContainer}
-      onPress={() => navigation.navigate(summaryItemScreenName, { folderName, summaryName: item })}
-      onLongPress={() => openEditModal({ index, item })}
-    >
-      <View style={styles.icon}>{folderIconEmpty}</View>
-      <Text>{item}</Text>
-    </TouchableOpacity>
-  )
-}
+import CustomModal from '../../components/CustomModal'
+import EditModal from '../home/EditModal'
+import { deleteSummary, loadSummaries, updateSummary } from '../../services/SummaryService'
+import { AuthContext } from '../../context/AuthContext'
+import SummaryItem from './SummaryItem'
+import { StatusBar } from 'expo-status-bar'
 
 const SummaryScreen = ({ route }) => {
-  const [summaries, setSummaries] = useState(['SCRUM', 'Kanban', 'XP', 'Lean', 'Agile', 'Otros'])
+  const [summaries, setSummaries] = useState([])
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [summary, setSummary] = useState({})
+  const { userData } = useContext(AuthContext)
+  const { folderId, folderName } = route.params
 
-  const { folderName } = route.params
+  const fetchData = useCallback(async () => {
+    try {
+      const response = await loadSummaries(userData, folderId)
+      setSummaries(response)
+    } catch (error) {
+      console.error('Error al obtener las carpetas:', error.message)
+    }
+  }, [userData, folderId])
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
+
+  const closeModal = () => {
+    setIsModalVisible(false)
+    setSummary({})
+  }
+
+  const openModal = ({ id, name }) => {
+    setSummary({ id, name })
+    setIsModalVisible(true)
+  }
+
+  const updateSummaryItem = async ({ item: summaryItem }) => {
+    const response = await updateSummary(userData, summaryItem)
+    if (response) {
+      const summariesUpdated = summaries.map((summary) => {
+        if (summary.id === summaryItem.id) {
+          return { ...summary, titulo: summaryItem.name }
+        }
+        return summary
+      })
+      setSummaries(summariesUpdated)
+    }
+    setIsModalVisible(false)
+  }
+
+  const deleteSummaryItem = async ({ item: summaryItem }) => {
+    const { id: summaryId } = summaryItem
+    const response = await deleteSummary(userData, summaryId)
+    if (response.status === 200) {
+      const summariesUpdated = summaries.filter((summary) => summary.id !== summaryItem.id)
+      setSummaries(summariesUpdated)
+    }
+    setSummary({})
+    setIsModalVisible(false)
+  }
 
   const renderContent = () => {
     if (summaries.length === 0) {
@@ -37,11 +74,11 @@ const SummaryScreen = ({ route }) => {
       <FlatList
         style={styles.summaryListContainer}
         data={summaries}
-        renderItem={({ item, index }) =>
+        renderItem={({ item }) =>
           <SummaryItem
             item={item}
-            index={index}
             folderName={folderName}
+            openModal={openModal}
           />}
       />
     )
@@ -49,6 +86,7 @@ const SummaryScreen = ({ route }) => {
 
   return (
     <View style={styles.container}>
+      <StatusBar style='dark' backgroundColor='white' />
       <NavigatorPath route={route} />
       <View style={styles.contentContainer}>
         <View style={styles.text}>
@@ -56,6 +94,15 @@ const SummaryScreen = ({ route }) => {
         </View>
       </View>
       {renderContent()}
+      <CustomModal isVisible={isModalVisible}>
+        <EditModal
+          titleButton='resumen'
+          onClose={closeModal}
+          data={summary}
+          updateItem={updateSummaryItem}
+          deleteItem={deleteSummaryItem}
+        />
+      </CustomModal>
     </View>
   )
 }
@@ -77,23 +124,11 @@ const styles = StyleSheet.create({
   spacing: {
     marginHorizontal: 5
   },
-  summaryContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    gap: 10,
-    width: 350,
-    marginBottom: 10
-  },
   summaryListContainer: {
     alignSelf: 'flex-start',
     marginTop: 30,
-    marginHorizontal: 30
-  },
-  icon: {
-    backgroundColor: COLORS.GRAY,
-    padding: 10,
-    borderRadius: 50
+    marginHorizontal: 30,
+    height: '70%'
   },
   contentContainer: {
     alignItems: 'center',

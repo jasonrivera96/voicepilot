@@ -1,52 +1,60 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native'
+import * as Yup from 'yup'
 
 import { COLORS } from '../../constants'
+import { Formik } from 'formik'
 
-const EditModal = ({ onClose, folder, deleteFolderItem, updateFolderItem }) => {
-  const [folderItem, setFolderItem] = useState(folder)
-  const handleChange = (data) => {
-    setFolderItem({ ...folderItem, item: data })
-  }
+const EditSchema = Yup.object().shape({
+  name: Yup.string().required('Campo requerido')
+})
 
+const EditModal = ({ onClose, data, deleteItem, updateItem, titleButton }) => {
   return (
-    <View>
-      <View style={styles.contenet}>
-        <Text style={styles.titleModal}>Acciones</Text>
-      </View>
-      <View style={styles.containerInput}>
-        <Text style={styles.labelInput}>Cambiar nombre</Text>
-        <TextInput
-          value={folderItem.item}
-          onChangeText={(data) => handleChange(data)}
-          style={styles.textInput}
-        />
-      </View>
+    <Formik
+      initialValues={data}
+      validationSchema={EditSchema}
+      onSubmit={(values) => updateItem({ item: values })}
+    >
+      {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+        <View>
+          <View style={styles.contenet}>
+            <Text style={styles.titleModal}>Acciones</Text>
+          </View>
+          <View style={styles.containerInput}>
+            <Text style={styles.labelInput}>Cambiar nombre</Text>
+            <TextInput
+              value={values.name}
+              onChangeText={handleChange('name')}
+              onBlur={handleBlur('name')}
+              style={styles.textInput}
+              multiline
+            />
+            {touched.name && errors.name && (
+              <Text style={styles.errorText}>* {errors.name}</Text>
+            )}
+          </View>
 
-      <View>
-        <TouchableOpacity
-          style={styles.containerDeleteButton}
-          onPress={() => deleteFolderItem({ folderItem })}
-        >
-          <Text style={styles.textDeleteButton}>Eliminar carpeta</Text>
-        </TouchableOpacity>
-      </View>
+          <View>
+            <TouchableOpacity
+              style={styles.containerDeleteButton}
+              onPress={() => deleteItem({ item: values })}
+            >
+              <Text style={styles.textDeleteButton}>Eliminar {titleButton}</Text>
+            </TouchableOpacity>
+          </View>
 
-      <View style={styles.containerButtons}>
-        <TouchableOpacity
-          style={styles.containerButtonCreate}
-          onPress={() => updateFolderItem({ folderItem })}
-        >
-          <Text style={styles.textButtonCreate}>Actualizar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.containerButtonCancelar}
-          onPress={onClose}
-        >
-          <Text style={styles.textButtonCancelar}>Cancelar</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+          <View style={styles.containerButtons}>
+            <TouchableOpacity style={styles.containerButtonCreate} onPress={handleSubmit}>
+              <Text style={styles.textButtonCreate}>Actualizar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.containerButtonCancelar} onPress={onClose}>
+              <Text style={styles.textButtonCancelar}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+    </Formik>
   )
 }
 
@@ -116,7 +124,12 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.GRAY,
     borderRadius: 8,
     paddingHorizontal: 15,
-    height: 44,
+    minHeight: 44,
+    maxHeight: 200,
     borderWidth: 0
+  },
+  errorText: {
+    marginTop: 5,
+    color: COLORS.ORANGE
   }
 })

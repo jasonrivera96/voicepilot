@@ -17,6 +17,7 @@ import Constants from 'expo-constants'
 
 import CustomRecorderButton from '../components/CustomRecorderButton'
 import { COLORS } from '../constants'
+import { StatusBar } from 'expo-status-bar'
 
 export default function RecorderScreen () {
   const [recording, setRecording] = useState()
@@ -154,6 +155,7 @@ export default function RecorderScreen () {
   return (
 
     <View style={styles.container}>
+      <StatusBar style='dark' backgroundColor='white' />
       <Text style={styles.timer}>{`${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`}</Text>
       <Text>{message}</Text>
       {/* <Text style={styles.instructions}>Presiona para iniciar a grabar</Text> */}
