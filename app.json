@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "voicepilot",
+    "name": "Voice Pilot",
     "slug": "voicepilot",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -15,16 +15,23 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.alpalasaul.voicepilot"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.alpalasaul.voicepilot"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "77816c03-7940-4a4f-a7cb-7d246fa94708"
+      }
     }
   }
 }

@@ -50,7 +50,8 @@ const UploadScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    // justifyContent: 'center',
+    paddingTop: Constants.statusBarHeight,
     alignItems: 'center',
     backgroundColor: COLORS.WHITE
   },

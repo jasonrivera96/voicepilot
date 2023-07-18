@@ -4,6 +4,7 @@ import { COLORS } from '../../constants'
 import NavigatorPath from '../../components/NavigatorPath'
 import { getSummary } from '../../services/SummaryService'
 import { AuthContext } from '../../context/AuthContext'
+import { StatusBar } from 'expo-status-bar'
 
 const SummaryItemScreen = ({ route }) => {
   const { summaryId } = route.params
@@ -28,6 +29,7 @@ const SummaryItemScreen = ({ route }) => {
   return (
     <View style={styles.container}>
       <NavigatorPath route={route} />
+      <StatusBar style='dark' backgroundColor='white' />
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <View style={styles.main}>
           <Text style={styles.title}>{titulo}</Text>
@@ -58,17 +60,18 @@ const styles = StyleSheet.create({
 
   },
   title: {
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: 'bold',
     textAlign: 'center'
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     marginTop: 20
   },
   resumen: {
-    fontSize: 14,
-    textAlign: 'justify'
+    marginTop: 10,
+    fontSize: 16
+    // textAlign: 'justify'
   }
 })
