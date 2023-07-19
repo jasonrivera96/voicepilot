@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
-import { View, StyleSheet, FlatList } from 'react-native'
+import { View, StyleSheet, FlatList, Alert } from 'react-native'
 import Constants from 'expo-constants'
 
 import CustomModal from '../../components/CustomModal'
@@ -69,11 +69,26 @@ const HomeScreen = () => {
   }
 
   const deleteFolderItem = async ({ item: folderItem }) => {
-    const response = await deleteFolder(userData, folderItem.id)
-    if (response.status === 200) {
-      const newFolders = folders.filter((folder) => folder.id !== folderItem.id)
-      setFolders(newFolders)
-    }
+    Alert.alert(
+      'Eliminar carpeta',
+      `Esta acción es irreversible, ¿estás seguro de eliminar la carpeta "${folderItem.name}"?`,
+      [
+        {
+          text: 'Sí',
+          onPress: async () => {
+            const response = await deleteFolder(userData, folderItem.id)
+            if (response.status === 200) {
+              const newFolders = folders.filter((folder) => folder.id !== folderItem.id)
+              setFolders(newFolders)
+            }
+          }
+        },
+        { text: 'No' }
+      ],
+      {
+        cancelable: false
+      }
+    )
     setFolder({})
     setIsEditModal(false)
     setIsModalVisible(false)

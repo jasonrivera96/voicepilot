@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
-import { StyleSheet, Text, View, FlatList } from 'react-native'
+import { StyleSheet, Text, View, FlatList, Alert } from 'react-native'
 
 import { COLORS } from '../../constants'
 import NavigatorPath from '../../components/NavigatorPath'
@@ -56,12 +56,27 @@ const SummaryScreen = ({ route }) => {
   }
 
   const deleteSummaryItem = async ({ item: summaryItem }) => {
-    const { id: summaryId } = summaryItem
-    const response = await deleteSummary(userData, summaryId)
-    if (response.status === 200) {
-      const summariesUpdated = summaries.filter((summary) => summary.id !== summaryItem.id)
-      setSummaries(summariesUpdated)
-    }
+    Alert.alert(
+      'Eliminar archivo',
+      `Esta acción es irreversible, ¿estás seguro de eliminar el archivo "${summaryItem.name}"?`,
+      [
+        {
+          text: 'Sí',
+          onPress: async () => {
+            const { id: summaryId } = summaryItem
+            const response = await deleteSummary(userData, summaryId)
+            if (response.status === 200) {
+              const summariesUpdated = summaries.filter((summary) => summary.id !== summaryItem.id)
+              setSummaries(summariesUpdated)
+            }
+          }
+        },
+        { text: 'No' }
+      ],
+      {
+        cancelable: false
+      }
+    )
     setSummary({})
     setIsModalVisible(false)
   }

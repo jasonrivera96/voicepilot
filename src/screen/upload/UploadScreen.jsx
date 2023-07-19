@@ -1,48 +1,86 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { StyleSheet, View, Text, TouchableOpacity, Alert } from 'react-native'
-import axios from 'axios'
 import { Icon } from 'react-native-elements'
 import Constants from 'expo-constants'
+import * as DocumentPicker from 'expo-document-picker'
 
 import { COLORS } from '../../constants'
 import { StatusBar } from 'expo-status-bar'
+import Mp3Template from './Mp3Template'
+import Mp4Template from './Mp4Template'
+import { uploadFile } from '../../services/UploadService'
+import { AuthContext } from '../../context/AuthContext'
 
 const UploadScreen = () => {
   const [file, setFile] = useState(null)
+  const [mimeType, setMimeType] = useState()
+  const { userData } = useContext(AuthContext)
 
-  const handleUpload = () => {
+  const handleFile = async () => {
     try {
-      const formData = new FormData()
-      formData.append('file', file)
-      // API PARA SUBIR ARCHIVOS
-      // const response = await.axios.post('', formData);
-      Alert.alert('Éxito', 'Archivo subido correctamente')
+      const { mimeType, name, size, uri, type } = await DocumentPicker.getDocumentAsync({
+        type: ['audio/mp3', 'video/mp4']
+      })
+
+      if (type !== 'success') return
+      setFile({ name, size, uri, type: mimeType })
+      setMimeType(mimeType)
     } catch (error) {
-      Alert.alert('Error', 'No se pudo subir el archivo')
+      console.log(error)
     }
-    console.log('Archivo:', file)
+  }
+
+  const handleCancel = () => {
+    setFile(null)
+    setMimeType()
+  }
+
+  const handleUpload = async () => {
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('folderId', '64b402ff9901cc08cb8ae69c')
+    const response = await uploadFile(userData, formData)
+    if (response) {
+      setFile(null)
+      setMimeType()
+      Alert.alert(
+        'Archivo subido correctamente',
+        'Se está procesando su solicitud, puede ver su estado en la sección de carpetas'
+      )
+      return
+    }
+    Alert.alert(
+      'Error al subir el archivo',
+      'Por favor intente nuevamente, si el error persiste comuníquese con soporte'
+    )
   }
 
   return (
     <View style={styles.container}>
       <StatusBar style='dark' backgroundColor='white' />
       <Text style={styles.title}>Subir Archivo</Text>
-      <View style={styles.boxContainer}>
-        <Icon name='cloud-upload' size={80} />
-        <Text style={styles.titleLoad}>Carga tus archivos aquí</Text>
-        <Text style={styles.fileName}>Formatos soportados MP3, MP4</Text>
-        {/* DAR FUNCIONALIDAD PARA SUBIR ARCHIVOS (API) */}
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText} onPress={handleUpload}>Buscar archivos</Text>
-        </TouchableOpacity>
-        {/* <Text style={styles.fileName}>{file ? file.name : 'Ningún archivo seleccionado'}</Text> */}
-
-      </View>
-      {/* DIRIGIR A LA PANTALLA SEGUN MP3SCREEN O MP4SCREEN EL TIPO DE ARCHIVO */}
-      <TouchableOpacity style={styles.uploadButton}>
-
-        <Text style={styles.buttonText1}>Subir</Text>
-      </TouchableOpacity>
+      {!file && (
+        <View style={styles.boxContainer}>
+          <Icon name='cloud-upload' size={80} />
+          <Text style={styles.titleLoad}>Carga tus archivos aquí</Text>
+          <Text style={styles.fileName}>Formatos soportados MP3, MP4</Text>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText} onPress={handleFile}>Buscar archivos</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+      {mimeType === 'audio/mp3' && (<Mp3Template file={file} />)}
+      {mimeType === 'video/mp4' && (<Mp4Template file={file} />)}
+      {file && (
+        <View style={{ flexDirection: 'row' }}>
+          <TouchableOpacity style={styles.uploadButton1} onPress={handleCancel}>
+            <Text style={styles.buttonText2}>Cancelar</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.uploadButton} onPress={handleUpload}>
+            <Text style={styles.buttonText1}>Subir</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   )
 }
@@ -50,7 +88,6 @@ const UploadScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: 'center',
     paddingTop: Constants.statusBarHeight,
     alignItems: 'center',
     backgroundColor: COLORS.WHITE
@@ -123,7 +160,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: COLORS.WHITE
 
+  },
+  uploadButton1: {
+    marginRight: 8,
+    borderRadius: 5,
+    marginTop: '15%',
+    width: 82,
+    height: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
+    lineHeight: 22
+  },
+  buttonText2: {
+    fontSize: 16,
+    color: COLORS.GRAY_EXTRA_SOFT
   }
+
 })
 
 export default UploadScreen
