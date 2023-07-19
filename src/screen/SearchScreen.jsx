@@ -1,50 +1,33 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, {  useContext, useEffect, useState } from 'react'
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, FlatList } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import Constants from 'expo-constants'
-import { COLORS, summaryScreenName } from '../constants'
+import { COLORS, summaryItemScreenName, summaryScreenName } from '../constants'
 import { StatusBar } from 'expo-status-bar'
 import { AuthContext } from '../context/AuthContext'
-import { loadFolders } from '../services/FolderService'
-import { getSummary } from '../services/SummaryService'
 import { useNavigation } from '@react-navigation/native'
 import { makeQuery } from '../services/SearchService'
 
-export default function SearchScreen ({ item }) {
+export default function SearchScreen() {
   const [searchQuery, setSearchQuery] = useState('')
   const [focus, setFocus] = useState()
   const [recentSearches, setRecentSearches] = useState([])
-  const [folders, setFolders] = useState([])
-  const [summaries, setSummaries] = useState([])
+  const [results, setResults] = useState([])
   const { userData } = useContext(AuthContext)
   const navigation = useNavigation()
 
-  const fetchData = useCallback(async () => {
-    try {
-      const response = await loadFolders(userData)
-      setFolders(response)
-    } catch (error) {
-      console.error('Error al obtener las carpetas:', error.message)
-    }
-  }, [userData])
 
-  // const fetchSummaries = useCallback(async () => {
-  //   try {
-  //     const response = await getSummary(userData)
-  //     setSummaries(response)
-  //   } catch (error) {
-  //     console.error('Error al obtener los resúmenes:', error.message)
-  //   }
-  // }, [userData])
+  useEffect(() => {
+    searchQueryTest()
 
-  // useEffect(() => {
-  //   fetchData()
-  //   fetchSummaries()
-  // }, [fetchData, fetchSummaries])
+  }, [searchQueryTest])
 
-  async function searchQueryTest (query) {
-    const response = await makeQuery(userData, query)
-    console.log(response)
+  async function searchQueryTest() {
+
+    const response = await makeQuery(userData, searchQuery)
+    setResults(response)
+
+
   }
 
   const handleSearch = () => {
@@ -52,52 +35,12 @@ export default function SearchScreen ({ item }) {
       return
     }
 
-    const filteredFolders = folders.filter(folder =>
-      folder.name.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-
-    const filteredSummaries = summaries.filter(summary =>
-      summary.name.toLowerCase().includes(searchQuery.toLowerCase())
-    )
 
     setRecentSearches([{ query: searchQuery, id: Date.now() }, ...recentSearches])
     setSearchQuery('')
   }
 
-  const renderSearchResult = ({ item, isFolder }) => (
-    <TouchableOpacity
-      key={item.id}
-      style={styles.searchResultContainer}
-      onPress={() =>
-        navigation.navigate(summaryScreenName, { folderId: item.id, folderName: item.name })}
-    >
-      <View style={styles.resultTextContainer}>
-        {isFolder
-          ? (
-            <FontAwesome name='folder-o' size={16} color={COLORS.GRAY_EXTRA_SOFT} style={styles.resultIcon} />
-            )
-          : (
-            <FontAwesome name='file-text-o' size={16} color={COLORS.GRAY_EXTRA_SOFT} style={styles.resultIcon} />
-            )}
-        <Text style={styles.searchResultText}>
-          {item.name.length > 85 ? item.name.substring(0, 85) + '...' : item.name}
-        </Text>
-      </View>
-      <Text style={styles.searchResultType}>
-        {isFolder
-          ? (
-            <View style={styles.secondary}>
-              <Text style={styles.estado}>Carpeta</Text>
-            </View>
-            )
-          : (
-            <View style={styles.secondary1}>
-              <Text style={styles.estado1}>Resumen</Text>
-            </View>
-            )}
-      </Text>
-    </TouchableOpacity>
-  )
+
 
   const onFocus = () => {
     setFocus(true)
@@ -126,21 +69,67 @@ export default function SearchScreen ({ item }) {
       </View>
       <View style={styles.searchResultsContainer}>
         <Text style={styles.searchResultsTitle}>Resultados</Text>
-        <FlatList
-          data={folders.filter(folder => folder.name.toLowerCase().includes(searchQuery.toLowerCase()))}
-          renderItem={({ item }) => renderSearchResult({ item, isFolder: true })}
-          keyExtractor={item => item.id.toString()}
-          contentContainerStyle={styles.searchResultsList}
-        />
-        <FlatList
-          data={summaries.filter(summary => summary.name.toLowerCase().includes(searchQuery.toLowerCase()))}
-          renderItem={({ item }) => renderSearchResult({ item, isFolder: false })}
-          keyExtractor={item => item.id.toString()}
-          contentContainerStyle={styles.searchResultsList}
-        />
+        {searchQuery === '' ? (
+          <Text style={styles.noResultsText}>No hay resultados</Text>
+        ) : (
+          <FlatList
+            data={results}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => {
+              if (item.type == 'folder') {
+                return (
+                  <TouchableOpacity
+                    style={styles.searchResultContainer}
+                    onPress={() => navigation.navigate(summaryScreenName, {
+                      folderId: item.folderId,
+                      folderName: item.nombre,
+                    })}
+                  >
+                    <View style={styles.resultTextContainer}>
+                      <FontAwesome name='folder-o' size={16} color={COLORS.GRAY_EXTRA_SOFT} style={styles.resultIcon} />
+                      <Text style={styles.searchResultText}>{item.nombre.length > 85 ? item.nombre.substring(0, 85) + '...' : item.nombre}</Text>
+                    </View>
+                    <Text style={styles.searchResultType}>
+                      <View style={styles.secondary1}>
+                        <Text style={styles.estado1}>Carpeta</Text>
+                      </View>
+                    </Text>
+                  </TouchableOpacity>
+                )
+              } else if (item.type == 'summary') {
+                return (
+                  <TouchableOpacity
+                    style={styles.searchResultContainer}
+                    onPress={() => navigation.navigate(summaryItemScreenName, {
+                      folderName: item.folderName,
+                      summaryName: item.titulo,
+                      summaryId: item.summaryId,
+                    })}
+                  >
+                    <View style={styles.resultTextContainer}>
+                      <FontAwesome name='file-text-o' size={16} color={COLORS.GRAY_EXTRA_SOFT} style={styles.resultIcon} />
+                      <Text style={styles.searchResultText}>{item.titulo.length > 85 ? item.titulo.substring(0, 85) + '...' : item.titulo}</Text>
+                    </View>
+                    <Text style={styles.searchResultType}>
+                      <View style={styles.secondary}>
+                        <Text style={styles.estado}>Resumen</Text>
+                      </View>
+                    </Text>
+                  </TouchableOpacity>
+                )
+              } else {
+                return null
+              }
+
+
+            }}
+          />
+        )}
+
       </View>
     </View>
-  )
+  );
+
 }
 
 const styles = StyleSheet.create({
@@ -187,10 +176,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginLeft: 20
   },
-  searchResultsList: {
-    alignItems: 'flex-start',
-    paddingHorizontal: 20
+  noResultsText: {
+    marginLeft: 25,
+    fontSize: 12,
   },
+
   searchResultContainer: {
     flexDirection: 'row',
     paddingVertical: 7,
@@ -198,16 +188,17 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: COLORS.GRAY_LIGHT,
     marginBottom: 10,
-    width: '95%'
+    width: '100%'
   },
   resultTextContainer: {
     flexDirection: 'row',
-    alignItems: 'flex-start'
+    alignItems: 'center'
   },
   resultIcon: {
     marginRight: 10
   },
   searchResultText: {
+    width: "80%",
     fontSize: 16
   },
   searchResultType: {
@@ -215,28 +206,32 @@ const styles = StyleSheet.create({
     height: 25,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 15
+    borderRadius: 15,
+    paddingHorizontal: 10,
   },
   secondary: {
-    width: '20%',
     height: 25,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
+    width: 100,
+    padding: "5%",
     borderRadius: 15,
-    backgroundColor: COLORS.GREEN_SOFT
+    backgroundColor: COLORS.GREEN_SOFT,
   },
   estado: {
-    color: COLORS.GREEN
+    width: "100%",
+    color: COLORS.GREEN,
+    textAlign: 'center', 
   },
   secondary1: {
-    width: '20%',
     height: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: 100,
+
+    padding: "5%",
     borderRadius: 15,
-    backgroundColor: '#FFF9E9FF'
+    backgroundColor: '#FFF9E9FF',
   },
   estado1: {
-    color: '#876500FF'
+    width: "100%",
+    color: '#876500FF',
+    textAlign: 'center', 
   }
 })
