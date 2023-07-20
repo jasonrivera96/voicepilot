@@ -19,5 +19,16 @@ export const COLORS = {
   DANGER: '#F22128FF',
   DANGER_EXTRA_SOFT: '#FEF0F1FF',
   GREEN: '#00C54FFF',
-  GREEN_SOFT: '#E7FFF1FF'
+  GREEN_SOFT: '#E7FFF1FF',
+
+ 
+  Pastel_Orange: 'rgba(253, 213, 177, 0.19)',
+  Pastel_Orange_1: '#FF973CFF',
+  Pastel_Pink: 'rgba(254, 209, 214, 0.19)', 
+  Pastel_Pink_1: '#DE7780', 
+  Pastel_Mint_Green: 'rgba(152, 251, 152, 0.19)',
+  Pastel_Mint_Green_1: '#95C995',
+  Pastel_Blue: 'rgba(211, 228, 248, 0.19)',
+  Pastel_Blue_1: '#84A7CD',
+
 }
