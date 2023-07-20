@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, FlatList } from 'react-native'
-import { FontAwesome, Ionicons, MaterialIcons } from '@expo/vector-icons'
+import { Ionicons, MaterialIcons } from '@expo/vector-icons'
 import Constants from 'expo-constants'
 import { COLORS, summaryItemScreenName, summaryScreenName } from '../constants'
 import { StatusBar } from 'expo-status-bar'
@@ -58,7 +58,7 @@ export default function SearchScreen () {
           clearButtonMode='while-editing'
         />
         {
-          searchQuery !== '' && (
+          ((results && results.length > 0) || searchQuery !== '') && (
             <TouchableOpacity style={styles.searchButton} onPress={() => clearResults()}>
               <MaterialIcons name='cancel' size={24} color={COLORS.ORANGE} />
             </TouchableOpacity>

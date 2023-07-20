@@ -20,7 +20,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/voicito.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.alpalasaul.voicepilot"
