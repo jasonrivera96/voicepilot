@@ -138,8 +138,14 @@ const UploadScreen = () => {
                 <Text style={styles.label}>Seleccione la carpeta</Text>
                 <Dropdown
                   data={dropdownItems}
+                  rowTextStyle={{ fontSize: 14 }}
+                  dropdownStyle={{ width: '90%', height: '20%', borderRadius: 15 }}
+                  selectedRowTextStyle={{ color: COLORS.ORANGE }}
+                  rowStyle={{ height: 30, borderBottomWidth: 0 }}
+                  buttonStyle={{ width: '100%', height: 40, borderRadius: 10, marginBottom: 10, paddingHorizontal: 5, backgroundColor: COLORS.GRAY }}
+                  buttonTextStyle={{ fontSize: 14 }}
+                  renderDropdownIcon={() => <Icon name='chevron-down' style={{ marginRight: 10 }} type='font-awesome-5' color={COLORS.GRAY_SOFT} size={16} />}
                   onSelect={(item) => setSelectedItem(item.id)}
-                  selectedRowStyle={{ width: 200 }}
                   defaultButtonText='Seleccione una carpeta'
                   rowTextForSelection={(item) => item.name}
                   buttonTextAfterSelection={(selectedItem) => selectedItem.name}

@@ -21,6 +21,7 @@ import { COLORS } from '../constants'
 import { StatusBar } from 'expo-status-bar'
 
 import { AuthContext } from '../context/AuthContext'
+import { Icon } from 'react-native-elements'
 
 export default function RecorderScreen () {
   const [recording, setRecording] = useState()
@@ -47,13 +48,13 @@ export default function RecorderScreen () {
       const response = await loadFolders(userData)
       setFolders(response)
 
-      // Obtener los nombres de las carpetas
-      const folderNames = response.map((folder) => folder.name)
+      const folderNames = response.map((folder) => ({ name: folder.name, id: folder.id }))
       setDropdownItems(folderNames)
     } catch (error) {
       console.error('Error al obtener las carpetas:', error.message)
     }
   }, [userData])
+
   useEffect(() => {
     fetchData()
   }, [fetchData])
@@ -209,9 +210,17 @@ export default function RecorderScreen () {
                 {/* REVISAR POR QUE NO CAMBIA DE TAMAÑO */}
                 <Dropdown
                   data={dropdownItems}
-                  onSelect={(item) => setSelectedItem(item)}
-                  defaultButtonText='Seleccione una opción'
-                  dropdownStyle={styles.dropdownStyle}
+                  rowTextStyle={{ fontSize: 14 }}
+                  dropdownStyle={{ width: '90%', height: '20%', borderRadius: 15 }}
+                  selectedRowTextStyle={{ color: COLORS.ORANGE }}
+                  rowStyle={{ height: 30, borderBottomWidth: 0 }}
+                  buttonStyle={{ width: '100%', height: 40, borderRadius: 10, marginBottom: 10, paddingHorizontal: 5, backgroundColor: COLORS.GRAY }}
+                  buttonTextStyle={{ fontSize: 14 }}
+                  renderDropdownIcon={() => <Icon name='chevron-down' style={{ marginRight: 10 }} type='font-awesome-5' color={COLORS.GRAY_SOFT} size={16} />}
+                  onSelect={(item) => setSelectedItem(item.id)}
+                  defaultButtonText='Seleccione una carpeta'
+                  rowTextForSelection={(item) => item.name}
+                  buttonTextAfterSelection={(selectedItem) => selectedItem.name}
                 />
 
                 <Text style={styles.label}>Descripción</Text>
