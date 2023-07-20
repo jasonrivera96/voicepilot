@@ -17,15 +17,13 @@ export default function SearchScreen() {
   const navigation = useNavigation()
 
 
-  useEffect(() => {
-    searchQueryTest()
 
-  }, [searchQueryTest])
 
   async function searchQueryTest() {
 
     const response = await makeQuery(userData, searchQuery)
     setResults(response)
+    console.log(response)
 
 
   }
@@ -62,16 +60,18 @@ export default function SearchScreen() {
           placeholder='Ingrese su búsqueda'
           onChangeText={text => setSearchQuery(text)}
           value={searchQuery}
+          onSubmitEditing={searchQueryTest}
         />
-        <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
+        <TouchableOpacity style={styles.searchButton} onPress={searchQueryTest}>
           <FontAwesome name='search' size={18} color={searchQuery === '' ? COLORS.GRAY_EXTRA_SOFT : COLORS.ORANGE} />
         </TouchableOpacity>
       </View>
       <View style={styles.searchResultsContainer}>
         <Text style={styles.searchResultsTitle}>Resultados</Text>
         {searchQuery === '' ? (
-          <Text style={styles.noResultsText}>No hay resultados</Text>
-        ) : (
+          <Text style={styles.noResultsText}>Ingrese una búsqueda</Text>
+        ) : results.length === 0 ? (
+          <Text style={styles.noResultsText}>No hay resultados</Text> ) : (
           <FlatList
             data={results}
             keyExtractor={(item, index) => index.toString()}
