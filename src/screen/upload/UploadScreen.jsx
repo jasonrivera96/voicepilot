@@ -36,7 +36,6 @@ const UploadScreen = () => {
   const { userData } = useContext(AuthContext)
 
   useEffect(() => {
-    console.log('infinito')
     async function fetchFolders () {
       try {
         const response = await loadFolders(userData)
@@ -71,12 +70,14 @@ const UploadScreen = () => {
   const handleUpload = async () => {
     const formData = new FormData()
     formData.append('file', file)
-    formData.append('folderId', selectedItem.id)
-    // const response = await uploadFile(userData, formData)
-    const response = true
+    formData.append('folderId', selectedItem)
+    const response = await uploadFile(userData, formData)
+    // const response = true
     if (response) {
       setFile(null)
       setMimeType()
+      setDescription('')
+      setSelectedItem(null)
       Alert.alert(
         'Archivo subido correctamente',
         'Se está procesando su solicitud, puede ver su estado en la sección de carpetas'
@@ -104,8 +105,8 @@ const UploadScreen = () => {
           </TouchableOpacity>
         </View>
       )}
-      {mimeType === 'audio/mp3' && (<Mp3Template file={file} />)}
-      {mimeType === 'video/mp4' && (<Mp4Template file={file} />)}
+      {mimeType === 'audio/mp3' && file && (<Mp3Template file={file} />)}
+      {mimeType === 'video/mp4' && file && (<Mp4Template file={file} />)}
       {file && (
         <View style={{ flexDirection: 'row' }}>
           <TouchableOpacity style={styles.uploadButton1} onPress={handleCancel}>
@@ -139,6 +140,7 @@ const UploadScreen = () => {
                 <Dropdown
                   data={dropdownItems}
                   onSelect={(item) => setSelectedItem(item.id)}
+                  selectedRowStyle={{ width: 200 }}
                   defaultButtonText='Seleccione una carpeta'
                   rowTextForSelection={(item) => item.name}
                   buttonTextAfterSelection={(selectedItem) => selectedItem.name}
@@ -162,7 +164,7 @@ const UploadScreen = () => {
 
                   <TouchableOpacity
                     style={[styles.buttonModal, { backgroundColor: '#FF7700FF' }]}
-                    onpress={() => handleUpload()}
+                    onPress={handleUpload}
                   >
                     <Text style={styles.buttonText1}>Transcribir</Text>
                   </TouchableOpacity>
