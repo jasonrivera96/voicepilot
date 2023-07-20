@@ -138,7 +138,7 @@ const UploadScreen = () => {
                 <Text style={styles.label}>Seleccione la carpeta</Text>
                 <Dropdown
                   data={dropdownItems}
-                  onSelect={(item) => setSelectedItem(item)}
+                  onSelect={(item) => setSelectedItem(item.id)}
                   defaultButtonText='Seleccione una carpeta'
                   rowTextForSelection={(item) => item.name}
                   buttonTextAfterSelection={(selectedItem) => selectedItem.name}
