@@ -1,6 +1,6 @@
-import React, {  useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, FlatList } from 'react-native'
-import { FontAwesome } from '@expo/vector-icons'
+import { FontAwesome, Ionicons } from '@expo/vector-icons'
 import Constants from 'expo-constants'
 import { COLORS, summaryItemScreenName, summaryScreenName } from '../constants'
 import { StatusBar } from 'expo-status-bar'
@@ -36,8 +36,13 @@ export default function SearchScreen() {
 
     setRecentSearches([{ query: searchQuery, id: Date.now() }, ...recentSearches])
     setSearchQuery('')
+    
+    searchQueryTest();
   }
 
+  const clearSearchInput = () => {
+    setSearchQuery('');
+  };
 
 
   const onFocus = () => {
@@ -60,9 +65,11 @@ export default function SearchScreen() {
           placeholder='Ingrese su búsqueda'
           onChangeText={text => setSearchQuery(text)}
           value={searchQuery}
-          onSubmitEditing={searchQueryTest}
+          onSubmitEditing={handleSearch}
+          clearButtonMode="while-editing"
         />
-        <TouchableOpacity style={styles.searchButton} onPress={searchQueryTest}>
+        <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
+
           <FontAwesome name='search' size={18} color={searchQuery === '' ? COLORS.GRAY_EXTRA_SOFT : COLORS.ORANGE} />
         </TouchableOpacity>
       </View>
@@ -71,7 +78,7 @@ export default function SearchScreen() {
         {searchQuery === '' ? (
           <Text style={styles.noResultsText}>Ingrese una búsqueda</Text>
         ) : results.length === 0 ? (
-          <Text style={styles.noResultsText}>No hay resultados</Text> ) : (
+          <Text style={styles.noResultsText}>No hay resultados</Text>) : (
           <FlatList
             data={results}
             keyExtractor={(item, index) => index.toString()}
@@ -86,7 +93,8 @@ export default function SearchScreen() {
                     })}
                   >
                     <View style={styles.resultTextContainer}>
-                      <FontAwesome name='folder-o' size={16} color={COLORS.GRAY_EXTRA_SOFT} style={styles.resultIcon} />
+
+                      <Ionicons name='folder-open-outline' size={16} color={COLORS.GRAY_EXTRA_SOFT} style={styles.resultIcon} />
                       <Text style={styles.searchResultText}>{item.nombre.length > 85 ? item.nombre.substring(0, 85) + '...' : item.nombre}</Text>
                     </View>
                     <Text style={styles.searchResultType}>
@@ -107,7 +115,7 @@ export default function SearchScreen() {
                     })}
                   >
                     <View style={styles.resultTextContainer}>
-                      <FontAwesome name='file-text-o' size={16} color={COLORS.GRAY_EXTRA_SOFT} style={styles.resultIcon} />
+                    <Ionicons name='file-tray-full-outline' size={16}  color={COLORS.GRAY_EXTRA_SOFT} style={styles.resultIcon}/>
                       <Text style={styles.searchResultText}>{item.titulo.length > 85 ? item.titulo.substring(0, 85) + '...' : item.titulo}</Text>
                     </View>
                     <Text style={styles.searchResultType}>
@@ -186,7 +194,6 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
     paddingHorizontal: '5%',
     borderRadius: 8,
-    backgroundColor: COLORS.GRAY_LIGHT,
     marginBottom: 10,
     width: '100%'
   },
@@ -195,10 +202,17 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   resultIcon: {
-    marginRight: 10
+    marginRight: 10,
+    borderWidth:1,
+    padding: 10,
+    borderColor: COLORS.GRAY,
+    
+    borderRadius: 20
+
+    
   },
   searchResultText: {
-    width: "80%",
+    width: "70%",
     fontSize: 16
   },
   searchResultType: {
@@ -219,7 +233,7 @@ const styles = StyleSheet.create({
   estado: {
     width: "100%",
     color: COLORS.GREEN,
-    textAlign: 'center', 
+    textAlign: 'center',
   },
   secondary1: {
     height: 25,
@@ -232,6 +246,6 @@ const styles = StyleSheet.create({
   estado1: {
     width: "100%",
     color: '#876500FF',
-    textAlign: 'center', 
+    textAlign: 'center',
   }
 })
