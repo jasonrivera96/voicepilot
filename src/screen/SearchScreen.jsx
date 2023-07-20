@@ -8,7 +8,7 @@ import { AuthContext } from '../context/AuthContext'
 import { useNavigation } from '@react-navigation/native'
 import { makeQuery } from '../services/SearchService'
 
-export default function SearchScreen () {
+export default function SearchScreen() {
   const [searchQuery, setSearchQuery] = useState('')
   const [focus, setFocus] = useState()
   const [recentSearches, setRecentSearches] = useState([])
@@ -16,10 +16,14 @@ export default function SearchScreen () {
   const { userData } = useContext(AuthContext)
   const navigation = useNavigation()
 
-  async function searchQueryTest () {
+
+
+  async function searchQueryTest() {
+
     const response = await makeQuery(userData, searchQuery)
     setResults(response)
     console.log(response)
+
   }
 
   const handleSearch = () => {
@@ -28,14 +32,10 @@ export default function SearchScreen () {
     }
 
     setRecentSearches([{ query: searchQuery, id: Date.now() }, ...recentSearches])
-    setSearchQuery('')
-
-    searchQueryTest()
+    
+    searchQueryTest();
   }
 
-  const clearSearchInput = () => {
-    setSearchQuery('')
-  }
 
   const onFocus = () => {
     setFocus(true)
@@ -58,79 +58,74 @@ export default function SearchScreen () {
           onChangeText={text => setSearchQuery(text)}
           value={searchQuery}
           onSubmitEditing={handleSearch}
-          clearButtonMode='while-editing'
+          clearButtonMode="while-editing"
         />
-        <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
-
-          <FontAwesome name='search' size={18} color={searchQuery === '' ? COLORS.GRAY_EXTRA_SOFT : COLORS.ORANGE} />
-        </TouchableOpacity>
+     
       </View>
       <View style={styles.searchResultsContainer}>
         <Text style={styles.searchResultsTitle}>Resultados</Text>
-        {searchQuery === ''
-          ? (
-            <Text style={styles.noResultsText}>Ingrese una búsqueda</Text>
-            )
-          : results.length === 0
-            ? (
-              <Text style={styles.noResultsText}>No hay resultados</Text>)
-            : (
-              <FlatList
-                data={results}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }) => {
-                  if (item.type == 'folder') {
-                    return (
-                      <TouchableOpacity
-                        style={styles.searchResultContainer}
-                        onPress={() => navigation.navigate(summaryScreenName, {
-                          folderId: item.folderId,
-                          folderName: item.nombre
-                        })}
-                      >
-                        <View style={styles.resultTextContainer}>
+        {searchQuery === '' ? (
+          <Text style={styles.noResultsText}>Ingrese una búsqueda</Text>
+        ) : results.length === 0 ? (
+          <Text style={styles.noResultsText}>No hay resultados</Text>) : (
+          <FlatList
+            data={results}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => {
+              if (item.type == 'folder') {
+                return (
+                  <TouchableOpacity
+                    style={styles.searchResultContainer}
+                    onPress={() => navigation.navigate(summaryScreenName, {
+                      folderId: item.folderId,
+                      folderName: item.nombre,
+                    })}
+                  >
+                    <View style={styles.resultTextContainer}>
 
-                          <Ionicons name='folder-open-outline' size={16} color={COLORS.GRAY_EXTRA_SOFT} style={styles.resultIcon} />
-                          <Text style={styles.searchResultText}>{item.nombre.length > 85 ? item.nombre.substring(0, 85) + '...' : item.nombre}</Text>
-                        </View>
-                        <Text style={styles.searchResultType}>
-                          <View style={styles.secondary1}>
-                            <Text style={styles.estado1}>Carpeta</Text>
-                          </View>
-                        </Text>
-                      </TouchableOpacity>
-                    )
-                  } else if (item.type == 'summary') {
-                    return (
-                      <TouchableOpacity
-                        style={styles.searchResultContainer}
-                        onPress={() => navigation.navigate(summaryItemScreenName, {
-                          folderName: item.folderName,
-                          summaryName: item.titulo,
-                          summaryId: item.summaryId
-                        })}
-                      >
-                        <View style={styles.resultTextContainer}>
-                          <Ionicons name='file-tray-full-outline' size={16} color={COLORS.GRAY_EXTRA_SOFT} style={styles.resultIcon} />
-                          <Text style={styles.searchResultText}>{item.titulo.length > 85 ? item.titulo.substring(0, 85) + '...' : item.titulo}</Text>
-                        </View>
-                        <Text style={styles.searchResultType}>
-                          <View style={styles.secondary}>
-                            <Text style={styles.estado}>Resumen</Text>
-                          </View>
-                        </Text>
-                      </TouchableOpacity>
-                    )
-                  } else {
-                    return null
-                  }
-                }}
-              />
-              )}
+                      <Ionicons name='folder-open-outline' size={16} color={COLORS.GRAY_EXTRA_SOFT} style={styles.resultIcon} />
+                      <Text style={styles.searchResultText}>{item.nombre.length > 85 ? item.nombre.substring(0, 85) + '...' : item.nombre}</Text>
+                    </View>
+                    <Text style={styles.searchResultType}>
+                      <View style={styles.secondary1}>
+                        <Text style={styles.estado1}>Carpeta</Text>
+                      </View>
+                    </Text>
+                  </TouchableOpacity>
+                )
+              } else if (item.type == 'summary') {
+                return (
+                  <TouchableOpacity
+                    style={styles.searchResultContainer}
+                    onPress={() => navigation.navigate(summaryItemScreenName, {
+                      folderName: item.folderName,
+                      summaryName: item.titulo,
+                      summaryId: item.summaryId,
+                    })}
+                  >
+                    <View style={styles.resultTextContainer}>
+                    <Ionicons name='file-tray-full-outline' size={16}  color={COLORS.GRAY_EXTRA_SOFT} style={styles.resultIcon}/>
+                      <Text style={styles.searchResultText}>{item.titulo.length > 85 ? item.titulo.substring(0, 85) + '...' : item.titulo}</Text>
+                    </View>
+                    <Text style={styles.searchResultType}>
+                      <View style={styles.secondary}>
+                        <Text style={styles.estado}>Resumen</Text>
+                      </View>
+                    </Text>
+                  </TouchableOpacity>
+                )
+              } else {
+                return null
+              }
+
+            }}
+          />
+        )}
 
       </View>
     </View>
-  )
+  );
+
 }
 
 const styles = StyleSheet.create({
@@ -179,7 +174,7 @@ const styles = StyleSheet.create({
   },
   noResultsText: {
     marginLeft: 25,
-    fontSize: 12
+    fontSize: 12,
   },
 
   searchResultContainer: {
@@ -196,15 +191,16 @@ const styles = StyleSheet.create({
   },
   resultIcon: {
     marginRight: 10,
-    borderWidth: 1,
+    borderWidth:1,
     padding: 10,
     borderColor: COLORS.GRAY,
-
+    
     borderRadius: 20
 
+    
   },
   searchResultText: {
-    width: '70%',
+    width: "70%",
     fontSize: 16
   },
   searchResultType: {
@@ -213,32 +209,33 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 15,
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
   },
   secondary: {
     height: 25,
     width: 100,
-    padding: '5%',
+    padding: "5%",
     borderRadius: 15,
-    backgroundColor: COLORS.GREEN_SOFT
+    backgroundColor: COLORS.GREEN_SOFT,
   },
   estado: {
-    width: '100%',
+    width: "100%",
     color: COLORS.GREEN,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   secondary1: {
     height: 25,
     width: 100,
 
-    padding: '5%',
+    padding: "5%",
     borderRadius: 15,
-    backgroundColor: '#FFF9E9FF'
+    backgroundColor: '#FFF9E9FF',
   },
   estado1: {
-    width: '100%',
+    width: "100%",
     color: '#876500FF',
     textAlign: 'center',
-    textAlign: 'center'
   }
 })
+
+
