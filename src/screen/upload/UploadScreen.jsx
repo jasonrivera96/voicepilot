@@ -72,7 +72,6 @@ const UploadScreen = () => {
     formData.append('file', file)
     formData.append('folderId', selectedItem)
     const response = await uploadFile(userData, formData)
-    // const response = true
     if (response) {
       setFile(null)
       setMimeType()
