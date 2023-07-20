@@ -22,7 +22,7 @@ import { StatusBar } from 'expo-status-bar'
 
 import { AuthContext } from '../context/AuthContext'
 
-export default function RecorderScreen() {
+export default function RecorderScreen () {
   const [recording, setRecording] = useState()
   const [recordings, setRecordings] = useState([])
   const [message, setMessage] = useState('')
@@ -48,9 +48,8 @@ export default function RecorderScreen() {
       setFolders(response)
 
       // Obtener los nombres de las carpetas
-      const folderNames = response.map((folder) => folder.name);
-      setDropdownItems(folderNames);
-
+      const folderNames = response.map((folder) => folder.name)
+      setDropdownItems(folderNames)
     } catch (error) {
       console.error('Error al obtener las carpetas:', error.message)
     }
@@ -198,25 +197,26 @@ export default function RecorderScreen() {
               <View style={styles.modalContent}>
                 <Text style={styles.modalTitle}>Guardar Grabación</Text>
 
-                <Text style={styles.label}>Nombre del audio:</Text>
+                <Text style={styles.label}>Nombre del audio</Text>
                 <TextInput
-                  style={styles.input}
+                  style={styles.inputName}
                   value={recordingName}
                   onChangeText={setRecordingName}
+                  multiline
                 />
 
-                <Text style={styles.label}>Seleccione la carpeta:</Text>
+                <Text style={styles.label}>Seleccione la carpeta</Text>
                 {/* REVISAR POR QUE NO CAMBIA DE TAMAÑO */}
                 <Dropdown
                   data={dropdownItems}
                   onSelect={(item) => setSelectedItem(item)}
                   defaultButtonText='Seleccione una opción'
-                                   dropdownStyle={styles.dropdownStyle}
+                  dropdownStyle={styles.dropdownStyle}
                 />
 
-                <Text style={styles.label}>Descripción:</Text>
+                <Text style={styles.label}>Descripción</Text>
                 <TextInput
-                  style={styles.input}
+                  style={styles.inputDescription}
                   value={description}
                   onChangeText={setDescription}
                   multiline
@@ -313,13 +313,20 @@ const styles = StyleSheet.create({
   },
   dropdownStyle: {
     width: '90%',
-    height: "15%",
-    borderRadius: 10,
+    height: '15%',
+    borderRadius: 10
   },
-
-
-  input: {
-    height: 40,
+  inputName: {
+    minHeight: 40,
+    maxHeight: 120,
+    borderRadius: 10,
+    marginBottom: 10,
+    paddingHorizontal: 5,
+    backgroundColor: COLORS.GRAY
+  },
+  inputDescription: {
+    minHeight: 80,
+    maxHeight: 120,
     borderRadius: 10,
     marginBottom: 10,
     paddingHorizontal: 5,
