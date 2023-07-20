@@ -1,5 +1,17 @@
-import React, { useContext, useState } from 'react'
-import { StyleSheet, View, Text, TouchableOpacity, Alert } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  Alert,
+  Modal,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
+  TextInput
+} from 'react-native'
 import { Icon } from 'react-native-elements'
 import Constants from 'expo-constants'
 import * as DocumentPicker from 'expo-document-picker'
@@ -10,11 +22,32 @@ import Mp3Template from './Mp3Template'
 import Mp4Template from './Mp4Template'
 import { uploadFile } from '../../services/UploadService'
 import { AuthContext } from '../../context/AuthContext'
+import Dropdown from 'react-native-select-dropdown'
+import { loadFolders } from '../../services/FolderService'
 
 const UploadScreen = () => {
   const [file, setFile] = useState(null)
-  const [mimeType, setMimeType] = useState()
+  const [mimeType, setMimeType] = useState('')
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [description, setDescription] = useState('')
+  const [dropdownItems, setDropdownItems] = useState([])
+  const [selectedItem, setSelectedItem] = useState(null)
+
   const { userData } = useContext(AuthContext)
+
+  useEffect(() => {
+    console.log('infinito')
+    async function fetchFolders () {
+      try {
+        const response = await loadFolders(userData)
+        const folders = response.map((folder) => ({ name: folder.name, id: folder.id }))
+        setDropdownItems(folders)
+      } catch (error) {
+        console.error('Error al obtener las carpetas:', error.message)
+      }
+    }
+    fetchFolders()
+  }, [file, userData])
 
   const handleFile = async () => {
     try {
@@ -38,8 +71,9 @@ const UploadScreen = () => {
   const handleUpload = async () => {
     const formData = new FormData()
     formData.append('file', file)
-    formData.append('folderId', '64b402ff9901cc08cb8ae69c')
-    const response = await uploadFile(userData, formData)
+    formData.append('folderId', selectedItem.id)
+    // const response = await uploadFile(userData, formData)
+    const response = true
     if (response) {
       setFile(null)
       setMimeType()
@@ -47,6 +81,7 @@ const UploadScreen = () => {
         'Archivo subido correctamente',
         'Se está procesando su solicitud, puede ver su estado en la sección de carpetas'
       )
+      setIsModalVisible(false)
       return
     }
     Alert.alert(
@@ -76,11 +111,67 @@ const UploadScreen = () => {
           <TouchableOpacity style={styles.uploadButton1} onPress={handleCancel}>
             <Text style={styles.buttonText2}>Cancelar</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.uploadButton} onPress={handleUpload}>
+          <TouchableOpacity style={styles.uploadButton} onPress={() => setIsModalVisible(true)}>
             <Text style={styles.buttonText1}>Subir</Text>
           </TouchableOpacity>
         </View>
       )}
+      <Modal visible={isModalVisible} animationType='slide' transparent>
+        <KeyboardAvoidingView
+          style={styles.modalContainer}
+          behavior={Platform.OS === 'ios' ? 'padding' : null}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+        >
+          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Subir archivo</Text>
+
+                <Text style={styles.label}>Nombre del audio</Text>
+                <TextInput
+                  style={styles.inputName}
+                  value={file?.name}
+                  editable={false}
+                  multiline
+                />
+
+                <Text style={styles.label}>Seleccione la carpeta</Text>
+                <Dropdown
+                  data={dropdownItems}
+                  onSelect={(item) => setSelectedItem(item)}
+                  defaultButtonText='Seleccione una carpeta'
+                  rowTextForSelection={(item) => item.name}
+                  buttonTextAfterSelection={(selectedItem) => selectedItem.name}
+                />
+
+                <Text style={styles.label}>Descripción</Text>
+                <TextInput
+                  style={styles.inputDescription}
+                  value={description}
+                  onChangeText={setDescription}
+                  multiline
+                />
+                <View style={styles.transcribir}>
+                  <TouchableOpacity
+                    style={[styles.buttonModal, { backgroundColor: '#F3F4F6FF' }]}
+                    onPress={() => setIsModalVisible(false)}
+                    color='#353536'
+                  >
+                    <Text style={styles.buttonTextModal}>Cancelar</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={[styles.buttonModal, { backgroundColor: '#FF7700FF' }]}
+                    onpress={() => handleUpload()}
+                  >
+                    <Text style={styles.buttonText1}>Transcribir</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
+      </Modal>
     </View>
   )
 }
@@ -131,20 +222,6 @@ const styles = StyleSheet.create({
     marginTop: '4%',
     color: COLORS.GRAY_EXTRA_SOFT
   },
-  label: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 10
-  },
-  input: {
-    height: 40,
-    width: '100%',
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 20,
-    paddingHorizontal: 10
-  },
   uploadButton: {
     backgroundColor: COLORS.ORANGE,
     color: COLORS.WHITE,
@@ -159,7 +236,6 @@ const styles = StyleSheet.create({
   buttonText1: {
     fontSize: 16,
     color: COLORS.WHITE
-
   },
   uploadButton1: {
     marginRight: 8,
@@ -174,8 +250,68 @@ const styles = StyleSheet.create({
   buttonText2: {
     fontSize: 16,
     color: COLORS.GRAY_EXTRA_SOFT
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    width: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.307)'
+  },
+  modalContent: {
+    backgroundColor: COLORS.WHITE,
+    padding: 20,
+    borderTopEndRadius: 15,
+    borderTopStartRadius: 16,
+    elevation: 5
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10
+  },
+  label: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginBottom: 5,
+    marginTop: 15
+  },
+  dropdownStyle: {
+    width: '90%',
+    height: '15%',
+    borderRadius: 10
+  },
+  inputName: {
+    minHeight: 40,
+    maxHeight: 120,
+    borderRadius: 10,
+    marginBottom: 10,
+    paddingHorizontal: 5,
+    backgroundColor: COLORS.GRAY
+  },
+  inputDescription: {
+    minHeight: 80,
+    maxHeight: 120,
+    borderRadius: 10,
+    marginBottom: 10,
+    paddingHorizontal: 5,
+    backgroundColor: COLORS.GRAY
+  },
+  transcribir: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20
+  },
+  buttonTextModal: {
+    color: '#353536',
+    fontSize: 14
+  },
+  buttonModal: {
+    borderRadius: 12,
+    padding: 10,
+    marginRight: 20,
+    width: 150,
+    alignItems: 'center'
   }
-
 })
 
 export default UploadScreen
