@@ -212,29 +212,24 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     marginTop: 8
-  }
-    marginTop: 8,
   },
-
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)'
   },
-
   modalView: {
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',
-    width: '80%',
+    width: '80%'
   },
-
   modalTitle: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: 'center'
   },
   iconContainer: {
     backgroundColor: COLORS.WHITE,
@@ -244,18 +239,16 @@ const styles = StyleSheet.create({
     shadowColor: COLORS.BLACK,
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 2
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 5,
+    elevation: 5
   },
   closeButton: {
     fontSize: 16,
     color: COLORS.GRAY_EXTRA_SOFT,
     marginTop: 10,
-    fontWeight: 'bold',
-  },
-
-
+    fontWeight: 'bold'
+  }
 })
