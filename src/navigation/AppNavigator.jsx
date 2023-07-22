@@ -7,7 +7,7 @@ import { AuthContext } from '../context/AuthContext'
 import { COLORS } from '../constants'
 import MainStack from './MainStack'
 
-const AppNav = () => {
+const AppNavigator = () => {
   const { isLoading, userToken } = useContext(AuthContext)
 
   if (isLoading) {
@@ -25,7 +25,7 @@ const AppNav = () => {
   )
 }
 
-export default AppNav
+export default AppNavigator
 
 const styles = StyleSheet.create({
   activityIndicatorContainer: {

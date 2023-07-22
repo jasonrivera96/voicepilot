@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import * as NavigationBar from 'expo-navigation-bar'
 
 import { AuthProvider } from './src/context/AuthContext'
-import AppNav from './src/navigation/AppNav'
+import AppNavigator from './src/navigation/AppNavigator'
 import { StatusBar } from 'expo-status-bar'
 
 export default function App () {
@@ -17,7 +17,7 @@ export default function App () {
   return (
     <AuthProvider>
       <StatusBar style='dark' backgroundColor='white' />
-      <AppNav />
+      <AppNavigator />
     </AuthProvider>
   )
 }

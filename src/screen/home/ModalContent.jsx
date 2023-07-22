@@ -14,7 +14,7 @@ const ModalContent = ({ onClose, addFolderItem }) => {
     <Formik
       initialValues={{ folderName: '' }}
       validationSchema={ModalSchema}
-      onSubmit={(values) => addFolderItem(values.folderName)}
+      onSubmit={(values) => addFolderItem(values.folderName.trim())}
     >
       {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
         <View>

@@ -4,7 +4,7 @@ import { COLORS } from '../../constants'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 const Mp3Template = ({ file }) => {
-  const { name, size } = file
+  const { name, size, type } = file
 
   const sizeBytesToMb = (size) => {
     const sizeMb = size / 1000000
@@ -17,7 +17,7 @@ const Mp3Template = ({ file }) => {
         <MaterialCommunityIcons name='music-note-outline' size={80} style={{ textAlign: 'center' }} />
         <Text style={styles.fileName}>{name}</Text>
         <Text style={styles.duration}>Tamaño: {sizeBytesToMb(size)}</Text>
-        <Text style={styles.buttonText}>MP3</Text>
+        <Text style={styles.buttonText}>{type.replace('audio/', '')}</Text>
       </View>
     </View>
   )
@@ -38,7 +38,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: COLORS.ORANGE,
     textAlign: 'center',
-    marginTop: '9%'
+    marginTop: '9%',
+    textTransform: 'uppercase'
 
   },
   fileName: {

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import {
   StyleSheet,
   View,
@@ -10,7 +10,8 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
-  TextInput
+  TextInput,
+  ActivityIndicator
 } from 'react-native'
 import { Icon } from 'react-native-elements'
 import Constants from 'expo-constants'
@@ -25,34 +26,33 @@ import { AuthContext } from '../../context/AuthContext'
 import Dropdown from 'react-native-select-dropdown'
 import { loadFolders } from '../../services/FolderService'
 
-const UploadScreen = () => {
+const UploadScreen = ({ toggleShowNotification }) => {
   const [file, setFile] = useState(null)
   const [mimeType, setMimeType] = useState('')
   const [isModalVisible, setIsModalVisible] = useState(false)
-  const [description, setDescription] = useState('')
   const [dropdownItems, setDropdownItems] = useState([])
   const [selectedItem, setSelectedItem] = useState(null)
+  const [isLoading, setisLoading] = useState(false)
 
   const { userData } = useContext(AuthContext)
 
-  useEffect(() => {
-    async function fetchFolders () {
-      try {
-        const response = await loadFolders(userData)
-        const folders = response.map((folder) => ({ name: folder.name, id: folder.id }))
-        setDropdownItems(folders)
-      } catch (error) {
-        console.error('Error al obtener las carpetas:', error.message)
-      }
+  async function fetchFolders () {
+    try {
+      const response = await loadFolders(userData)
+      const folders = response.map((folder) => ({ name: folder.name, id: folder.id }))
+      setDropdownItems(folders)
+    } catch (error) {
+      console.error('Error al obtener las carpetas:', error.message)
     }
-    fetchFolders()
-  }, [file, userData])
+  }
 
   const handleFile = async () => {
     try {
       const { mimeType, name, size, uri, type } = await DocumentPicker.getDocumentAsync({
-        type: ['audio/mp3', 'video/mp4']
+        type: ['audio/*', 'video/mp4']
       })
+
+      console.log('mimeType', mimeType)
 
       if (type !== 'success') return
       setFile({ name, size, uri, type: mimeType })
@@ -67,20 +67,32 @@ const UploadScreen = () => {
     setMimeType()
   }
 
+  const closeModal = () => {
+    setIsModalVisible(false)
+    setSelectedItem(null)
+  }
+
+  const openModal = async () => {
+    await fetchFolders()
+    setIsModalVisible(true)
+  }
+
   const handleUpload = async () => {
+    if (!selectedItem) {
+      return
+    }
     const formData = new FormData()
     formData.append('file', file)
-    formData.append('folderId', selectedItem)
+    formData.append('folderId', selectedItem.id)
+    setisLoading(true)
     const response = await uploadFile(userData, formData)
+    // const response = true
     if (response) {
+      toggleShowNotification({ folder: selectedItem })
       setFile(null)
+      setisLoading(false)
       setMimeType()
-      setDescription('')
       setSelectedItem(null)
-      Alert.alert(
-        'Archivo subido correctamente',
-        'Se está procesando su solicitud, puede ver su estado en la sección de carpetas'
-      )
       setIsModalVisible(false)
       return
     }
@@ -104,14 +116,14 @@ const UploadScreen = () => {
           </TouchableOpacity>
         </View>
       )}
-      {mimeType === 'audio/mp3' && file && (<Mp3Template file={file} />)}
-      {mimeType === 'video/mp4' && file && (<Mp4Template file={file} />)}
+      {mimeType?.includes('audio') && file && (<Mp3Template file={file} />)}
+      {mimeType?.includes('video') && file && (<Mp4Template file={file} />)}
       {file && (
         <View style={{ flexDirection: 'row' }}>
           <TouchableOpacity style={styles.uploadButton1} onPress={handleCancel}>
             <Text style={styles.buttonText2}>Cancelar</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.uploadButton} onPress={() => setIsModalVisible(true)}>
+          <TouchableOpacity style={styles.uploadButton} onPress={() => openModal()}>
             <Text style={styles.buttonText1}>Subir</Text>
           </TouchableOpacity>
         </View>
@@ -135,41 +147,44 @@ const UploadScreen = () => {
                   multiline
                 />
 
-                <Text style={styles.label}>Seleccione la carpeta</Text>
+                <Text style={styles.label}>Carpeta</Text>
                 <Dropdown
                   data={dropdownItems}
                   rowTextStyle={{ fontSize: 14 }}
-                  dropdownStyle={{ width: '90%', height: '20%', borderRadius: 15 }}
+                  dropdownStyle={{ width: '90%', height: '20%', borderRadius: 10 }}
                   selectedRowTextStyle={{ color: COLORS.ORANGE }}
                   rowStyle={{ height: 30, borderBottomWidth: 0 }}
                   buttonStyle={{ width: '100%', height: 40, borderRadius: 10, marginBottom: 10, paddingHorizontal: 5, backgroundColor: COLORS.GRAY }}
                   buttonTextStyle={{ fontSize: 14 }}
                   renderDropdownIcon={() => <Icon name='chevron-down' style={{ marginRight: 10 }} type='font-awesome-5' color={COLORS.GRAY_SOFT} size={16} />}
-                  onSelect={(item) => setSelectedItem(item.id)}
+                  onSelect={(item) => setSelectedItem(item)}
                   defaultButtonText='Seleccione una carpeta'
                   rowTextForSelection={(item) => item.name}
                   buttonTextAfterSelection={(selectedItem) => selectedItem.name}
+                  disabled={isLoading}
                 />
+                <View style={styles.errorContainer}>
+                  {!selectedItem && <Text style={{ color: COLORS.DANGER, fontSize: 12 }}>* Este campo es requerido</Text>}
+                </View>
 
-                <Text style={styles.label}>Descripción</Text>
-                <TextInput
-                  style={styles.inputDescription}
-                  value={description}
-                  onChangeText={setDescription}
-                  multiline
-                />
+                <View style={styles.loadingContainer}>
+                  {isLoading && <ActivityIndicator size='large' color={COLORS.ORANGE} />}
+                </View>
+
                 <View style={styles.transcribir}>
                   <TouchableOpacity
                     style={[styles.buttonModal, { backgroundColor: '#F3F4F6FF' }]}
-                    onPress={() => setIsModalVisible(false)}
+                    onPress={() => closeModal()}
                     color='#353536'
+                    disabled={isLoading}
                   >
                     <Text style={styles.buttonTextModal}>Cancelar</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
-                    style={[styles.buttonModal, { backgroundColor: '#FF7700FF' }]}
+                    style={[styles.buttonModal, { backgroundColor: isLoading ? COLORS.GRAY_SOFT : COLORS.ORANGE }]}
                     onPress={handleUpload}
+                    disabled={isLoading}
                   >
                     <Text style={styles.buttonText1}>Transcribir</Text>
                   </TouchableOpacity>
@@ -295,14 +310,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     backgroundColor: COLORS.GRAY
   },
-  inputDescription: {
-    minHeight: 80,
-    maxHeight: 120,
-    borderRadius: 10,
-    marginBottom: 10,
-    paddingHorizontal: 5,
-    backgroundColor: COLORS.GRAY
-  },
   transcribir: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -318,6 +325,15 @@ const styles = StyleSheet.create({
     marginRight: 20,
     width: 150,
     alignItems: 'center'
+  },
+  errorContainer: {
+    height: 25,
+    alignSelf: 'flex-start',
+    marginBottom: 30
+  },
+  loadingContainer: {
+    height: 100,
+    justifyContent: 'center'
   }
 })
 

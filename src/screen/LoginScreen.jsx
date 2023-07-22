@@ -82,8 +82,8 @@ export default function LoginScreen ({ setRegisterUser }) {
               iconType='material-community'
               checkedIcon='checkbox-marked'
               title='Recuérdame'
-              titleProps={{ style: { color: 'black', backgroundColor: 'white' } }}
-              containerStyle={{ backgroundColor: 'white', borderWidth: 0, padding: 0, margin: 0, marginLeft: 0 }}
+              titleProps={{ style: { color: 'black', backgroundColor: COLORS.WHITE } }}
+              containerStyle={{ backgroundColor: COLORS.WHITE, borderWidth: 0, padding: 0, margin: 0, marginLeft: 0 }}
               uncheckedIcon='checkbox-blank-outline'
               checkedColor={COLORS.ORANGE}
             />

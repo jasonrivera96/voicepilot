@@ -87,14 +87,12 @@ export default function SearchScreen () {
                     >
                       <View style={styles.resultTextContainer}>
 
-                        <Ionicons name='folder-open-outline' size={16} color={COLORS.GRAY_EXTRA_SOFT} style={styles.resultIcon} />
-                        <Text style={styles.searchResultText}>{item.nombre.length > 85 ? item.nombre.substring(0, 85) + '...' : item.nombre}</Text>
+                        <Ionicons name='folder-open-outline' size={20} style={styles.resultIcon} />
+                        <Text style={styles.searchResultText}>{item.nombre.length > 55 ? item.nombre.substring(0, 55) + '...' : item.nombre}</Text>
                       </View>
-                      <Text style={styles.searchResultType}>
-                        <View style={styles.secondary1}>
-                          <Text style={styles.estado1}>Carpeta</Text>
-                        </View>
-                      </Text>
+                      <View style={styles.searchResultType}>
+                        <Text style={styles.estado1}>Carpeta</Text>
+                      </View>
                     </TouchableOpacity>
                   )
                 } else if (item.type === 'summary') {
@@ -108,14 +106,12 @@ export default function SearchScreen () {
                       })}
                     >
                       <View style={styles.resultTextContainer}>
-                        <Ionicons name='file-tray-full-outline' size={16} color={COLORS.GRAY_EXTRA_SOFT} style={styles.resultIcon} />
-                        <Text style={styles.searchResultText}>{item.titulo.length > 85 ? item.titulo.substring(0, 85) + '...' : item.titulo}</Text>
+                        <Ionicons name='file-tray-full-outline' size={20} style={styles.resultIcon} />
+                        <Text style={styles.searchResultText}>{item.titulo.length > 55 ? item.titulo.substring(0, 55) + '...' : item.titulo}</Text>
                       </View>
-                      <Text style={styles.searchResultType}>
-                        <View style={styles.secondary}>
-                          <Text style={styles.estado}>Resumen</Text>
-                        </View>
-                      </Text>
+                      <View style={styles.searchResultType}>
+                        <Text style={styles.estado}>Resumen</Text>
+                      </View>
                     </TouchableOpacity>
                   )
                 } else {
@@ -134,7 +130,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: COLORS.WHITE,
     paddingTop: Constants.statusBarHeight
   },
   title: {
@@ -174,65 +170,55 @@ const styles = StyleSheet.create({
   },
   noResultsText: {
     marginLeft: 25,
-    fontSize: 12
+    fontSize: 14
   },
 
   searchResultContainer: {
     flexDirection: 'row',
-    paddingVertical: 7,
     paddingHorizontal: '5%',
-    borderRadius: 8,
     marginBottom: 10,
     width: '100%'
   },
   resultTextContainer: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    width: '75%'
   },
   resultIcon: {
     marginRight: 10,
-    borderWidth: 1,
     padding: 10,
-    borderColor: COLORS.GRAY,
-
+    backgroundColor: COLORS.GRAY,
     borderRadius: 20
-
   },
   searchResultText: {
-    width: '70%',
-    fontSize: 16
+    width: '80%'
   },
   searchResultType: {
-    marginLeft: 'auto',
-    height: 25,
     justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 15,
-    paddingHorizontal: 10
+    width: '25%'
   },
   secondary: {
-    height: 25,
-    width: 100,
-    padding: '5%',
+    paddingHorizontal: 15,
+    paddingVertical: 2,
     borderRadius: 15,
-    backgroundColor: COLORS.GREEN_SOFT
+    backgroundColor: COLORS.GREEN_SOFT,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   estado: {
     width: '100%',
     color: COLORS.GREEN,
-    textAlign: 'center'
-  },
-  secondary1: {
-    height: 25,
-    width: 100,
-
-    padding: '5%',
+    textAlign: 'center',
+    backgroundColor: COLORS.GREEN_SOFT,
     borderRadius: 15,
-    backgroundColor: '#FFF9E9FF'
+    paddingVertical: 2
   },
   estado1: {
     width: '100%',
     color: '#876500FF',
-    textAlign: 'center'
+    textAlign: 'center',
+    backgroundColor: '#FFF9E9FF',
+    borderRadius: 15,
+    paddingVertical: 2
   }
 })

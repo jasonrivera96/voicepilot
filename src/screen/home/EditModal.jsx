@@ -10,11 +10,15 @@ const EditSchema = Yup.object().shape({
 })
 
 const EditModal = ({ onClose, data, deleteItem, updateItem, titleButton }) => {
+  const handleUpdate = ({ form }) => {
+    const itemTrim = { ...form, name: form.name.trim() }
+    updateItem({ item: itemTrim })
+  }
   return (
     <Formik
       initialValues={data}
       validationSchema={EditSchema}
-      onSubmit={(values) => updateItem({ item: values })}
+      onSubmit={(values) => handleUpdate({ form: values })}
     >
       {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
         <View>

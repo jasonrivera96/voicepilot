@@ -1,4 +1,5 @@
-import React from 'react'
+/* eslint-disable react/no-children-prop */
+import React, { useState } from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { Icon } from 'react-native-elements'
 import { StyleSheet } from 'react-native'
@@ -14,9 +15,12 @@ import {
   profileScreenName,
   recorderScreenName,
   searchScreenName,
+  summaryScreenName,
   uploadScreenName
 } from '../constants'
 import HomeStack from './HomeStack'
+import NotificationScreen from '../screen/NotificationScreen'
+import { useNavigation } from '@react-navigation/native'
 
 const Tab = createBottomTabNavigator()
 
@@ -53,26 +57,59 @@ const renderTabBarIcon = ({ route, focused, color, size }) => {
 }
 
 const AuthStack = () => {
+  const [showNotification, setShowNotification] = useState(false)
+  const [folder, setFolder] = useState()
+  const navigation = useNavigation()
+
+  const handleNotificationClose = () => {
+    setShowNotification(false)
+  }
+
+  const handleNavigationOnClose = () => {
+    setShowNotification(false)
+    navigation.navigate(summaryScreenName, { folderId: folder?.id, folderName: folder?.name })
+  }
+
+  const toggleShowNotification = ({ folder }) => {
+    setShowNotification(true)
+    setFolder(folder)
+  }
+
   return (
-    <Tab.Navigator
-      initialRouteName={homeScreenName}
-      screenOptions={({ route }) => ({
-        headerShown: false,
-        tabBarShowLabel: false,
-        tabBarActiveTintColor: '#323842FF',
-        tabBarStyle: styles.tabBarStyle,
-        tabBarIcon: ({ focused, color, size }) =>
-          renderTabBarIcon({ route, focused, color, size })
-      })}
+    <>
+      <Tab.Navigator
+        initialRouteName={homeScreenName}
+        screenOptions={({ route }) => ({
+          headerShown: false,
+          tabBarShowLabel: false,
+          tabBarActiveTintColor: COLORS.GRAY_SOFT,
+          tabBarStyle: styles.tabBarStyle,
+          tabBarIcon: ({ focused, color, size }) =>
+            renderTabBarIcon({ route, focused, color, size })
+        })}
+      >
+        <Tab.Screen name={homeScreenName} component={HomeStack} />
+        <Tab.Screen name={searchScreenName} component={SearchScreen} />
+        <Tab.Screen
+          name={recorderScreenName}
+          children={() => <RecorderScreen toggleShowNotification={toggleShowNotification} />}
+        />
+        <Tab.Screen
+          name={uploadScreenName}
+          children={() => <UploadScreen toggleShowNotification={toggleShowNotification} />}
+        />
+        <Tab.Screen name={profileScreenName} component={ProfileScreen} />
 
-    >
-      <Tab.Screen name={homeScreenName} component={HomeStack} />
-      <Tab.Screen name={searchScreenName} component={SearchScreen} />
-      <Tab.Screen name={recorderScreenName} component={RecorderScreen} />
-      <Tab.Screen name={uploadScreenName} component={UploadScreen} />
-      <Tab.Screen name={profileScreenName} component={ProfileScreen} />
-
-    </Tab.Navigator>
+      </Tab.Navigator>
+      {
+        showNotification && (
+          <NotificationScreen
+            onClose={handleNotificationClose}
+            navigationOnClose={handleNavigationOnClose}
+          />
+        )
+      }
+    </>
   )
 }
 

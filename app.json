@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "Voice Pilot",
+    "name": "Gomike",
     "slug": "voicepilot",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/voicito.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/loading.png",
+      "image": "./assets/gomike_main.png",
       "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
@@ -20,8 +20,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/voicito.png"
       },
       "package": "com.alpalasaul.voicepilot"
     },

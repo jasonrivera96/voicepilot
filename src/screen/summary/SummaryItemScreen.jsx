@@ -41,7 +41,9 @@ const SummaryItemScreen = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <NavigatorPath route={route} />
+      <View style={styles.containerPath}>
+        <NavigatorPath route={route} />
+      </View>
       <StatusBar style='dark' backgroundColor='white' />
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <Text style={styles.title}>{titulo}</Text>
@@ -167,23 +169,23 @@ const styles = StyleSheet.create({
 
     marginBottom: '50%'
   },
-
+  containerPath: {
+    marginBottom: 5
+  },
   contentContainer: {
     marginTop: 7,
     marginHorizontal: 25
   },
-
   title: {
     fontSize: 25,
     fontWeight: 'bold',
-    textAlign: 'center',
     marginTop: '8%',
     color: COLORS.GRAY_SOFT
   },
   resumen: {
     fontSize: 16,
-    marginBottom: 10
-
+    marginBottom: 10,
+    lineHeight: 22
   },
   post: {
     flexDirection: 'row',

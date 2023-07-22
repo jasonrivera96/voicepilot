@@ -149,7 +149,7 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.WHITE,
     paddingTop: statusBarHeight,
     justifyContent: 'center',
     alignItems: 'center'

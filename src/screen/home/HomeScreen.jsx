@@ -11,6 +11,7 @@ import { AuthContext } from '../../context/AuthContext'
 import { createFolder, deleteFolder, loadFolders, updateFolder } from '../../services/FolderService'
 import FolderItem from './FolderItem'
 import { StatusBar } from 'expo-status-bar'
+import { COLORS } from '../../constants'
 
 const HomeScreen = () => {
   const [folders, setFolders] = useState([])
@@ -138,7 +139,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: Constants.statusBarHeight,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.WHITE,
     alignItems: 'center'
   },
   folderListContainer: {

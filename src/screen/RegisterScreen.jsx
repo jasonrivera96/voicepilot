@@ -107,8 +107,8 @@ const RegisterScreen = ({ setRegisterUser }) => {
             onPress={toggleCheckbox}
             iconType='material-community'
             checkedIcon='checkbox-marked'
-            titleProps={{ style: { color: 'black', backgroundColor: 'white' } }}
-            containerStyle={{ backgroundColor: 'white', borderWidth: 0, padding: 0, margin: 0, marginLeft: 0 }}
+            titleProps={{ style: { color: 'black', backgroundColor: COLORS.WHITE } }}
+            containerStyle={{ backgroundColor: COLORS.WHITE, borderWidth: 0, padding: 0, margin: 0, marginLeft: 0 }}
             uncheckedIcon='checkbox-blank-outline'
             checkedColor={COLORS.ORANGE}
             title={
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     paddingTop: Constants.statusBarHeight,
-    backgroundColor: '#fff'
+    backgroundColor: COLORS.WHITE
   },
   form: {
     marginTop: 30,
