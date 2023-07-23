@@ -16,6 +16,7 @@ import {
 import { Icon } from 'react-native-elements'
 import Constants from 'expo-constants'
 import * as DocumentPicker from 'expo-document-picker'
+import { Feather } from '@expo/vector-icons'
 
 import { COLORS } from '../../constants'
 import { StatusBar } from 'expo-status-bar'
@@ -108,7 +109,7 @@ const UploadScreen = ({ toggleShowNotification }) => {
       <Text style={styles.title}>Subir Archivo</Text>
       {!file && (
         <View style={styles.boxContainer}>
-          <Icon name='cloud-upload' size={80} />
+          <Feather name='upload-cloud' size={80} color='black' />
           <Text style={styles.titleLoad}>Carga tus archivos aquí</Text>
           <Text style={styles.fileName}>Formatos soportados MP3, MP4</Text>
           <TouchableOpacity style={styles.button}>

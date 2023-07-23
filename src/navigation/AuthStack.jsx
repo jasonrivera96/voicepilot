@@ -21,21 +21,22 @@ import {
 import HomeStack from './HomeStack'
 import NotificationScreen from '../screen/NotificationScreen'
 import { useNavigation } from '@react-navigation/native'
+import { Octicons } from '@expo/vector-icons'
 
 const Tab = createBottomTabNavigator()
 
 const getIconName = (routeName, focused) => {
   switch (routeName) {
     case homeScreenName:
-      return focused ? 'home' : 'home-outline'
+      return 'home'
     case searchScreenName:
-      return focused ? 'search' : 'search-outline'
+      return 'search'
     case recorderScreenName:
       return 'mic'
     case uploadScreenName:
-      return focused ? 'cloud-upload' : 'cloud-upload-outline'
+      return 'upload'
     case profileScreenName:
-      return focused ? 'person' : 'person-outline'
+      return 'person'
     default:
       return ''
   }
@@ -45,13 +46,23 @@ const renderTabBarIcon = ({ route, focused, color, size }) => {
   const iconName = getIconName(route.name, focused)
   const isRecorderScreen = route.name === recorderScreenName
 
+  if (isRecorderScreen) {
+    return (
+      <Icon
+        name={iconName}
+        type='ionicon'
+        size={35}
+        color='#FFFFFF'
+        containerStyle={styles.recorderIcon}
+      />
+    )
+  }
+
   return (
-    <Icon
+    <Octicons
       name={iconName}
-      type='ionicon'
-      size={isRecorderScreen ? 35 : size}
-      color={isRecorderScreen ? '#FFFFFF' : color}
-      containerStyle={isRecorderScreen && styles.recorderIcon}
+      size={size}
+      color={color}
     />
   )
 }
@@ -128,6 +139,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 0,
     position: 'absolute',
     bottom: 0,
-    elevation: 0
+    elevation: 0,
+    backgroundColor: COLORS.WHITE
   }
 })

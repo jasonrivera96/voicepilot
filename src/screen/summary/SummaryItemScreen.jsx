@@ -6,6 +6,7 @@ import { getSummary } from '../../services/SummaryService'
 import { AuthContext } from '../../context/AuthContext'
 import { StatusBar } from 'expo-status-bar'
 import { FontAwesome } from '@expo/vector-icons'
+import SubArticle from './post/SubArticle'
 
 const SummaryItemScreen = ({ route }) => {
   const { summaryId } = route.params
@@ -37,7 +38,7 @@ const SummaryItemScreen = ({ route }) => {
     setIsModalVisible(true)
   }
 
-  const { titulo, resumen } = summary
+  const { titulo, resumen, subArticuloList } = summary
 
   return (
     <View style={styles.container}>
@@ -51,9 +52,10 @@ const SummaryItemScreen = ({ route }) => {
         <View style={styles.centeredView}>
 
           <View style={styles.postResumen}>
-            <Text style={[styles.resumen, { textAlign: 'justify' }]}>{resumen}</Text>
-
+            <Text style={styles.resumen}>{resumen}</Text>
+            <SubArticle data={subArticuloList} />
           </View>
+
           <Text style={[styles.title, { fontSize: 16 }]}>Post-it o Algo así</Text>
 
           {/* Palabras */}
@@ -166,7 +168,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     marginTop: '4%',
-
     marginBottom: '50%'
   },
   containerPath: {
@@ -184,8 +185,8 @@ const styles = StyleSheet.create({
   },
   resumen: {
     fontSize: 16,
-    marginBottom: 10,
-    lineHeight: 22
+    lineHeight: 22,
+    textAlign: 'justify'
   },
   post: {
     flexDirection: 'row',
@@ -197,7 +198,6 @@ const styles = StyleSheet.create({
   subtitleP: {
     fontSize: 15,
     fontWeight: 'bold'
-
   },
   texto: {
     marginBottom: '2%',
