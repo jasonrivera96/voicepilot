@@ -29,7 +29,6 @@ import { uploadFile } from '../services/UploadService'
 
 export default function RecorderScreen ({ toggleShowNotification }) {
   const [recording, setRecording] = useState()
-  const [message, setMessage] = useState('')
 
   const [seconds, setSeconds] = useState(0)
   const [minutes, setMinutes] = useState(0)
@@ -94,8 +93,6 @@ export default function RecorderScreen ({ toggleShowNotification }) {
             })
           }, 1000)
         )
-      } else {
-        setMessage('Presióname para iniciar a grabar')
       }
     } catch (error) {
       console.error('Failed to start recording', error)
@@ -199,7 +196,8 @@ export default function RecorderScreen ({ toggleShowNotification }) {
     <View style={styles.container}>
       <StatusBar style='dark' backgroundColor='white' />
       <Text style={styles.timer}>{`${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`}</Text>
-      <Text>{message}</Text>
+
+      <View style={styles.containerSpace} />
 
       <CustomRecorderButton stopRecording={stopRecording} startRecording={startRecording} />
 
@@ -294,6 +292,9 @@ const styles = StyleSheet.create({
     color: '#fff',
     marginLeft: 5,
     fontSize: 14
+  },
+  containerSpace: {
+    marginTop: '25%'
   },
   modalContainer: {
     flex: 1,
