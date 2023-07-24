@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react'
 import { TouchableOpacity, Animated, Easing, StyleSheet } from 'react-native'
-import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../constants'
+import { Icon } from 'react-native-elements'
 
 const CustomRecorderButton = ({ stopRecording, startRecording }) => {
   const animation = useRef(new Animated.Value(0)).current
@@ -53,9 +53,16 @@ const CustomRecorderButton = ({ stopRecording, startRecording }) => {
   return (
     <TouchableOpacity onPress={startAnimation}>
       <Animated.View
-        style={[styles.button, { transform: [{ scale: buttonScale }], opacity: buttonOpacity }]}
+        style={[styles.button,
+          { transform: [{ scale: buttonScale }], opacity: buttonOpacity },
+          { backgroundColor: isAnimating ? COLORS.ORANGE : COLORS.WHITE }]}
       >
-        <Ionicons name='md-mic' size={80} color='white' />
+        <Icon
+          type='font-awesome-5'
+          name='microphone'
+          size={150}
+          color={isAnimating ? COLORS.WHITE : COLORS.ORANGE}
+        />
       </Animated.View>
     </TouchableOpacity>
   )
@@ -63,10 +70,9 @@ const CustomRecorderButton = ({ stopRecording, startRecording }) => {
 
 const styles = StyleSheet.create({
   button: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    backgroundColor: COLORS.ORANGE,
+    width: 250,
+    height: 250,
+    borderRadius: 200,
     alignItems: 'center',
     justifyContent: 'center'
   }

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import {
   StyleSheet,
   View,
@@ -37,7 +37,7 @@ const UploadScreen = ({ toggleShowNotification }) => {
 
   const { userData } = useContext(AuthContext)
 
-  async function fetchFolders () {
+  const fetchFolders = useCallback(async () => {
     try {
       const response = await loadFolders(userData)
       const folders = response.map((folder) => ({ name: folder.name, id: folder.id }))
@@ -45,16 +45,13 @@ const UploadScreen = ({ toggleShowNotification }) => {
     } catch (error) {
       console.error('Error al obtener las carpetas:', error.message)
     }
-  }
+  }, [userData])
 
   const handleFile = async () => {
     try {
       const { mimeType, name, size, uri, type } = await DocumentPicker.getDocumentAsync({
         type: ['audio/*', 'video/mp4']
       })
-
-      console.log('mimeType', mimeType)
-
       if (type !== 'success') return
       setFile({ name, size, uri, type: mimeType })
       setMimeType(mimeType)
@@ -86,8 +83,8 @@ const UploadScreen = ({ toggleShowNotification }) => {
     formData.append('file', file)
     formData.append('folderId', selectedItem.id)
     setisLoading(true)
-    const response = await uploadFile(userData, formData)
-    // const response = true
+    // const response = await uploadFile(userData, formData)
+    const response = true
     if (response) {
       toggleShowNotification({ folder: selectedItem })
       setFile(null)

@@ -1,37 +1,56 @@
-import React, { useContext, useState } from 'react'
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, FlatList } from 'react-native'
-import { Ionicons, MaterialIcons } from '@expo/vector-icons'
+import React, { useCallback, useContext, useState } from 'react'
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { MaterialIcons } from '@expo/vector-icons'
 import Constants from 'expo-constants'
-import { COLORS, summaryItemScreenName, summaryScreenName } from '../constants'
+import debounce from 'just-debounce-it'
+
+import { COLORS } from '../constants'
 import { StatusBar } from 'expo-status-bar'
 import { AuthContext } from '../context/AuthContext'
-import { useNavigation } from '@react-navigation/native'
-import { makeQuery } from '../services/SearchService'
+import { useResources } from '../hooks/useResources'
+import QueryResult from './QueryResult'
 
 export default function SearchScreen () {
   const [searchQuery, setSearchQuery] = useState('')
   const [focus, setFocus] = useState()
-  const [recentSearches, setRecentSearches] = useState([])
-  const [results, setResults] = useState([])
+  // const [recentSearches, setRecentSear ches] = useState([])
+  // const [results, setResults] = useState([])
   const { userData } = useContext(AuthContext)
-  const navigation = useNavigation()
+  const { resources, loading, getResources, clearResources } = useResources({ searchQuery })
 
-  async function searchQueryTest () {
-    const response = await makeQuery(userData, searchQuery)
-    setResults(response)
+  // async function searchQueryTest () {
+  //   const response = await makeQuery(userData, searchQuery)
+  //   setResults(response)
+  // }
+
+  // const handleSearch = () => {
+  //   if (searchQuery.trim() === '') {
+  //     return
+  //   }
+  //   setRecentSearches([{ query: searchQuery, id: Date.now() }, ...recentSearches])
+  //   searchQueryTest()
+  // }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedGetResources = useCallback(
+    debounce((searchQuery, userData) => {
+      getResources({ searchQuery, userData })
+    }, 500),
+    [getResources]
+  )
+
+  const handleChange = (search) => {
+    setSearchQuery(search)
+    debouncedGetResources(search, userData)
   }
 
-  const handleSearch = () => {
-    if (searchQuery.trim() === '') {
-      return
-    }
-    setRecentSearches([{ query: searchQuery, id: Date.now() }, ...recentSearches])
-    searchQueryTest()
+  const handleSubmit = () => {
+    getResources({ searchQuery, userData })
   }
 
   const clearResults = () => {
     setSearchQuery('')
-    setResults([])
+    clearResources()
   }
 
   const onFocus = () => {
@@ -51,15 +70,15 @@ export default function SearchScreen () {
           style={styles.searchInput}
           onFocus={() => onFocus()}
           onBlur={() => onBlur()}
-          placeholder='Ingrese su búsqueda'
-          onChangeText={text => setSearchQuery(text)}
+          placeholder='Buscar'
+          onChangeText={text => handleChange(text)}
           value={searchQuery}
-          onSubmitEditing={handleSearch}
+          onSubmitEditing={handleSubmit}
           clearButtonMode='while-editing'
         />
         {
-          ((results && results.length > 0) || searchQuery !== '') && (
-            <TouchableOpacity style={styles.searchButton} onPress={() => clearResults()}>
+          ((resources && resources.length > 0) || searchQuery !== '') && (
+            <TouchableOpacity style={{ borderWidth: 0 }} onPress={() => clearResults()}>
               <MaterialIcons name='cancel' size={24} color={COLORS.ORANGE} />
             </TouchableOpacity>
           )
@@ -68,59 +87,8 @@ export default function SearchScreen () {
       </View>
       <View style={styles.searchResultsContainer}>
         <Text style={styles.searchResultsTitle}>Resultados</Text>
-        {results && results.length === 0 && searchQuery !== ''
-          ? (
-            <Text style={styles.noResultsText}>No se encontró archivos para: {searchQuery}</Text>)
-          : (
-            <FlatList
-              data={results}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => {
-                if (item.type === 'folder') {
-                  return (
-                    <TouchableOpacity
-                      style={styles.searchResultContainer}
-                      onPress={() => navigation.navigate(summaryScreenName, {
-                        folderId: item.folderId,
-                        folderName: item.nombre
-                      })}
-                    >
-                      <View style={styles.resultTextContainer}>
-
-                        <Ionicons name='folder-open-outline' size={20} style={styles.resultIcon} />
-                        <Text style={styles.searchResultText}>{item.nombre.length > 55 ? item.nombre.substring(0, 55) + '...' : item.nombre}</Text>
-                      </View>
-                      <View style={styles.searchResultType}>
-                        <Text style={styles.estado1}>Carpeta</Text>
-                      </View>
-                    </TouchableOpacity>
-                  )
-                } else if (item.type === 'summary') {
-                  return (
-                    <TouchableOpacity
-                      style={styles.searchResultContainer}
-                      onPress={() => navigation.navigate(summaryItemScreenName, {
-                        folderName: item.folderName,
-                        summaryName: item.titulo,
-                        summaryId: item.summaryId
-                      })}
-                    >
-                      <View style={styles.resultTextContainer}>
-                        <Ionicons name='file-tray-full-outline' size={20} style={styles.resultIcon} />
-                        <Text style={styles.searchResultText}>{item.titulo.length > 55 ? item.titulo.substring(0, 55) + '...' : item.titulo}</Text>
-                      </View>
-                      <View style={styles.searchResultType}>
-                        <Text style={styles.estado}>Resumen</Text>
-                      </View>
-                    </TouchableOpacity>
-                  )
-                } else {
-                  return null
-                }
-              }}
-            />
-            )}
-
+        {loading && <ActivityIndicator size='large' color={COLORS.ORANGE} />}
+        {!loading && <QueryResult resources={resources} searchQuery={searchQuery} />}
       </View>
     </View>
   )
@@ -142,16 +110,18 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
+    borderWidth: 0,
     borderRadius: 50,
     paddingHorizontal: 10,
     width: '90%',
-    marginTop: 40
+    marginTop: 40,
+    backgroundColor: COLORS.GRAY
   },
   searchInput: {
     flex: 1,
     height: 40,
-    borderRadius: 50
+    borderRadius: 50,
+    backgroundColor: COLORS.GRAY
   },
   searchButton: {
     backgroundColor: COLORS.WHITE,
@@ -171,54 +141,5 @@ const styles = StyleSheet.create({
   noResultsText: {
     marginLeft: 25,
     fontSize: 14
-  },
-
-  searchResultContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: '5%',
-    marginBottom: 10,
-    width: '100%'
-  },
-  resultTextContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '75%'
-  },
-  resultIcon: {
-    marginRight: 10,
-    padding: 10,
-    backgroundColor: COLORS.GRAY,
-    borderRadius: 20
-  },
-  searchResultText: {
-    width: '80%'
-  },
-  searchResultType: {
-    justifyContent: 'center',
-    width: '25%'
-  },
-  secondary: {
-    paddingHorizontal: 15,
-    paddingVertical: 2,
-    borderRadius: 15,
-    backgroundColor: COLORS.GREEN_SOFT,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  estado: {
-    width: '100%',
-    color: COLORS.GREEN,
-    textAlign: 'center',
-    backgroundColor: COLORS.GREEN_SOFT,
-    borderRadius: 15,
-    paddingVertical: 2
-  },
-  estado1: {
-    width: '100%',
-    color: '#876500FF',
-    textAlign: 'center',
-    backgroundColor: '#FFF9E9FF',
-    borderRadius: 15,
-    paddingVertical: 2
   }
 })

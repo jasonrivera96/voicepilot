@@ -134,6 +134,6 @@ const styles = StyleSheet.create({
   },
   errorText: {
     marginTop: 5,
-    color: COLORS.ORANGE
+    color: COLORS.DANGER
   }
 })

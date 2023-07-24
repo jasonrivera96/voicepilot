@@ -1,6 +1,7 @@
 import { VoicePilotApi } from '../api/VoicePilotApi'
 
 export async function makeQuery (userData, query) {
+  if (query === '') return
   const { id: userId, token } = userData
   let responseData
   try {

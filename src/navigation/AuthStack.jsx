@@ -3,6 +3,9 @@ import React, { useState } from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { Icon } from 'react-native-elements'
 import { StyleSheet } from 'react-native'
+import HomeStack from './HomeStack'
+import NotificationScreen from '../screen/NotificationScreen'
+import { useNavigation } from '@react-navigation/native'
 
 import ProfileScreen from '../screen/ProfileScreen'
 import SearchScreen from '../screen/SearchScreen'
@@ -18,49 +21,61 @@ import {
   summaryScreenName,
   uploadScreenName
 } from '../constants'
-import HomeStack from './HomeStack'
-import NotificationScreen from '../screen/NotificationScreen'
-import { useNavigation } from '@react-navigation/native'
-import { Octicons } from '@expo/vector-icons'
 
 const Tab = createBottomTabNavigator()
 
-const getIconName = (routeName, focused) => {
+const getIcon = (routeName, focused) => {
   switch (routeName) {
     case homeScreenName:
-      return 'home'
+      return {
+        name: 'home',
+        type: 'octicon'
+      }
     case searchScreenName:
-      return 'search'
+      return {
+        name: 'search',
+        type: 'octicon'
+      }
     case recorderScreenName:
-      return 'mic'
+      return {
+        name: 'microphone',
+        type: 'font-awesome-5'
+      }
     case uploadScreenName:
-      return 'upload'
+      return {
+        name: 'upload-cloud',
+        type: 'feather'
+      }
     case profileScreenName:
-      return 'person'
+      return {
+        name: 'person',
+        type: 'octicon'
+      }
     default:
       return ''
   }
 }
 
 const renderTabBarIcon = ({ route, focused, color, size }) => {
-  const iconName = getIconName(route.name, focused)
+  const { name, type } = getIcon(route.name, focused)
   const isRecorderScreen = route.name === recorderScreenName
 
   if (isRecorderScreen) {
     return (
       <Icon
-        name={iconName}
-        type='ionicon'
-        size={35}
-        color='#FFFFFF'
-        containerStyle={styles.recorderIcon}
+        name={name}
+        type={type}
+        size={size}
+        color={focused ? color : COLORS.WHITE}
+        containerStyle={!focused && styles.recorderIcon}
       />
     )
   }
 
   return (
-    <Octicons
-      name={iconName}
+    <Icon
+      name={name}
+      type={type}
       size={size}
       color={color}
     />
@@ -132,7 +147,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.ORANGE,
     padding: 10,
     textAlign: 'center',
-    width: 58
+    width: 48
   },
   tabBarStyle: {
     height: 85,

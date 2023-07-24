@@ -9,7 +9,9 @@ import {
   KeyboardAvoidingView,
   Platform,
   TouchableWithoutFeedback,
-  Keyboard
+  Keyboard,
+  ActivityIndicator
+  , Alert
 } from 'react-native'
 import { Audio } from 'expo-av'
 import Dropdown from 'react-native-select-dropdown'
@@ -34,11 +36,11 @@ export default function RecorderScreen () {
   const [customInterval, setCustomInterval] = useState()
   // variables para el modal
   const [recordingName, setRecordingName] = useState('')
-  const [description, setDescription] = useState('')
   const [modalVisible, setModalVisible] = useState(false)
   // variable para obtener las carpetas
   const [dropdownItems, setDropdownItems] = useState([])
   const [selectedItem, setSelectedItem] = useState(null)
+  const [isLoading, setisLoading] = useState(false)
 
   const [folders, setFolders] = useState([])
   const { userData } = useContext(AuthContext)
@@ -54,10 +56,6 @@ export default function RecorderScreen () {
       console.error('Error al obtener las carpetas:', error.message)
     }
   }, [userData])
-
-  useEffect(() => {
-    fetchData()
-  }, [fetchData])
 
   useEffect(() => {
     return () => {
@@ -119,8 +117,6 @@ export default function RecorderScreen () {
       handleSendRecordings()
       setRecordings(updatedRecordings)
       clearInterval(customInterval)
-      setSeconds(0)
-      setMinutes(0)
     }
   }
 
@@ -135,7 +131,38 @@ export default function RecorderScreen () {
   }
 
   const handleSendRecordings = () => {
+    fetchData()
     setModalVisible(true)
+  }
+
+  const handleUpload = async () => {
+    if (!selectedItem) {
+      return
+    }
+    Keyboard.dismiss()
+    setisLoading(true)
+  }
+
+  const closeModal = () => {
+    Alert.alert(
+      '¿Estás seguro?',
+      'Si cancelas, perderás la grabación',
+      [
+        {
+          text: 'Sí',
+          onPress: () => {
+            setModalVisible(false)
+            setSelectedItem(null)
+            setSeconds(0)
+            setMinutes(0)
+            setHours(0)
+          },
+          style: 'cancel'
+        },
+        { text: 'No' }
+      ],
+      { cancelable: false }
+    )
   }
 
   // PARA LOS BOTONES DE REPRODUCIR EL AUDIO Y DESCARGAR
@@ -205,9 +232,11 @@ export default function RecorderScreen () {
                   onChangeText={setRecordingName}
                   multiline
                 />
+                <View>
+                  {!recordingName && <Text style={{ color: COLORS.DANGER, fontSize: 12 }}>* Este campo es requerido</Text>}
+                </View>
 
-                <Text style={styles.label}>Seleccione la carpeta</Text>
-                {/* REVISAR POR QUE NO CAMBIA DE TAMAÑO */}
+                <Text style={styles.label}>Carpeta</Text>
                 <Dropdown
                   data={dropdownItems}
                   rowTextStyle={{ fontSize: 14 }}
@@ -223,24 +252,27 @@ export default function RecorderScreen () {
                   buttonTextAfterSelection={(selectedItem) => selectedItem.name}
                 />
 
-                <Text style={styles.label}>Descripción</Text>
-                <TextInput
-                  style={styles.inputDescription}
-                  value={description}
-                  onChangeText={setDescription}
-                  multiline
-                />
+                <View style={styles.errorContainer}>
+                  {!selectedItem && <Text style={{ color: COLORS.DANGER, fontSize: 12 }}>* Este campo es requerido</Text>}
+                </View>
+
+                <View style={styles.loadingContainer}>
+                  {isLoading && <ActivityIndicator size='large' color={COLORS.ORANGE} />}
+                </View>
+
                 <View style={styles.transcribir}>
                   <TouchableOpacity
                     style={[styles.buttonModal, { backgroundColor: '#F3F4F6FF' }]}
-                    onPress={() => setModalVisible(false)}
+                    onPress={() => closeModal()}
                     color='#353536'
+                    disabled={isLoading}
                   >
                     <Text style={styles.buttonTextModal}>Cancelar</Text>
                   </TouchableOpacity>
-                  {/* DIRIGIR A LA PANTALLA DE NOTIFICACION */}
                   <TouchableOpacity
-                    style={[styles.buttonModal, { backgroundColor: '#FF7700FF' }]}
+                    style={[styles.buttonModal, { backgroundColor: isLoading ? COLORS.GRAY_SOFT : COLORS.ORANGE }]}
+                    onPress={handleUpload}
+                    disabled={isLoading}
                   >
                     <Text style={styles.buttonText}>Transcribir</Text>
                   </TouchableOpacity>
@@ -363,6 +395,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 35,
     borderRadius: 50,
     marginTop: 80
+  },
+  errorContainer: {
+    height: 25,
+    alignSelf: 'flex-start',
+    marginBottom: 30
+  },
+  loadingContainer: {
+    height: 100,
+    justifyContent: 'center'
   }
-
 })
