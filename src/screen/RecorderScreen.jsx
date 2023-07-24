@@ -140,9 +140,6 @@ export default function RecorderScreen ({ toggleShowNotification }) {
       console.log('Error al cambiar el nombre del archivo', error)
     }
 
-    const { sound } = await Audio.Sound.createAsync({ uri: pathAudioFileWithName })
-    await sound.playAsync()
-
     const file = {
       name: audioFileName,
       uri: pathAudioFileWithName,
@@ -297,6 +294,12 @@ const styles = StyleSheet.create({
     color: '#fff',
     marginLeft: 5,
     fontSize: 14
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    width: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.307)'
   },
   modalContent: {
     backgroundColor: COLORS.WHITE,
