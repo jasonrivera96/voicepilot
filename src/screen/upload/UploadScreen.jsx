@@ -83,8 +83,7 @@ const UploadScreen = ({ toggleShowNotification }) => {
     formData.append('file', file)
     formData.append('folderId', selectedItem.id)
     setisLoading(true)
-    // const response = await uploadFile(userData, formData)
-    const response = true
+    const response = await uploadFile(userData, formData)
     if (response) {
       toggleShowNotification({ folder: selectedItem })
       setFile(null)
@@ -98,6 +97,7 @@ const UploadScreen = ({ toggleShowNotification }) => {
       'Error al subir el archivo',
       'Por favor intente nuevamente, si el error persiste comuníquese con soporte'
     )
+    setisLoading(false)
   }
 
   return (

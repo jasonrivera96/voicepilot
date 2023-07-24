@@ -21,34 +21,32 @@ import { loadFolders } from '../services/FolderService'
 import CustomRecorderButton from '../components/CustomRecorderButton'
 import { COLORS } from '../constants'
 import { StatusBar } from 'expo-status-bar'
+import * as FileSystem from 'expo-file-system'
 
 import { AuthContext } from '../context/AuthContext'
 import { Icon } from 'react-native-elements'
+import { uploadFile } from '../services/UploadService'
 
-export default function RecorderScreen () {
+export default function RecorderScreen ({ toggleShowNotification }) {
   const [recording, setRecording] = useState()
-  const [recordings, setRecordings] = useState([])
   const [message, setMessage] = useState('')
-  // variables para el cronometro
+
   const [seconds, setSeconds] = useState(0)
   const [minutes, setMinutes] = useState(0)
   const [hours, setHours] = useState(0)
+
   const [customInterval, setCustomInterval] = useState()
-  // variables para el modal
   const [recordingName, setRecordingName] = useState('')
   const [modalVisible, setModalVisible] = useState(false)
-  // variable para obtener las carpetas
   const [dropdownItems, setDropdownItems] = useState([])
   const [selectedItem, setSelectedItem] = useState(null)
   const [isLoading, setisLoading] = useState(false)
 
-  const [folders, setFolders] = useState([])
   const { userData } = useContext(AuthContext)
 
   const fetchData = useCallback(async () => {
     try {
       const response = await loadFolders(userData)
-      setFolders(response)
 
       const folderNames = response.map((folder) => ({ name: folder.name, id: folder.id }))
       setDropdownItems(folderNames)
@@ -75,7 +73,7 @@ export default function RecorderScreen () {
         })
 
         const { recording } = await Audio.Recording.createAsync(
-          Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
+          Audio.RecordingOptionsPresets.HIGH_QUALITY
         )
 
         setRecording(recording)
@@ -108,26 +106,15 @@ export default function RecorderScreen () {
     if (recording) {
       setRecording(undefined)
       await recording.stopAndUnloadAsync()
-      const { sound, status } = await recording.createNewLoadedSoundAsync()
-      const updatedRecordings = [...recordings, {
-        sound,
-        duration: getDurationFormatted(status.durationMillis),
-        file: recording.getURI()
-      }]
+      await Audio.setAudioModeAsync(
+        {
+          allowsRecordingIOS: false
+        }
+      )
+      setRecording(recording.getURI())
       handleSendRecordings()
-      setRecordings(updatedRecordings)
       clearInterval(customInterval)
     }
-  }
-
-  const getDurationFormatted = (millis) => {
-    const hours = Math.floor(millis / 1000 / 60 / 60)
-    const minutes = Math.floor(millis / 1000 / 60)
-    const seconds = Math.round((millis / 1000) % 60)
-    const hoursDisplay = hours < 10 ? `0${hours}` : hours
-    const minutesDisplay = minutes < 10 ? `0${minutes}` : minutes
-    const secondsDisplay = seconds < 10 ? `0${seconds}` : seconds
-    return `${hoursDisplay}:${minutesDisplay}:${secondsDisplay}`
   }
 
   const handleSendRecordings = () => {
@@ -139,8 +126,53 @@ export default function RecorderScreen () {
     if (!selectedItem) {
       return
     }
+
+    const audioFileName = `${recordingName}.m4a`
+    const basePath = recording.split('/').slice(0, -1).join('/')
+    const pathAudioFileWithName = `${basePath}/${audioFileName}`
+
+    try {
+      FileSystem.moveAsync({
+        from: recording,
+        to: pathAudioFileWithName
+      })
+    } catch (error) {
+      console.log('Error al cambiar el nombre del archivo', error)
+    }
+
+    const { sound } = await Audio.Sound.createAsync({ uri: pathAudioFileWithName })
+    await sound.playAsync()
+
+    const file = {
+      name: audioFileName,
+      uri: pathAudioFileWithName,
+      type: 'audio/m4a'
+    }
+
     Keyboard.dismiss()
+
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('folderId', selectedItem.id)
     setisLoading(true)
+    const response = await uploadFile(userData, formData)
+    if (response) {
+      toggleShowNotification({ folder: selectedItem })
+      setRecordingName('')
+      setRecording(null)
+      setSelectedItem(null)
+      setModalVisible(false)
+      setSeconds(0)
+      setMinutes(0)
+      setHours(0)
+      setisLoading(false)
+      return
+    }
+    Alert.alert(
+      'Error al subir el archivo',
+      'Por favor intente nuevamente, si el error persiste comuníquese con soporte'
+    )
+    setisLoading(false)
   }
 
   const closeModal = () => {
@@ -165,54 +197,14 @@ export default function RecorderScreen () {
     )
   }
 
-  // PARA LOS BOTONES DE REPRODUCIR EL AUDIO Y DESCARGAR
-
-  // const playRecording = async (sound) => {
-  //   await sound.setVolumeAsync(1.0)
-  //   await sound.replayAsync()
-  // }
-
-  // const shareRecording = async (file) => {
-  //   await Sharing.shareAsync(file)
-  // }
-
-  // Abre la ventana emergente para ingresar los detalles del audio
-
-  // LISTADO DE GRABACIONES
-  // const renderRecordingLines = () => {
-  //   return recordings.map((recordingLine, index) => {
-  //     return (
-  //       <View key={index} style={styles.row}>
-  //         <Text style={styles.fill}>Grabación {index + 1} - {recordingLine.duration}</Text>
-  //         <TouchableOpacity
-  //           style={styles.button}
-  //           onPress={() => playRecording(recordingLine.sound)}
-  //         >
-  //           <FontAwesome name='play' size={15} color='black' />
-  //         </TouchableOpacity>
-  //         <TouchableOpacity
-  //           style={styles.button}
-  //           onPress={() => shareRecording(recordingLine.file)}
-  //         >
-  //           <FontAwesome name='download' size={15} color='black' />
-  //         </TouchableOpacity>
-  //       </View>
-  //     )
-  //   })
-  // }
-
   return (
 
     <View style={styles.container}>
       <StatusBar style='dark' backgroundColor='white' />
       <Text style={styles.timer}>{`${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`}</Text>
       <Text>{message}</Text>
-      {/* <Text style={styles.instructions}>Presiona para iniciar a grabar</Text> */}
-      <Text style={styles.instructions} />
 
       <CustomRecorderButton stopRecording={stopRecording} startRecording={startRecording} />
-
-      {/* {renderRecordingLines()} */}
 
       <Modal visible={modalVisible} animationType='slide' transparent>
         <KeyboardAvoidingView
@@ -246,7 +238,7 @@ export default function RecorderScreen () {
                   buttonStyle={{ width: '100%', height: 40, borderRadius: 10, marginBottom: 10, paddingHorizontal: 5, backgroundColor: COLORS.GRAY }}
                   buttonTextStyle={{ fontSize: 14 }}
                   renderDropdownIcon={() => <Icon name='chevron-down' style={{ marginRight: 10 }} type='font-awesome-5' color={COLORS.GRAY_SOFT} size={16} />}
-                  onSelect={(item) => setSelectedItem(item.id)}
+                  onSelect={(item) => setSelectedItem(item)}
                   defaultButtonText='Seleccione una carpeta'
                   rowTextForSelection={(item) => item.name}
                   buttonTextAfterSelection={(selectedItem) => selectedItem.name}
@@ -301,38 +293,10 @@ const styles = StyleSheet.create({
     marginTop: 70,
     color: COLORS.GRAY_SOFT
   },
-  instructions: {
-    fontSize: 16,
-    marginBottom: 50,
-    color: COLORS.GRAY_SOFT
-  },
-
-  // row: {
-  //   flexDirection: 'row',
-  //   alignItems: 'center',
-  //   marginBottom: 10
-  // },
-  // fill: {
-  //   flex: 1
-  // },
-  // button: {
-  //   flexDirection: 'row',
-  //   alignItems: 'center',
-  //   backgroundColor: COLORS.GRAY,
-  //   paddingHorizontal: 10,
-  //   paddingVertical: 5,
-  //   marginRight: 10
-  // },
   buttonText: {
     color: '#fff',
     marginLeft: 5,
     fontSize: 14
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    width: '100%',
-    backgroundColor: 'rgba(0, 0, 0, 0.307)'
   },
   modalContent: {
     backgroundColor: COLORS.WHITE,
@@ -365,14 +329,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     backgroundColor: COLORS.GRAY
   },
-  inputDescription: {
-    minHeight: 80,
-    maxHeight: 120,
-    borderRadius: 10,
-    marginBottom: 10,
-    paddingHorizontal: 5,
-    backgroundColor: COLORS.GRAY
-  },
   transcribir: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -388,13 +344,6 @@ const styles = StyleSheet.create({
     marginRight: 20,
     width: 150,
     alignItems: 'center'
-  },
-  stopButton: {
-    backgroundColor: COLORS.ORANGE,
-    paddingVertical: 5,
-    paddingHorizontal: 35,
-    borderRadius: 50,
-    marginTop: 80
   },
   errorContainer: {
     height: 25,

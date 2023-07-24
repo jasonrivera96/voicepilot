@@ -7,6 +7,6 @@ export async function uploadFile (userData, formData) {
     const responseData = await response.data
     return responseData
   } catch (error) {
-    console.log(`Error al subir archivo multimedia con userId ${userId}`, error)
+    console.log(`Error al subir archivo multimedia con userId ${userId}`, error.response.data)
   }
 }
