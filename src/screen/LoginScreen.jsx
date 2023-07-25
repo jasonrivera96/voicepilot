@@ -36,7 +36,10 @@ export default function LoginScreen ({ setRegisterUser }) {
 
   const handleLoginButtonPress = () => {
     Keyboard.dismiss()
-    formik.handleSubmit()
+    if(isSelected){
+      formik.handleSubmit()
+    }
+    
   }
 
   return (
@@ -93,7 +96,7 @@ export default function LoginScreen ({ setRegisterUser }) {
           </View>
         </View>
 
-        <TouchableOpacity style={styles.biniciar} onPress={handleLoginButtonPress}>
+        <TouchableOpacity style={[styles.biniciar, {opacity: isSelected ? 1 :0.5}]} onPress={handleLoginButtonPress} disabled={!isSelected}>
           <Text style={{ color: 'white' }}>Iniciar Sesión</Text>
         </TouchableOpacity>
       </View>

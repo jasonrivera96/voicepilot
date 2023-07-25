@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { View, Text, TextInput, StyleSheet, Pressable, TouchableOpacity, Keyboard } from 'react-native'
+import { View, Text, TextInput, StyleSheet, Pressable, TouchableOpacity, Keyboard, Alert } from 'react-native'
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons'
 import { Icon, CheckBox } from 'react-native-elements'
 import Constants from 'expo-constants'
@@ -10,16 +10,17 @@ import { useTogglePasswordVisibility } from '../hooks/useTogglePassVisibility'
 import { COLORS } from '../constants'
 import { AuthContext } from '../context/AuthContext'
 import { StatusBar } from 'expo-status-bar'
+import { useState } from 'react'
 
 const validationSchema = yup.object().shape({
   username: yup.string().required('El usuario es requerido'),
   email: yup.string().email('Correo electrónico inválido').required('El correo electrónico es requerido'),
-  password: yup.string().min(6, 'La contraseña debe tener al menos 6 caracteres').required('La contraseña es requerida')
+  password: yup.string().min(8, 'La contraseña debe tener al menos 8 caracteres').required('La contraseña es requerida')
 })
 
 const RegisterScreen = ({ setRegisterUser }) => {
   const { register } = useContext(AuthContext)
-
+  const [isSelected, setSelection] = useState(true)
   const formik = useFormik({
     initialValues: {
       username: '',
@@ -49,7 +50,10 @@ const RegisterScreen = ({ setRegisterUser }) => {
 
   const handleRegisterButtonPress = () => {
     Keyboard.dismiss()
-    handleSubmit()
+    if(isSelected){
+      formik. handleSubmit()
+    }
+   
   }
 
   return (
@@ -121,7 +125,7 @@ const RegisterScreen = ({ setRegisterUser }) => {
           />
         </View>
 
-        <TouchableOpacity style={styles.bregistrarse} onPress={handleRegisterButtonPress}>
+        <TouchableOpacity style={[styles.bregistrarse, {opacity: values.isSelected ? 1 :0.5}]} onPress={handleRegisterButtonPress} disabled={!values.isSelected}>
           <Text style={{ color: 'white' }}>Registrarse</Text>
         </TouchableOpacity>
       </View>

@@ -7,6 +7,11 @@ import { AuthContext } from '../../context/AuthContext'
 import { StatusBar } from 'expo-status-bar'
 import { FontAwesome } from '@expo/vector-icons'
 import SubArticle from './post/SubArticle'
+import Fechas from './post/Fechas'
+import Palabras from './post/Palabras'
+import Temas from './post/Temas'
+import Preguntas from './post/Preguntas'
+import Tareas from './post/Tareas'
 
 const SummaryItemScreen = ({ route }) => {
   const { summaryId } = route.params
@@ -31,14 +36,16 @@ const SummaryItemScreen = ({ route }) => {
     title: '',
     color: COLORS.GRAY_SOFT,
     icon: 'file-text-o',
-    iconColor: COLORS.Pastel_Mint_Green_1
-  })
-  const handleOpenModal = (title, color, icon, iconColor) => {
-    setSelectedPost({ title, color, icon, iconColor })
+    iconColor: COLORS.Pastel_Mint_Green_1,
+    info: null,
+  });
+  const handleOpenModal = (title, color, icon, iconColor, info) => {
+    setSelectedPost({ title, color, icon, iconColor,info })
+   
     setIsModalVisible(true)
   }
 
-  const { titulo, resumen, subArticuloList } = summary
+  const { titulo, resumen, subArticuloList, palabras, temas, fechas, preguntas, tareas } = summary
 
   return (
     <View style={styles.container}>
@@ -56,23 +63,23 @@ const SummaryItemScreen = ({ route }) => {
             <SubArticle data={subArticuloList} />
           </View>
 
-          <Text style={[styles.title, { fontSize: 16 }]}>Post-it o Algo así</Text>
+          <Text style={[styles.title, { fontSize: 16 }]}>Información Clave</Text>
 
           {/* Palabras */}
-          <TouchableOpacity onPress={() => handleOpenModal('Palabras Clave', COLORS.Pastel_Mint_Green, 'text-height', COLORS.Pastel_Mint_Green_1)} style={[styles.post, { backgroundColor: COLORS.Pastel_Mint_Green }]}>
+          <TouchableOpacity onPress={() => handleOpenModal('Palabras Clave', COLORS.Pastel_Mint_Green, 'text-height', COLORS.Pastel_Mint_Green_1, <Palabras data={palabras}/>)} style={[styles.post, { backgroundColor: COLORS.Pastel_Mint_Green }]}>
             <View style={styles.firstColumn}>
               <FontAwesome name='text-height' size={40} color={COLORS.Pastel_Mint_Green_1} />
             </View>
             <View style={styles.secondColumn}>
               <Text style={[styles.subtitleP, { color: COLORS.Pastel_Mint_Green_1 }]}>Palabras Clave</Text>
               <View style={styles.row}>
-                <Text style={styles.texto}>Aquí encontrarás las fechas destacadas encontradas en el audio</Text>
+                <Text style={styles.texto}>Palabras importantes encontradas en el audio analizado</Text>
               </View>
             </View>
           </TouchableOpacity>
           {/* TEMAS */}
           <TouchableOpacity
-            onPress={() => handleOpenModal('Temas Destacados', COLORS.GRAY, 'folder-open-o', COLORS.GRAY_SOFT)}
+            onPress={() => handleOpenModal('Temas Destacados', COLORS.GRAY, 'folder-open-o', COLORS.GRAY_SOFT, <Temas data={temas}/>)}
             style={[styles.post, { backgroundColor: COLORS.GRAY }]}
           >
             <View style={styles.firstColumn}>
@@ -81,30 +88,32 @@ const SummaryItemScreen = ({ route }) => {
             <View style={styles.secondColumn}>
               <Text style={[styles.subtitleP, { color: COLORS.GRAY_SOFT }]}>Temas Destacados</Text>
               <View style={styles.row}>
-                <Text style={styles.texto}>Aquí encontrarás las fechas destacadas encontradas en el audio</Text>
+                <Text style={styles.texto}>Temas con mayor relevancia mencionados en el audio</Text>
               </View>
             </View>
           </TouchableOpacity>
 
           {/* FECHAS  */}
+          
           <TouchableOpacity
-            onPress={() => handleOpenModal('Fechas importantes', COLORS.Pastel_Orange, 'calendar-o', COLORS.Pastel_Orange_1)}
-            style={[styles.post]}
+            onPress={() => handleOpenModal('Fechas Importantes', COLORS.Pastel_Orange_1, 'calendar-o', COLORS.Pastel_Orange_1, <Fechas data={fechas}/>)}
+            style={[styles.post, { backgroundColor: COLORS.Pastel_Orange }]}
           >
             <View style={styles.firstColumn}>
               <FontAwesome name='calendar-o' size={40} color={COLORS.Pastel_Orange_1} />
             </View>
             <View style={styles.secondColumn}>
-              <Text style={[styles.subtitleP, { color: COLORS.Pastel_Orange_1 }]}>Fechas importantes</Text>
+              <Text style={[styles.subtitleP, { color: COLORS.Pastel_Orange_1 }]}>Fechas Importantes</Text>
               <View style={styles.row}>
-                <Text style={styles.texto}>Aquí encontrarás las fechas destacadas encontradas en el audio</Text>
+                <Text style={styles.texto}>Fechas consideradas clave en el desarrollo del audio</Text>
               </View>
             </View>
           </TouchableOpacity>
+        
 
           {/* Preguntas */}
           <TouchableOpacity
-            onPress={() => handleOpenModal('Preguntas', COLORS.Pastel_Pink, 'question', COLORS.Pastel_Pink_1)}
+            onPress={() => handleOpenModal('Preguntas', COLORS.Pastel_Pink, 'question', COLORS.Pastel_Pink_1, <Preguntas data={preguntas}/>)}
             style={[styles.post, { backgroundColor: COLORS.Pastel_Pink }]}
           >
             <View style={styles.firstColumn}>
@@ -113,14 +122,14 @@ const SummaryItemScreen = ({ route }) => {
             <View style={styles.secondColumn}>
               <Text style={[styles.subtitleP, { color: COLORS.Pastel_Pink_1 }]}>Preguntas</Text>
               <View style={styles.row}>
-                <Text style={styles.texto}>Aquí encontrarás las fechas destacadas encontradas en el audio</Text>
+                <Text style={styles.texto}>Preguntas de apoyo para complementar la información recopilada</Text>
               </View>
             </View>
           </TouchableOpacity>
 
           {/* Tareas */}
           <TouchableOpacity
-            onPress={() => handleOpenModal('Tareas', COLORS.Pastel_Blue, 'tasks', COLORS.Pastel_Blue_1)}
+            onPress={() => handleOpenModal('Tareas', COLORS.Pastel_Blue, 'tasks', COLORS.Pastel_Blue_1, <Tareas data={tareas}/>)}
             style={[styles.post, { backgroundColor: COLORS.Pastel_Blue }]}
           >
             <View style={styles.firstColumn}>
@@ -129,11 +138,10 @@ const SummaryItemScreen = ({ route }) => {
             <View style={styles.secondColumn}>
               <Text style={[styles.subtitleP, { color: COLORS.Pastel_Blue_1 }]}>Tareas</Text>
               <View style={styles.row}>
-                <Text style={styles.texto}>Aquí encontrarás las fechas destacadas encontradas en el audio</Text>
+                <Text style={styles.texto}>Tareas programadas durante la reproducción del audio</Text>
               </View>
             </View>
           </TouchableOpacity>
-          {/* EN TODOS LOS POST DEBES AGREGAR EL LLAMADO DE SU RESPECTIVA PARTE DEL BACK, AGREGARLO EN EL SELECTPOST Y HANDLEOPENMODAL PARA QUE APAREZCA LA INFORMACION EN EL MODAL */}
           <Modal visible={isModalVisible} animationType='fade' transparent>
             <TouchableWithoutFeedback onPress={() => setIsModalVisible(false)}>
               <View style={styles.modalContainer}>
@@ -143,6 +151,10 @@ const SummaryItemScreen = ({ route }) => {
 
                   <Text style={[styles.modalTitle, { color: selectedPost.iconColor }]}>{selectedPost.title}</Text>
                   {/* Resto del contenido del modal */}
+                  <ScrollView style={styles.modalScrollView}>
+                  {selectedPost.info}
+                  </ScrollView>
+                  
                   <TouchableOpacity onPress={() => setIsModalVisible(false)}>
                     <Text style={styles.closeButton}>Cerrar</Text>
                   </TouchableOpacity>
@@ -225,7 +237,12 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',
-    width: '80%'
+    width: '80%',
+    maxHeight: '80%'
+  },
+  modalScrollView:{
+    
+    width: '100%',
   },
   modalTitle: {
     fontSize: 24,
