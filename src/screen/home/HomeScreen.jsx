@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { View, StyleSheet, FlatList, Alert } from 'react-native'
 import Constants from 'expo-constants'
 
@@ -7,32 +7,24 @@ import Header from './Header'
 import EmptyFolder from './EmptyFolder'
 import ModalContent from './ModalContent'
 import EditModal from './EditModal'
-import { AuthContext } from '../../context/AuthContext'
-import { createFolder, deleteFolder, loadFolders, updateFolder } from '../../services/FolderService'
 import FolderItem from './FolderItem'
 import { StatusBar } from 'expo-status-bar'
 import { COLORS } from '../../constants'
+import { useFolder } from '../../hooks/useFolder'
 
 const HomeScreen = () => {
-  const [folders, setFolders] = useState([])
+  const { state, getFolders, addFolder, updateFolde, removeFolder } = useFolder()
   const [folder, setFolder] = useState({})
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [isEditModal, setIsEditModal] = useState(false)
   const flatList = useRef(null)
-  const { userData } = useContext(AuthContext)
-
-  const fetchData = useCallback(async () => {
-    try {
-      const response = await loadFolders(userData)
-      setFolders(response)
-    } catch (error) {
-      console.error('Error al obtener las carpetas:', error.message)
-    }
-  }, [userData])
 
   useEffect(() => {
-    fetchData()
-  }, [fetchData])
+    getFolders()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const { folders } = state
 
   const closeModal = () => {
     setIsModalVisible(false)
@@ -45,26 +37,13 @@ const HomeScreen = () => {
   }
 
   const addFolderItem = async (folderName) => {
-    const response = await createFolder(userData, folderName)
-    if (response) {
-      const { id, name } = response
-      setFolders((prev) => [...prev, { id, name }])
-    }
+    addFolder(folderName)
     folders.length > 0 && flatList.current.scrollToEnd({ animated: true })
     setIsModalVisible(false)
   }
 
   const updateFolderItem = async ({ item: folderItem }) => {
-    const response = await updateFolder(userData, folderItem)
-    if (response) {
-      const newFolders = folders.map((folder) => {
-        if (folder.id === folderItem.id) {
-          return { ...folder, name: folderItem.name }
-        }
-        return folder
-      })
-      setFolders(newFolders)
-    }
+    updateFolde(folderItem)
     setFolder({})
     setIsModalVisible(false)
   }
@@ -77,11 +56,7 @@ const HomeScreen = () => {
         {
           text: 'Sí',
           onPress: async () => {
-            const response = await deleteFolder(userData, folderItem.id)
-            if (response.status === 200) {
-              const newFolders = folders.filter((folder) => folder.id !== folderItem.id)
-              setFolders(newFolders)
-            }
+            removeFolder(folderItem)
           }
         },
         { text: 'No' }

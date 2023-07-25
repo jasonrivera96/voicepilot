@@ -37,11 +37,11 @@ const SummaryItemScreen = ({ route }) => {
     color: COLORS.GRAY_SOFT,
     icon: 'file-text-o',
     iconColor: COLORS.Pastel_Mint_Green_1,
-    info: null,
-  });
+    info: null
+  })
   const handleOpenModal = (title, color, icon, iconColor, info) => {
-    setSelectedPost({ title, color, icon, iconColor,info })
-   
+    setSelectedPost({ title, color, icon, iconColor, info })
+
     setIsModalVisible(true)
   }
 
@@ -66,7 +66,7 @@ const SummaryItemScreen = ({ route }) => {
           <Text style={[styles.title, { fontSize: 16 }]}>Información Clave</Text>
 
           {/* Palabras */}
-          <TouchableOpacity onPress={() => handleOpenModal('Palabras Clave', COLORS.Pastel_Mint_Green, 'text-height', COLORS.Pastel_Mint_Green_1, <Palabras data={palabras}/>)} style={[styles.post, { backgroundColor: COLORS.Pastel_Mint_Green }]}>
+          <TouchableOpacity onPress={() => handleOpenModal('Palabras Clave', COLORS.Pastel_Mint_Green, 'text-height', COLORS.Pastel_Mint_Green_1, <Palabras data={palabras} />)} style={[styles.post, { backgroundColor: COLORS.Pastel_Mint_Green }]}>
             <View style={styles.firstColumn}>
               <FontAwesome name='text-height' size={40} color={COLORS.Pastel_Mint_Green_1} />
             </View>
@@ -79,7 +79,7 @@ const SummaryItemScreen = ({ route }) => {
           </TouchableOpacity>
           {/* TEMAS */}
           <TouchableOpacity
-            onPress={() => handleOpenModal('Temas Destacados', COLORS.GRAY, 'folder-open-o', COLORS.GRAY_SOFT, <Temas data={temas}/>)}
+            onPress={() => handleOpenModal('Temas Destacados', COLORS.GRAY, 'folder-open-o', COLORS.GRAY_SOFT, <Temas data={temas} />)}
             style={[styles.post, { backgroundColor: COLORS.GRAY }]}
           >
             <View style={styles.firstColumn}>
@@ -94,9 +94,9 @@ const SummaryItemScreen = ({ route }) => {
           </TouchableOpacity>
 
           {/* FECHAS  */}
-          
+
           <TouchableOpacity
-            onPress={() => handleOpenModal('Fechas Importantes', COLORS.Pastel_Orange_1, 'calendar-o', COLORS.Pastel_Orange_1, <Fechas data={fechas}/>)}
+            onPress={() => handleOpenModal('Fechas Importantes', COLORS.Pastel_Orange_1, 'calendar-o', COLORS.Pastel_Orange_1, <Fechas data={fechas} />)}
             style={[styles.post, { backgroundColor: COLORS.Pastel_Orange }]}
           >
             <View style={styles.firstColumn}>
@@ -109,11 +109,10 @@ const SummaryItemScreen = ({ route }) => {
               </View>
             </View>
           </TouchableOpacity>
-        
 
           {/* Preguntas */}
           <TouchableOpacity
-            onPress={() => handleOpenModal('Preguntas', COLORS.Pastel_Pink, 'question', COLORS.Pastel_Pink_1, <Preguntas data={preguntas}/>)}
+            onPress={() => handleOpenModal('Preguntas', COLORS.Pastel_Pink, 'question', COLORS.Pastel_Pink_1, <Preguntas data={preguntas} />)}
             style={[styles.post, { backgroundColor: COLORS.Pastel_Pink }]}
           >
             <View style={styles.firstColumn}>
@@ -129,7 +128,7 @@ const SummaryItemScreen = ({ route }) => {
 
           {/* Tareas */}
           <TouchableOpacity
-            onPress={() => handleOpenModal('Tareas', COLORS.Pastel_Blue, 'tasks', COLORS.Pastel_Blue_1, <Tareas data={tareas}/>)}
+            onPress={() => handleOpenModal('Tareas', COLORS.Pastel_Blue, 'tasks', COLORS.Pastel_Blue_1, <Tareas data={tareas} />)}
             style={[styles.post, { backgroundColor: COLORS.Pastel_Blue }]}
           >
             <View style={styles.firstColumn}>
@@ -152,9 +151,9 @@ const SummaryItemScreen = ({ route }) => {
                   <Text style={[styles.modalTitle, { color: selectedPost.iconColor }]}>{selectedPost.title}</Text>
                   {/* Resto del contenido del modal */}
                   <ScrollView style={styles.modalScrollView}>
-                  {selectedPost.info}
+                    {selectedPost.info}
                   </ScrollView>
-                  
+
                   <TouchableOpacity onPress={() => setIsModalVisible(false)}>
                     <Text style={styles.closeButton}>Cerrar</Text>
                   </TouchableOpacity>
@@ -240,9 +239,9 @@ const styles = StyleSheet.create({
     width: '80%',
     maxHeight: '80%'
   },
-  modalScrollView:{
-    
-    width: '100%',
+  modalScrollView: {
+
+    width: '100%'
   },
   modalTitle: {
     fontSize: 24,

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import {
   StyleSheet,
   View,
@@ -25,27 +25,19 @@ import Mp4Template from './Mp4Template'
 import { uploadFile } from '../../services/UploadService'
 import { AuthContext } from '../../context/AuthContext'
 import Dropdown from 'react-native-select-dropdown'
-import { loadFolders } from '../../services/FolderService'
+import { useFolder } from '../../hooks/useFolder'
 
 const UploadScreen = ({ toggleShowNotification }) => {
   const [file, setFile] = useState(null)
   const [mimeType, setMimeType] = useState('')
   const [isModalVisible, setIsModalVisible] = useState(false)
-  const [dropdownItems, setDropdownItems] = useState([])
   const [selectedItem, setSelectedItem] = useState(null)
   const [isLoading, setisLoading] = useState(false)
+  const { state } = useFolder()
+
+  const { folders } = state
 
   const { userData } = useContext(AuthContext)
-
-  const fetchFolders = useCallback(async () => {
-    try {
-      const response = await loadFolders(userData)
-      const folders = response.map((folder) => ({ name: folder.name, id: folder.id }))
-      setDropdownItems(folders)
-    } catch (error) {
-      console.error('Error al obtener las carpetas:', error.message)
-    }
-  }, [userData])
 
   const handleFile = async () => {
     try {
@@ -70,8 +62,7 @@ const UploadScreen = ({ toggleShowNotification }) => {
     setSelectedItem(null)
   }
 
-  const openModal = async () => {
-    await fetchFolders()
+  const openModal = () => {
     setIsModalVisible(true)
   }
 
@@ -147,7 +138,7 @@ const UploadScreen = ({ toggleShowNotification }) => {
 
                 <Text style={styles.label}>Carpeta</Text>
                 <Dropdown
-                  data={dropdownItems}
+                  data={folders}
                   rowTextStyle={{ fontSize: 14 }}
                   dropdownStyle={{ width: '90%', height: '20%', borderRadius: 10 }}
                   selectedRowTextStyle={{ color: COLORS.ORANGE }}
@@ -330,7 +321,7 @@ const styles = StyleSheet.create({
     marginBottom: 30
   },
   loadingContainer: {
-    height: 100,
+    height: 50,
     justifyContent: 'center'
   }
 })

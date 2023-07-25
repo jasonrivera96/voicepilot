@@ -21,6 +21,7 @@ import {
   summaryScreenName,
   uploadScreenName
 } from '../constants'
+import { FolderProvider } from '../context/FolderContext'
 
 const Tab = createBottomTabNavigator()
 
@@ -102,7 +103,7 @@ const AuthStack = () => {
   }
 
   return (
-    <>
+    <FolderProvider>
       <Tab.Navigator
         initialRouteName={homeScreenName}
         screenOptions={({ route }) => ({
@@ -135,7 +136,7 @@ const AuthStack = () => {
           />
         )
       }
-    </>
+    </FolderProvider>
   )
 }
 

@@ -13,8 +13,8 @@ export function useResources ({ searchQuery }) {
       setLoading(true)
       setError(null)
       previousQuery.current = searchQuery
-      const newMovies = await makeQuery(userData, searchQuery)
-      setResources(newMovies)
+      const data = await makeQuery(userData, searchQuery)
+      setResources(data)
     } catch (error) {
       setError(error)
     } finally {

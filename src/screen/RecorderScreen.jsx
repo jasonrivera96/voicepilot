@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {
   StyleSheet,
   View,
@@ -16,7 +16,6 @@ import {
 import { Audio } from 'expo-av'
 import Dropdown from 'react-native-select-dropdown'
 import Constants from 'expo-constants'
-import { loadFolders } from '../services/FolderService'
 
 import CustomRecorderButton from '../components/CustomRecorderButton'
 import { COLORS } from '../constants'
@@ -26,6 +25,7 @@ import * as FileSystem from 'expo-file-system'
 import { AuthContext } from '../context/AuthContext'
 import { Icon } from 'react-native-elements'
 import { uploadFile } from '../services/UploadService'
+import { useFolder } from '../hooks/useFolder'
 
 export default function RecorderScreen ({ toggleShowNotification }) {
   const [recording, setRecording] = useState()
@@ -37,22 +37,13 @@ export default function RecorderScreen ({ toggleShowNotification }) {
   const [customInterval, setCustomInterval] = useState()
   const [recordingName, setRecordingName] = useState('')
   const [modalVisible, setModalVisible] = useState(false)
-  const [dropdownItems, setDropdownItems] = useState([])
   const [selectedItem, setSelectedItem] = useState(null)
   const [isLoading, setisLoading] = useState(false)
 
+  const { state } = useFolder()
   const { userData } = useContext(AuthContext)
 
-  const fetchData = useCallback(async () => {
-    try {
-      const response = await loadFolders(userData)
-
-      const folderNames = response.map((folder) => ({ name: folder.name, id: folder.id }))
-      setDropdownItems(folderNames)
-    } catch (error) {
-      console.error('Error al obtener las carpetas:', error.message)
-    }
-  }, [userData])
+  const { folders } = state
 
   useEffect(() => {
     return () => {
@@ -101,7 +92,6 @@ export default function RecorderScreen ({ toggleShowNotification }) {
 
   const stopRecording = async () => {
     if (recording) {
-      setRecording(undefined)
       await recording.stopAndUnloadAsync()
       await Audio.setAudioModeAsync(
         {
@@ -115,7 +105,6 @@ export default function RecorderScreen ({ toggleShowNotification }) {
   }
 
   const handleSendRecordings = () => {
-    fetchData()
     setModalVisible(true)
   }
 
@@ -225,7 +214,7 @@ export default function RecorderScreen ({ toggleShowNotification }) {
 
                 <Text style={styles.label}>Carpeta</Text>
                 <Dropdown
-                  data={dropdownItems}
+                  data={folders}
                   rowTextStyle={{ fontSize: 14 }}
                   dropdownStyle={{ width: '90%', height: '20%', borderRadius: 15 }}
                   selectedRowTextStyle={{ color: COLORS.ORANGE }}
@@ -355,7 +344,7 @@ const styles = StyleSheet.create({
     marginBottom: 30
   },
   loadingContainer: {
-    height: 100,
+    height: 50,
     justifyContent: 'center'
   }
 })
