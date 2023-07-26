@@ -1,7 +1,7 @@
 import { useRef, useState, useCallback } from 'react'
 import { makeQuery } from '../services/SearchService'
 
-export function useResources ({ searchQuery }) {
+export function useQuery ({ searchQuery }) {
   const [resources, setResources] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)

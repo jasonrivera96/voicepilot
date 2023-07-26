@@ -40,7 +40,10 @@ export const folderReducer = (state, action) => {
       }
     }
     case CLEAR_FOLDER:
-      return []
+      return {
+        ...state,
+        folders: []
+      }
     default:
       return state
   }

@@ -7,7 +7,7 @@ import debounce from 'just-debounce-it'
 import { COLORS } from '../constants'
 import { StatusBar } from 'expo-status-bar'
 import { AuthContext } from '../context/AuthContext'
-import { useResources } from '../hooks/useResources'
+import { useQuery } from '../hooks/useQuery'
 import QueryResult from './QueryResult'
 
 export default function SearchScreen () {
@@ -16,7 +16,7 @@ export default function SearchScreen () {
   // const [recentSearches, setRecentSear ches] = useState([])
   // const [results, setResults] = useState([])
   const { userData } = useContext(AuthContext)
-  const { resources, loading, getResources, clearResources } = useResources({ searchQuery })
+  const { resources, loading, getResources, clearResources } = useQuery({ searchQuery })
 
   // async function searchQueryTest () {
   //   const response = await makeQuery(userData, searchQuery)

@@ -38,7 +38,7 @@ const HomeScreen = () => {
 
   const addFolderItem = async (folderName) => {
     addFolder(folderName)
-    folders.length > 0 && flatList.current.scrollToEnd({ animated: true })
+    folders.length > 0 && await flatList.current.scrollToEnd({ animated: true })
     setIsModalVisible(false)
   }
 
