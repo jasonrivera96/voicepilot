@@ -12,7 +12,6 @@ import Temas from './post/Temas'
 import Preguntas from './post/Preguntas'
 import Tareas from './post/Tareas'
 import { Icon } from 'react-native-elements'
-import { FlatList } from 'react-native-gesture-handler'
 
 const SummaryItemScreen = ({ route }) => {
   const { summaryId } = route.params
@@ -67,124 +66,134 @@ const SummaryItemScreen = ({ route }) => {
           <Text style={[styles.title, { fontSize: 18 }]}>Tópicos destacados</Text>
 
           {/* Palabras */}
-          <TouchableOpacity
-            onPress={() =>
-              handleOpenModal(
-                'Palabras clave',
-                COLORS.YELLOW_PASTEL_FONT,
-                'text-search',
-                'material-community',
-                COLORS.YELLOW_PASTEL_TEXT,
-                <Palabras data={palabras} />
-              )}
-            style={[styles.post, { backgroundColor: COLORS.YELLOW_PASTEL_FONT }]}
-          >
-            <View style={styles.firstColumn}>
-              <Icon type='material-community' name='text-search' size={40} color={COLORS.YELLOW_PASTEL_TEXT} />
-            </View>
-            <View style={styles.secondColumn}>
-              <Text style={[styles.subtitleP, { color: COLORS.YELLOW_PASTEL_TEXT }]}>Palabras clave</Text>
-              <View style={styles.row}>
-                <Text style={[styles.texto, { color: COLORS.YELLOW_PASTEL_TEXT }]}>Describe las palabras más importantes y con mayor mención en el texto</Text>
+          {palabras && palabras.length > 0 && (
+            <TouchableOpacity
+              onPress={() =>
+                handleOpenModal(
+                  'Palabras clave',
+                  COLORS.YELLOW_PASTEL_FONT,
+                  'text-search',
+                  'material-community',
+                  COLORS.YELLOW_PASTEL_TEXT,
+                  <Palabras data={palabras} />
+                )}
+              style={[styles.post, { backgroundColor: COLORS.YELLOW_PASTEL_FONT }]}
+            >
+              <View style={styles.firstColumn}>
+                <Icon type='material-community' name='text-search' size={40} color={COLORS.YELLOW_PASTEL_TEXT} />
               </View>
-            </View>
-          </TouchableOpacity>
+              <View style={styles.secondColumn}>
+                <Text style={[styles.subtitleP, { color: COLORS.YELLOW_PASTEL_TEXT }]}>Palabras clave</Text>
+                <View style={styles.row}>
+                  <Text style={[styles.texto, { color: COLORS.YELLOW_PASTEL_TEXT }]}>Describe las palabras más importantes y con mayor mención en el texto</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          )}
+
           {/* TEMAS */}
-          <TouchableOpacity
-            onPress={() =>
-              handleOpenModal(
-                'Temas destacados',
-                COLORS.GRAY,
-                'message-text-outline',
-                'material-community',
-                COLORS.GREEN_MINT_PASTEL_TEXT,
-                <Temas data={temas} />
-              )}
-            style={[styles.post, { backgroundColor: COLORS.GREEN_MINT_PASTEL_FONT }]}
-          >
-            <View style={styles.firstColumn}>
-              <Icon type='material-community' name='message-text-outline' size={40} color={COLORS.GREEN_MINT_PASTEL_TEXT} />
-            </View>
-            <View style={styles.secondColumn}>
-              <Text style={[styles.subtitleP, { color: COLORS.GREEN_MINT_PASTEL_TEXT }]}>Temas destacados</Text>
-              <View style={styles.row}>
-                <Text style={[styles.texto, { color: COLORS.GREEN_MINT_PASTEL_TEXT }]}>Temas, conceptos y definiciones con mayor relevancia y mención en le texto</Text>
+          {temas && temas.length > 0 && (
+            <TouchableOpacity
+              onPress={() =>
+                handleOpenModal(
+                  'Temas destacados',
+                  COLORS.GRAY,
+                  'message-text-outline',
+                  'material-community',
+                  COLORS.GREEN_MINT_PASTEL_TEXT,
+                  <Temas data={temas} />
+                )}
+              style={[styles.post, { backgroundColor: COLORS.GREEN_MINT_PASTEL_FONT }]}
+            >
+              <View style={styles.firstColumn}>
+                <Icon type='material-community' name='message-text-outline' size={40} color={COLORS.GREEN_MINT_PASTEL_TEXT} />
               </View>
-            </View>
-          </TouchableOpacity>
+              <View style={styles.secondColumn}>
+                <Text style={[styles.subtitleP, { color: COLORS.GREEN_MINT_PASTEL_TEXT }]}>Temas destacados</Text>
+                <View style={styles.row}>
+                  <Text style={[styles.texto, { color: COLORS.GREEN_MINT_PASTEL_TEXT }]}>Temas, conceptos y definiciones con mayor relevancia y mención en le texto</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          )}
 
           {/* Tareas */}
-          <TouchableOpacity
-            onPress={() =>
-              handleOpenModal(
-                'Tareas',
-                COLORS.BLUE_PASTEL_FONT,
-                'tasklist',
-                'octicon',
-                COLORS.BLUE_PASTEL_TEXT,
-                <Tareas data={tareas} />
-              )}
-            style={[styles.post, { backgroundColor: COLORS.BLUE_PASTEL_FONT }]}
-          >
-            <View style={styles.firstColumn}>
-              <Icon type='octicon' name='tasklist' size={40} color={COLORS.BLUE_PASTEL_TEXT} />
-            </View>
-            <View style={styles.secondColumn}>
-              <Text style={[styles.subtitleP, { color: COLORS.BLUE_PASTEL_TEXT }]}>Tareas</Text>
-              <View style={styles.row}>
-                <Text style={[styles.texto, { color: COLORS.BLUE_PASTEL_TEXT }]}>Tareas, proyectos y actividades planificadas para los próximos días</Text>
+          {tareas && tareas.length > 0 && (
+            <TouchableOpacity
+              onPress={() =>
+                handleOpenModal(
+                  'Tareas',
+                  COLORS.BLUE_PASTEL_FONT,
+                  'tasklist',
+                  'octicon',
+                  COLORS.BLUE_PASTEL_TEXT,
+                  <Tareas data={tareas} />
+                )}
+              style={[styles.post, { backgroundColor: COLORS.BLUE_PASTEL_FONT }]}
+            >
+              <View style={styles.firstColumn}>
+                <Icon type='octicon' name='tasklist' size={40} color={COLORS.BLUE_PASTEL_TEXT} />
               </View>
-            </View>
-          </TouchableOpacity>
+              <View style={styles.secondColumn}>
+                <Text style={[styles.subtitleP, { color: COLORS.BLUE_PASTEL_TEXT }]}>Tareas</Text>
+                <View style={styles.row}>
+                  <Text style={[styles.texto, { color: COLORS.BLUE_PASTEL_TEXT }]}>Tareas, proyectos y actividades planificadas para los próximos días</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          )}
 
           {/* FECHAS  */}
-
-          <TouchableOpacity
-            onPress={() =>
-              handleOpenModal(
-                'Fechas importantes',
-                COLORS.ORANGE_PASTEL_TEXT,
-                'calendar-o',
-                'font-awesome',
-                COLORS.ORANGE_PASTEL_TEXT,
-                <Fechas data={fechas} />
-              )}
-            style={[styles.post, { backgroundColor: COLORS.ORANGE_PASTEL_FONT }]}
-          >
-            <View style={styles.firstColumn}>
-              <Icon type='font-awesome' name='calendar-o' size={40} color={COLORS.ORANGE_PASTEL_TEXT} />
-            </View>
-            <View style={styles.secondColumn}>
-              <Text style={[styles.subtitleP, { color: COLORS.ORANGE_PASTEL_TEXT }]}>Fechas importantes</Text>
-              <View style={styles.row}>
-                <Text style={[styles.texto, { color: COLORS.ORANGE_PASTEL_TEXT }]}>Fechas, eventos y sucesos considerados clave dentro del texto </Text>
+          {fechas && fechas.length > 0 && (
+            <TouchableOpacity
+              onPress={() =>
+                handleOpenModal(
+                  'Fechas importantes',
+                  COLORS.ORANGE_PASTEL_TEXT,
+                  'calendar-o',
+                  'font-awesome',
+                  COLORS.ORANGE_PASTEL_TEXT,
+                  <Fechas data={fechas} />
+                )}
+              style={[styles.post, { backgroundColor: COLORS.ORANGE_PASTEL_FONT }]}
+            >
+              <View style={styles.firstColumn}>
+                <Icon type='font-awesome' name='calendar-o' size={40} color={COLORS.ORANGE_PASTEL_TEXT} />
               </View>
-            </View>
-          </TouchableOpacity>
+              <View style={styles.secondColumn}>
+                <Text style={[styles.subtitleP, { color: COLORS.ORANGE_PASTEL_TEXT }]}>Fechas importantes</Text>
+                <View style={styles.row}>
+                  <Text style={[styles.texto, { color: COLORS.ORANGE_PASTEL_TEXT }]}>Fechas, eventos y sucesos considerados clave dentro del texto </Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          )}
 
           {/* Preguntas */}
-          <TouchableOpacity
-            onPress={() =>
-              handleOpenModal(
-                'Preguntas',
-                COLORS.PINK_PASTEL_FONT,
-                'question',
-                'font-awesome',
-                COLORS.PINK_PASTEL_TEXT,
-                <Preguntas data={preguntas} />
-              )}
-            style={[styles.post, { backgroundColor: COLORS.PINK_PASTEL_FONT }]}
-          >
-            <View style={styles.firstColumn}>
-              <Icon type='font-awesome' name='question' size={40} color={COLORS.PINK_PASTEL_TEXT} />
-            </View>
-            <View style={styles.secondColumn}>
-              <Text style={[styles.subtitleP, { color: COLORS.PINK_PASTEL_TEXT }]}>Preguntas</Text>
-              <View style={styles.row}>
-                <Text style={[styles.texto, { color: COLORS.PINK_PASTEL_TEXT }]}>Preguntas de apoyo para complementar la información recopilada</Text>
+          {preguntas && preguntas.length > 0 && (
+            <TouchableOpacity
+              onPress={() =>
+                handleOpenModal(
+                  'Preguntas',
+                  COLORS.PINK_PASTEL_FONT,
+                  'question',
+                  'font-awesome',
+                  COLORS.PINK_PASTEL_TEXT,
+                  <Preguntas data={preguntas} />
+                )}
+              style={[styles.post, { backgroundColor: COLORS.PINK_PASTEL_FONT }]}
+            >
+              <View style={styles.firstColumn}>
+                <Icon type='font-awesome' name='question' size={40} color={COLORS.PINK_PASTEL_TEXT} />
               </View>
-            </View>
-          </TouchableOpacity>
+              <View style={styles.secondColumn}>
+                <Text style={[styles.subtitleP, { color: COLORS.PINK_PASTEL_TEXT }]}>Preguntas</Text>
+                <View style={styles.row}>
+                  <Text style={[styles.texto, { color: COLORS.PINK_PASTEL_TEXT }]}>Preguntas de apoyo para complementar la información recopilada</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          )}
 
           <Modal visible={isModalVisible} animationType='fade' transparent>
             <TouchableWithoutFeedback>

@@ -3,12 +3,47 @@ import React from 'react'
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { COLORS, summaryItemScreenName, summaryScreenName } from '../constants'
 import { useNavigation } from '@react-navigation/native'
+import { Icon } from 'react-native-elements'
+
+const emptySearch = {
+  titulo: 'No existen búsquedas recientes',
+  icon: 'search',
+  type: 'oction',
+  detail: () => (
+    <Text style={stylesEmpty.description}>
+      Las búsquedas te permiten encontrar fácilmente tus
+      <Text style={stylesEmpty.textLink}> resúmenes </Text>
+      y
+      <Text style={stylesEmpty.textLink}> carpetas</Text>
+      .
+    </Text>
+  )
+}
+
+const notFound = {
+  titulo: 'Sin resultados',
+  icon: 'search-off',
+  type: 'material-icon',
+  detail: () => (
+    <Text style={stylesEmpty.description}>
+      No hemos podido encontrar
+      <Text style={stylesEmpty.textLink}> resúmenes </Text>
+      o
+      <Text style={stylesEmpty.textLink}> carpetas </Text>
+      con ese término. Verifica que esté bien escrito o intenta con otro término.
+    </Text>
+  )
+}
 
 const QueryResultEmpty = ({ searchQuery }) => {
-  const message = searchQuery.trim() === '' ? 'No se ha realizaron búsquedas' : 'No se encontraron resultados'
+  const message = searchQuery.trim() === '' ? emptySearch : notFound
   return (
-    <View>
-      <Text style={styles.noResultsText}>{message}</Text>
+    <View style={stylesEmpty.container}>
+      <View style={stylesEmpty.iconEmpty}>
+        <Icon type={message.type} name={message.icon} size={50} />
+      </View>
+      <Text style={stylesEmpty.message}>{message.titulo}</Text>
+      {message.detail && message.detail()}
     </View>
   )
 }
@@ -119,5 +154,61 @@ const styles = StyleSheet.create({
   noResultsText: {
     marginLeft: 25,
     fontSize: 14
+  }
+})
+
+const stylesEmpty = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.WHITE,
+    alignItems: 'center'
+  },
+  iconEmpty: {
+    backgroundColor: COLORS.GRAY,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 40,
+    width: 128,
+    height: 128,
+    borderRadius: 64
+  },
+  message: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginTop: 30
+  },
+  description: {
+    fontSize: 14,
+    marginHorizontal: 40,
+    textAlign: 'center',
+    marginTop: 10,
+    color: COLORS.GRAY_EXTRA_SOFT
+  },
+  containerButton: {
+    backgroundColor: COLORS.ORANGE,
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    width: 152,
+    height: 44,
+    borderRadius: 8,
+    opacity: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 24,
+    shadowColor: COLORS.ORANGE,
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 10
+  },
+  textButton: {
+    color: COLORS.WHITE
+  },
+  textLink: {
+    color: COLORS.ORANGE
   }
 })
