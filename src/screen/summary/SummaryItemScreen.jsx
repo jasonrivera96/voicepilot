@@ -5,13 +5,14 @@ import NavigatorPath from '../../components/NavigatorPath'
 import { getSummary } from '../../services/SummaryService'
 import { AuthContext } from '../../context/AuthContext'
 import { StatusBar } from 'expo-status-bar'
-import { FontAwesome } from '@expo/vector-icons'
 import SubArticle from './post/SubArticle'
 import Fechas from './post/Fechas'
 import Palabras from './post/Palabras'
 import Temas from './post/Temas'
 import Preguntas from './post/Preguntas'
 import Tareas from './post/Tareas'
+import { Icon } from 'react-native-elements'
+import { FlatList } from 'react-native-gesture-handler'
 
 const SummaryItemScreen = ({ route }) => {
   const { summaryId } = route.params
@@ -36,11 +37,11 @@ const SummaryItemScreen = ({ route }) => {
     title: '',
     color: COLORS.GRAY_SOFT,
     icon: 'file-text-o',
-    iconColor: COLORS.Pastel_Mint_Green_1,
+    iconColor: COLORS.GREEN_MINT_PASTEL_TEXT,
     info: null
   })
-  const handleOpenModal = (title, color, icon, iconColor, info) => {
-    setSelectedPost({ title, color, icon, iconColor, info })
+  const handleOpenModal = (title, color, icon, type, iconColor, info) => {
+    setSelectedPost({ title, color, icon, type, iconColor, info })
 
     setIsModalVisible(true)
   }
@@ -59,36 +60,79 @@ const SummaryItemScreen = ({ route }) => {
         <View style={styles.centeredView}>
 
           <View style={styles.postResumen}>
-            <Text style={styles.resumen}>{resumen}</Text>
+            {resumen && <Text style={styles.resumen}>{resumen}</Text>}
             <SubArticle data={subArticuloList} />
           </View>
 
-          <Text style={[styles.title, { fontSize: 16 }]}>Información Clave</Text>
+          <Text style={[styles.title, { fontSize: 18 }]}>Tópicos destacados</Text>
 
           {/* Palabras */}
-          <TouchableOpacity onPress={() => handleOpenModal('Palabras Clave', COLORS.Pastel_Mint_Green, 'text-height', COLORS.Pastel_Mint_Green_1, <Palabras data={palabras} />)} style={[styles.post, { backgroundColor: COLORS.Pastel_Mint_Green }]}>
+          <TouchableOpacity
+            onPress={() =>
+              handleOpenModal(
+                'Palabras clave',
+                COLORS.YELLOW_PASTEL_FONT,
+                'text-search',
+                'material-community',
+                COLORS.YELLOW_PASTEL_TEXT,
+                <Palabras data={palabras} />
+              )}
+            style={[styles.post, { backgroundColor: COLORS.YELLOW_PASTEL_FONT }]}
+          >
             <View style={styles.firstColumn}>
-              <FontAwesome name='text-height' size={40} color={COLORS.Pastel_Mint_Green_1} />
+              <Icon type='material-community' name='text-search' size={40} color={COLORS.YELLOW_PASTEL_TEXT} />
             </View>
             <View style={styles.secondColumn}>
-              <Text style={[styles.subtitleP, { color: COLORS.Pastel_Mint_Green_1 }]}>Palabras Clave</Text>
+              <Text style={[styles.subtitleP, { color: COLORS.YELLOW_PASTEL_TEXT }]}>Palabras clave</Text>
               <View style={styles.row}>
-                <Text style={styles.texto}>Palabras importantes encontradas en el audio analizado</Text>
+                <Text style={[styles.texto, { color: COLORS.YELLOW_PASTEL_TEXT }]}>Describe las palabras más importantes y con mayor mención en el texto</Text>
               </View>
             </View>
           </TouchableOpacity>
           {/* TEMAS */}
           <TouchableOpacity
-            onPress={() => handleOpenModal('Temas Destacados', COLORS.GRAY, 'folder-open-o', COLORS.GRAY_SOFT, <Temas data={temas} />)}
-            style={[styles.post, { backgroundColor: COLORS.GRAY }]}
+            onPress={() =>
+              handleOpenModal(
+                'Temas destacados',
+                COLORS.GRAY,
+                'message-text-outline',
+                'material-community',
+                COLORS.GREEN_MINT_PASTEL_TEXT,
+                <Temas data={temas} />
+              )}
+            style={[styles.post, { backgroundColor: COLORS.GREEN_MINT_PASTEL_FONT }]}
           >
             <View style={styles.firstColumn}>
-              <FontAwesome name='folder-open-o' size={40} color={COLORS.GRAY_SOFT} />
+              <Icon type='material-community' name='message-text-outline' size={40} color={COLORS.GREEN_MINT_PASTEL_TEXT} />
             </View>
             <View style={styles.secondColumn}>
-              <Text style={[styles.subtitleP, { color: COLORS.GRAY_SOFT }]}>Temas Destacados</Text>
+              <Text style={[styles.subtitleP, { color: COLORS.GREEN_MINT_PASTEL_TEXT }]}>Temas destacados</Text>
               <View style={styles.row}>
-                <Text style={styles.texto}>Temas con mayor relevancia mencionados en el audio</Text>
+                <Text style={[styles.texto, { color: COLORS.GREEN_MINT_PASTEL_TEXT }]}>Temas, conceptos y definiciones con mayor relevancia y mención en le texto</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          {/* Tareas */}
+          <TouchableOpacity
+            onPress={() =>
+              handleOpenModal(
+                'Tareas',
+                COLORS.BLUE_PASTEL_FONT,
+                'tasklist',
+                'octicon',
+                COLORS.BLUE_PASTEL_TEXT,
+                <Tareas data={tareas} />
+              )}
+            style={[styles.post, { backgroundColor: COLORS.BLUE_PASTEL_FONT }]}
+          >
+            <View style={styles.firstColumn}>
+              <Icon type='octicon' name='tasklist' size={40} color={COLORS.BLUE_PASTEL_TEXT} />
+            </View>
+            <View style={styles.secondColumn}>
+              <Text style={[styles.subtitleP, { color: COLORS.BLUE_PASTEL_TEXT }]}>Tareas</Text>
+              <View style={styles.row}>
+                <Text style={[styles.texto, { color: COLORS.BLUE_PASTEL_TEXT }]}>Tareas, proyectos y actividades planificadas para los próximos días</Text>
               </View>
             </View>
           </TouchableOpacity>
@@ -96,66 +140,67 @@ const SummaryItemScreen = ({ route }) => {
           {/* FECHAS  */}
 
           <TouchableOpacity
-            onPress={() => handleOpenModal('Fechas Importantes', COLORS.Pastel_Orange_1, 'calendar-o', COLORS.Pastel_Orange_1, <Fechas data={fechas} />)}
-            style={[styles.post, { backgroundColor: COLORS.Pastel_Orange }]}
+            onPress={() =>
+              handleOpenModal(
+                'Fechas importantes',
+                COLORS.ORANGE_PASTEL_TEXT,
+                'calendar-o',
+                'font-awesome',
+                COLORS.ORANGE_PASTEL_TEXT,
+                <Fechas data={fechas} />
+              )}
+            style={[styles.post, { backgroundColor: COLORS.ORANGE_PASTEL_FONT }]}
           >
             <View style={styles.firstColumn}>
-              <FontAwesome name='calendar-o' size={40} color={COLORS.Pastel_Orange_1} />
+              <Icon type='font-awesome' name='calendar-o' size={40} color={COLORS.ORANGE_PASTEL_TEXT} />
             </View>
             <View style={styles.secondColumn}>
-              <Text style={[styles.subtitleP, { color: COLORS.Pastel_Orange_1 }]}>Fechas Importantes</Text>
+              <Text style={[styles.subtitleP, { color: COLORS.ORANGE_PASTEL_TEXT }]}>Fechas importantes</Text>
               <View style={styles.row}>
-                <Text style={styles.texto}>Fechas consideradas clave en el desarrollo del audio</Text>
+                <Text style={[styles.texto, { color: COLORS.ORANGE_PASTEL_TEXT }]}>Fechas, eventos y sucesos considerados clave dentro del texto </Text>
               </View>
             </View>
           </TouchableOpacity>
 
           {/* Preguntas */}
           <TouchableOpacity
-            onPress={() => handleOpenModal('Preguntas', COLORS.Pastel_Pink, 'question', COLORS.Pastel_Pink_1, <Preguntas data={preguntas} />)}
-            style={[styles.post, { backgroundColor: COLORS.Pastel_Pink }]}
+            onPress={() =>
+              handleOpenModal(
+                'Preguntas',
+                COLORS.PINK_PASTEL_FONT,
+                'question',
+                'font-awesome',
+                COLORS.PINK_PASTEL_TEXT,
+                <Preguntas data={preguntas} />
+              )}
+            style={[styles.post, { backgroundColor: COLORS.PINK_PASTEL_FONT }]}
           >
             <View style={styles.firstColumn}>
-              <FontAwesome name='question' size={40} color={COLORS.Pastel_Pink_1} />
+              <Icon type='font-awesome' name='question' size={40} color={COLORS.PINK_PASTEL_TEXT} />
             </View>
             <View style={styles.secondColumn}>
-              <Text style={[styles.subtitleP, { color: COLORS.Pastel_Pink_1 }]}>Preguntas</Text>
+              <Text style={[styles.subtitleP, { color: COLORS.PINK_PASTEL_TEXT }]}>Preguntas</Text>
               <View style={styles.row}>
-                <Text style={styles.texto}>Preguntas de apoyo para complementar la información recopilada</Text>
+                <Text style={[styles.texto, { color: COLORS.PINK_PASTEL_TEXT }]}>Preguntas de apoyo para complementar la información recopilada</Text>
               </View>
             </View>
           </TouchableOpacity>
 
-          {/* Tareas */}
-          <TouchableOpacity
-            onPress={() => handleOpenModal('Tareas', COLORS.Pastel_Blue, 'tasks', COLORS.Pastel_Blue_1, <Tareas data={tareas} />)}
-            style={[styles.post, { backgroundColor: COLORS.Pastel_Blue }]}
-          >
-            <View style={styles.firstColumn}>
-              <FontAwesome name='tasks' size={40} color={COLORS.Pastel_Blue_1} />
-            </View>
-            <View style={styles.secondColumn}>
-              <Text style={[styles.subtitleP, { color: COLORS.Pastel_Blue_1 }]}>Tareas</Text>
-              <View style={styles.row}>
-                <Text style={styles.texto}>Tareas programadas durante la reproducción del audio</Text>
-              </View>
-            </View>
-          </TouchableOpacity>
           <Modal visible={isModalVisible} animationType='fade' transparent>
-            <TouchableWithoutFeedback onPress={() => setIsModalVisible(false)}>
+            <TouchableWithoutFeedback>
               <View style={styles.modalContainer}>
                 <View style={[styles.modalView, { backgroundColor: COLORS.WHITE }]}>
 
-                  <FontAwesome name={selectedPost.icon} size={40} color={selectedPost.iconColor} style={styles.icon} />
+                  <Icon type={selectedPost.type} name={selectedPost.icon} size={40} color={selectedPost.iconColor} style={styles.icon} />
 
                   <Text style={[styles.modalTitle, { color: selectedPost.iconColor }]}>{selectedPost.title}</Text>
-                  {/* Resto del contenido del modal */}
+
                   <ScrollView style={styles.modalScrollView}>
                     {selectedPost.info}
                   </ScrollView>
 
                   <TouchableOpacity onPress={() => setIsModalVisible(false)}>
-                    <Text style={styles.closeButton}>Cerrar</Text>
+                    <Text style={[styles.closeButton, { color: selectedPost.iconColor }]}>Cerrar</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -191,7 +236,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 25,
     fontWeight: 'bold',
-    marginTop: '8%',
+    marginTop: '4%',
     color: COLORS.GRAY_SOFT
   },
   resumen: {
@@ -202,7 +247,7 @@ const styles = StyleSheet.create({
   post: {
     flexDirection: 'row',
     marginTop: '5%',
-    backgroundColor: COLORS.Pastel_Orange,
+    backgroundColor: COLORS.ORANGE_PASTEL_FONT,
     padding: 5,
     borderRadius: 10
   },
@@ -223,8 +268,7 @@ const styles = StyleSheet.create({
     flex: 3
   },
   row: {
-    flexDirection: 'row',
-    marginTop: 8
+    flexDirection: 'row'
   },
   modalContainer: {
     flex: 1,
@@ -236,11 +280,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',
-    width: '80%',
-    maxHeight: '80%'
+    width: '90%',
+    maxHeight: '90%'
   },
   modalScrollView: {
-
     width: '100%'
   },
   modalTitle: {
@@ -265,7 +308,7 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     fontSize: 16,
-    color: COLORS.GRAY_EXTRA_SOFT,
+    color: COLORS.GRAY_SOFT,
     marginTop: 10,
     fontWeight: 'bold'
   }

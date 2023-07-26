@@ -18,7 +18,7 @@ export default SubArticle
 
 const styles = StyleSheet.create({
   subtitle: {
-    fontSize: 20,
+    fontSize: 17,
     fontWeight: 'bold',
     color: COLORS.GRAY_SOFT,
     marginTop: '5%',

@@ -2,22 +2,17 @@ import React from 'react'
 import { Text, View, StyleSheet } from 'react-native'
 
 import { COLORS } from '../../../constants'
-import { ScrollView } from 'react-native'
 
 const Palabras = ({ data }) => {
   return (
     <>
-    {data?.map((palabras) => (
-         
-<View style={styles.palabrasContainer}>
-    
-        <Text style={styles.bulletPoint}>•</Text>
+      {data?.map((palabras, index) => (
+        <View key={index} style={styles.palabrasContainer}>
+          <Text style={styles.bulletPoint}>{index + 1}. </Text>
           <Text style={styles.tit}>{palabras}</Text>
-          
         </View>
-      
-        ))}
-        </>
+      ))}
+    </>
   )
 }
 
@@ -25,23 +20,19 @@ export default Palabras
 
 const styles = StyleSheet.create({
   tit: {
-    fontSize: 13,
-    lineHeight:12,
+    lineHeight: 14,
     textAlign: 'justify',
-    color: COLORS.GRAY_EXTRA_SOFT,
-    flexShrink: 1,
+    color: COLORS.GRAY_SOFT
   },
   palabrasContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 5
   },
   bulletPoint: {
-    fontSize: 13,
-    lineHeight: 12,
     textAlign: 'justify',
-    color: COLORS.GRAY_EXTRA_SOFT,
-    marginRight: 5, // Espacio entre la viñeta y el texto
-  },
- 
+    color: COLORS.GRAY_SOFT,
+    marginRight: 5,
+    fontWeight: 'bold'
+  }
 })
