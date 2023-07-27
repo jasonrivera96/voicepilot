@@ -64,7 +64,10 @@ const SummaryItemScreen = ({ route }) => {
             <SubArticle data={subArticuloList} />
           </View>
 
-          <Text style={[styles.title, { fontSize: 18 }]}>Tópicos destacados</Text>
+          {
+            (palabras && palabras.length) > 0 &&
+            (<Text style={styles.title}>Tópicos destacados</Text>)
+          }
 
           {/* Palabras */}
           {palabras && palabras.length > 0 && (

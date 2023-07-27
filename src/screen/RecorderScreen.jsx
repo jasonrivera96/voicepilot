@@ -334,7 +334,6 @@ const styles = StyleSheet.create({
   buttonModal: {
     borderRadius: 12,
     padding: 10,
-    marginRight: 20,
     width: 150,
     alignItems: 'center'
   },
