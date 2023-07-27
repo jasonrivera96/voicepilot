@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
-import { StyleSheet, Text, View, ScrollView, Modal, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, Modal, TouchableOpacity } from 'react-native'
 import { COLORS } from '../../constants'
 import NavigatorPath from '../../components/NavigatorPath'
 import { getSummary } from '../../services/SummaryService'
@@ -205,7 +205,7 @@ const SummaryItemScreen = ({ route }) => {
                   COLORS.VIOLET_PASTEL_FONT,
                   'lightbulb-o',
                   'font-awesome',
-                  COLORS.PINK_PASTEL_TEXT,
+                  COLORS.VIOLET_PASTEL_TEXT,
                   <Ejemplos data={ejemplos} />
                 )}
               style={[styles.post, { backgroundColor: COLORS.VIOLET_PASTEL_FONT }]}
@@ -223,27 +223,27 @@ const SummaryItemScreen = ({ route }) => {
           )}
 
           <Modal visible={isModalVisible} animationType='fade' transparent>
-           
-              <View style={styles.modalContainer}>
-              
-                <View style={[styles.modalView, { backgroundColor: COLORS.WHITE }]}>
-               
-                  <Icon type={selectedPost.type} name={selectedPost.icon} size={40} color={selectedPost.iconColor} style={styles.icon} />
 
-                  <Text style={[styles.modalTitle, { color: selectedPost.iconColor }]}>{selectedPost.title}</Text>
+            <View style={styles.modalContainer}>
 
-                  <ScrollView style={styles.modalScrollView}>
-                    {selectedPost.info}
-                    </ScrollView>
+              <View style={[styles.modalView, { backgroundColor: COLORS.WHITE }]}>
 
-                  <TouchableOpacity onPress={() => setIsModalVisible(false)}>
-                    <Text style={[styles.closeButton, { color: selectedPost.iconColor }]}>Cerrar</Text>
-                  </TouchableOpacity>
-                 
-                </View>
-                
+                <Icon type={selectedPost.type} name={selectedPost.icon} size={40} color={selectedPost.iconColor} style={styles.icon} />
+
+                <Text style={[styles.modalTitle, { color: selectedPost.iconColor }]}>{selectedPost.title}</Text>
+
+                <ScrollView style={styles.modalScrollView}>
+                  {selectedPost.info}
+                </ScrollView>
+
+                <TouchableOpacity onPress={() => setIsModalVisible(false)}>
+                  <Text style={[styles.closeButton, { color: selectedPost.iconColor }]}>Cerrar</Text>
+                </TouchableOpacity>
+
               </View>
-              
+
+            </View>
+
           </Modal>
         </View>
       </ScrollView>
