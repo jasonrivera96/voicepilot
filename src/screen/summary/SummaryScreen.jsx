@@ -10,6 +10,7 @@ import { deleteSummary, loadSummaries, updateSummary } from '../../services/Summ
 import { AuthContext } from '../../context/AuthContext'
 import SummaryItem from './SummaryItem'
 import { StatusBar } from 'expo-status-bar'
+import Constants from 'expo-constants'
 
 const SummaryScreen = ({ route }) => {
   const [summaries, setSummaries] = useState([])
@@ -127,7 +128,8 @@ export default SummaryScreen
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.WHITE
+    backgroundColor: COLORS.WHITE,
+    alignItems: 'center',
   },
   containerPath: {
     flexDirection: 'row',
