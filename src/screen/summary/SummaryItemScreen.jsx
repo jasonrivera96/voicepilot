@@ -12,6 +12,7 @@ import Temas from './post/Temas'
 import Preguntas from './post/Preguntas'
 import Tareas from './post/Tareas'
 import { Icon } from 'react-native-elements'
+import Ejemplos from './post/Ejemplos'
 
 const SummaryItemScreen = ({ route }) => {
   const { summaryId } = route.params
@@ -45,7 +46,7 @@ const SummaryItemScreen = ({ route }) => {
     setIsModalVisible(true)
   }
 
-  const { titulo, resumen, subArticuloList, palabras, temas, fechas, preguntas, tareas } = summary
+  const { titulo, resumen, subArticuloList, palabras, temas, fechas, preguntas, tareas, ejemplos } = summary
 
   return (
     <View style={styles.container}>
@@ -195,25 +196,54 @@ const SummaryItemScreen = ({ route }) => {
             </TouchableOpacity>
           )}
 
-          <Modal visible={isModalVisible} animationType='fade' transparent>
-            <TouchableWithoutFeedback>
-              <View style={styles.modalContainer}>
-                <View style={[styles.modalView, { backgroundColor: COLORS.WHITE }]}>
+          {/* Ejemplos */}
+          {ejemplos && ejemplos.length > 0 && (
+            <TouchableOpacity
+              onPress={() =>
+                handleOpenModal(
+                  'Ejemplos',
+                  COLORS.VIOLET_PASTEL_FONT,
+                  'lightbulb-o',
+                  'font-awesome',
+                  COLORS.PINK_PASTEL_TEXT,
+                  <Ejemplos data={ejemplos} />
+                )}
+              style={[styles.post, { backgroundColor: COLORS.VIOLET_PASTEL_FONT }]}
+            >
+              <View style={styles.firstColumn}>
+                <Icon type='font-awesome' name='lightbulb-o' size={40} color={COLORS.VIOLET_PASTEL_TEXT} />
+              </View>
+              <View style={styles.secondColumn}>
+                <Text style={[styles.subtitleP, { color: COLORS.VIOLET_PASTEL_TEXT }]}>Ejemplos</Text>
+                <View style={styles.row}>
+                  <Text style={[styles.texto, { color: COLORS.VIOLET_PASTEL_TEXT }]}>Ejemplos para enriquecer el tema analizado</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          )}
 
+          <Modal visible={isModalVisible} animationType='fade' transparent>
+           
+              <View style={styles.modalContainer}>
+              
+                <View style={[styles.modalView, { backgroundColor: COLORS.WHITE }]}>
+               
                   <Icon type={selectedPost.type} name={selectedPost.icon} size={40} color={selectedPost.iconColor} style={styles.icon} />
 
                   <Text style={[styles.modalTitle, { color: selectedPost.iconColor }]}>{selectedPost.title}</Text>
 
                   <ScrollView style={styles.modalScrollView}>
                     {selectedPost.info}
-                  </ScrollView>
+                    </ScrollView>
 
                   <TouchableOpacity onPress={() => setIsModalVisible(false)}>
                     <Text style={[styles.closeButton, { color: selectedPost.iconColor }]}>Cerrar</Text>
                   </TouchableOpacity>
+                 
                 </View>
+                
               </View>
-            </TouchableWithoutFeedback>
+              
           </Modal>
         </View>
       </ScrollView>

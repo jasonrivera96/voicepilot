@@ -13,25 +13,9 @@ import QueryResult from './QueryResult'
 export default function SearchScreen () {
   const [searchQuery, setSearchQuery] = useState('')
   const [focus, setFocus] = useState()
-  // const [recentSearches, setRecentSear ches] = useState([])
-  // const [results, setResults] = useState([])
   const { userData } = useContext(AuthContext)
   const { resources, loading, getResources, clearResources } = useQuery({ searchQuery })
 
-  // async function searchQueryTest () {
-  //   const response = await makeQuery(userData, searchQuery)
-  //   setResults(response)
-  // }
-
-  // const handleSearch = () => {
-  //   if (searchQuery.trim() === '') {
-  //     return
-  //   }
-  //   setRecentSearches([{ query: searchQuery, id: Date.now() }, ...recentSearches])
-  //   searchQueryTest()
-  // }
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedGetResources = useCallback(
     debounce((searchQuery, userData) => {
       getResources({ searchQuery, userData })
