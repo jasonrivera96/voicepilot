@@ -36,20 +36,23 @@ const notFound = {
 }
 
 const QueryResultEmpty = ({ searchQuery }) => {
-  const message = searchQuery.trim() === '' ? emptySearch : notFound
+  const isEmpty = searchQuery.trim() === '';
+  const message = isEmpty ? emptySearch : notFound;
   return (
     <View style={stylesEmpty.container}>
       <View style={stylesEmpty.iconEmpty}>
         <Icon type={message.type} name={message.icon} size={50} />
       </View>
       <Text style={stylesEmpty.message}>{message.titulo}</Text>
-      {message.detail && message.detail()}
-    </View>
+      {message.detail && message.detail()
+      }
+          </View>
   )
 }
 
 const ListQueryResult = ({ resources }) => {
   const navigation = useNavigation()
+  
   return (
     <View style={{ height: '80%' }}>
       <FlatList
@@ -104,8 +107,9 @@ const ListQueryResult = ({ resources }) => {
 }
 
 const QueryResult = ({ resources, searchQuery }) => {
-  const hasData = resources?.length > 0
-  return hasData ? <ListQueryResult resources={resources} /> : <QueryResultEmpty searchQuery={searchQuery} />
+  const resourcesArray = resources || [];
+  const hasData = resourcesArray.length > 0
+  return hasData ? <ListQueryResult resources={resourcesArray} /> : <QueryResultEmpty searchQuery={searchQuery} />
 }
 
 export default QueryResult
