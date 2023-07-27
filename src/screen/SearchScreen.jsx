@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react'
+import React, { useCallback, useContext, useState, useEffect } from 'react'
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
 import Constants from 'expo-constants'
@@ -9,12 +9,67 @@ import { StatusBar } from 'expo-status-bar'
 import { AuthContext } from '../context/AuthContext'
 import { useQuery } from '../hooks/useQuery'
 import QueryResult from './QueryResult'
+import QueryResultEmpty from './QueryResult'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function SearchScreen () {
+export default function SearchScreen() {
   const [searchQuery, setSearchQuery] = useState('')
   const [focus, setFocus] = useState()
+
   const { userData } = useContext(AuthContext)
   const { resources, loading, getResources, clearResources } = useQuery({ searchQuery })
+  const [recentSearches, setRecentSearches] = useState([]);
+  const [currentSearch, setCurrentSearch] = useState('');
+  useEffect(() => {
+    if (userData?.id) {
+      const getRecentSearchesAsync = async () => {
+        try {
+          const recentSearchesString = await AsyncStorage.getItem(RECENT_SEARCHES_KEY);
+          const recentSearches = recentSearchesString ? JSON.parse(recentSearchesString) : [];
+          const userRecentSearches = recentSearches.filter((search) => search.userId === userData.id);
+          setRecentSearches(userRecentSearches);
+        } catch (error) {
+          console.error('Error al obtener las búsquedas recientes:', error);
+        }
+      };
+
+      getRecentSearchesAsync();
+    }
+  }, [userData, resources]);
+
+  const RECENT_SEARCHES_KEY = '@MyApp:recentSearches';
+
+
+
+  const storeRecentSearch = async (userId, query) => {
+    try {
+      const recentSearchesString = await AsyncStorage.getItem(RECENT_SEARCHES_KEY);
+      const recentSearches = recentSearchesString ? JSON.parse(recentSearchesString) : [];
+  
+      const id = Date.now().toString(); 
+  
+      
+      const recentSearch = { id, userId, query };
+  
+      
+      recentSearches.push(recentSearch);
+  
+      
+      await AsyncStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(recentSearches));
+  
+      
+      setRecentSearches(recentSearches); 
+    } catch (error) {
+      console.error('Error al almacenar la búsqueda reciente:', error);
+    }
+  };
+
+
+
+
+
+
+
 
   const debouncedGetResources = useCallback(
     debounce((searchQuery, userData) => {
@@ -24,12 +79,20 @@ export default function SearchScreen () {
   )
 
   const handleChange = (search) => {
-    setSearchQuery(search)
+    setCurrentSearch(search);
+    setSearchQuery(search);
+
     debouncedGetResources(search, userData)
+   
   }
 
   const handleSubmit = () => {
-    getResources({ searchQuery, userData })
+    getResources({  searchQuery: currentSearch, userData })
+    if (resources.length > 0 && currentSearch !== '')  {
+      storeRecentSearch(userData?.id, currentSearch);
+      
+    }
+    
   }
 
   const clearResults = () => {
@@ -45,6 +108,20 @@ export default function SearchScreen () {
     setFocus(false)
   }
 
+  const clearAllRecentSearches = async () => {
+    try {
+      await AsyncStorage.removeItem(RECENT_SEARCHES_KEY);
+      setRecentSearches([]);
+    } catch (error) {
+
+
+      console.error('Error al borrar las búsquedas recientes:', error);
+    }
+  };
+
+  const resourcesArray = resources || [];
+  const isResourcesEmpty = resourcesArray.length === 0;
+const isRecentSearchesEmpty = recentSearches.length === 0;
   return (
     <View style={styles.container}>
       <StatusBar style='dark' backgroundColor='white' />
@@ -69,11 +146,46 @@ export default function SearchScreen () {
         }
 
       </View>
+      {resourcesArray.length === 0 && searchQuery === '' && recentSearches.length > 0 && (
+        <View style={styles.recentSearchesContainer}>
+
+          <Text style={styles.recentSearchesTitle}>Búsquedas Recientes</Text>
+          {recentSearches.length > 0 ? (
+            recentSearches.map((recentSearch) => (
+
+              <TouchableOpacity
+                key={recentSearch.id}
+                onPress={() => handleChange(recentSearch.query)}
+                style={styles.recentSearchItem}
+              >
+                <Text>{recentSearch.query}</Text>
+              </TouchableOpacity>
+
+            ))
+          ) : (
+            <Text style={styles.noRecentSearchesText}>No hay búsquedas recientes</Text>
+          )}
+          <TouchableOpacity
+            style={styles.clearAllButton}
+            onPress={clearAllRecentSearches}
+          >
+            <Text style={styles.clearAllButtonText}>Borrar Todas</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {!isResourcesEmpty && (
+        <View style={styles.searchResultsContainer}>
+          <Text style={styles.searchResultsTitle}>Resultados</Text>
+          {loading && <ActivityIndicator size='large' color={COLORS.ORANGE} />}
+          {!loading && <QueryResult resources={resources} searchQuery={searchQuery} />}
+        </View>
+      )}
+      {isResourcesEmpty && searchQuery === '' && isRecentSearchesEmpty && (
       <View style={styles.searchResultsContainer}>
-        <Text style={styles.searchResultsTitle}>Resultados</Text>
-        {loading && <ActivityIndicator size='large' color={COLORS.ORANGE} />}
-        {!loading && <QueryResult resources={resources} searchQuery={searchQuery} />}
+        <QueryResultEmpty searchQuery={searchQuery} />
       </View>
+    )}
     </View>
   )
 }
@@ -125,5 +237,36 @@ const styles = StyleSheet.create({
   noResultsText: {
     marginLeft: 25,
     fontSize: 14
-  }
+  },
+  recentSearchesContainer: {
+    flex: 1,
+    alignSelf: 'stretch',
+    marginTop: 20,
+    paddingHorizontal: 20 // Agregamos un padding horizontal para que coincida con los resultados
+  },
+  recentSearchesTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  recentSearchItem: {
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.GRAY_EXTRA_SOFT,
+  },
+  noRecentSearchesText: {
+    fontSize: 14,
+    textAlign: 'center',
+    marginTop: 10,
+  },
+  clearAllButton: {
+    marginTop: 10,
+    alignSelf: 'flex-end',
+    paddingVertical: 8,
+  },
+  clearAllButtonText: {
+    fontSize: 14,
+    color: COLORS.ORANGE,
+  },
+
 })
