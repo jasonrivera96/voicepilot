@@ -45,7 +45,10 @@ export default function SearchScreen() {
     try {
       const recentSearchesString = await AsyncStorage.getItem(RECENT_SEARCHES_KEY);
       const recentSearches = recentSearchesString ? JSON.parse(recentSearchesString) : [];
-  
+      const existingSearch = recentSearches.find(search => search.userId === userId && search.query === query);
+      if (existingSearch) {
+        return; // No hacemos nada si la búsqueda ya existe
+      }
       const id = Date.now().toString(); 
   
       
@@ -169,7 +172,7 @@ const isRecentSearchesEmpty = recentSearches.length === 0;
             style={styles.clearAllButton}
             onPress={clearAllRecentSearches}
           >
-            <Text style={styles.clearAllButtonText}>Borrar Todas</Text>
+            <Text style={styles.clearAllButtonText}>Borrar Búsquedas</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -186,6 +189,12 @@ const isRecentSearchesEmpty = recentSearches.length === 0;
         <QueryResultEmpty searchQuery={searchQuery} />
       </View>
     )}
+          {isResourcesEmpty && searchQuery !== '' && (
+        <View style={styles.searchResultsContainer}>
+          <QueryResultEmpty searchQuery={searchQuery} />
+        </View>
+      )}
+
     </View>
   )
 }
