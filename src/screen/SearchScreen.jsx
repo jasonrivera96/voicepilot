@@ -8,14 +8,13 @@ import { COLORS } from '../constants'
 import { StatusBar } from 'expo-status-bar'
 import { AuthContext } from '../context/AuthContext'
 import { useQuery } from '../hooks/useQuery'
-import QueryResult from './QueryResult'
-import QueryResultEmpty from './QueryResult'
+import QueryResult, {QueryResultEmpty} from './QueryResult'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SearchScreen() {
   const [searchQuery, setSearchQuery] = useState('')
   const [focus, setFocus] = useState()
-
+  const [searchCounter, setSearchCounter] = useState(0);
   const { userData } = useContext(AuthContext)
   const { resources, loading, getResources, clearResources } = useQuery({ searchQuery })
   const [recentSearches, setRecentSearches] = useState([]);
@@ -35,7 +34,7 @@ export default function SearchScreen() {
 
       getRecentSearchesAsync();
     }
-  }, [userData, resources]);
+  }, [userData, resources, searchCounter]);
 
   const RECENT_SEARCHES_KEY = '@MyApp:recentSearches';
 
@@ -49,19 +48,19 @@ export default function SearchScreen() {
       if (existingSearch) {
         return; // No hacemos nada si la búsqueda ya existe
       }
-      const id = Date.now().toString(); 
-  
-      
+      const id = Date.now().toString();
+
+
       const recentSearch = { id, userId, query };
-  
-      
+
+
       recentSearches.push(recentSearch);
-  
-      
+
+
       await AsyncStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(recentSearches));
-  
-      
-      setRecentSearches(recentSearches); 
+
+
+      setRecentSearches(recentSearches);
     } catch (error) {
       console.error('Error al almacenar la búsqueda reciente:', error);
     }
@@ -76,26 +75,27 @@ export default function SearchScreen() {
 
   const debouncedGetResources = useCallback(
     debounce((searchQuery, userData) => {
-      getResources({ searchQuery, userData })
+      getResources({ searchQuery, userData });
     }, 500),
-    [getResources]
+    [searchQuery]
   )
 
   const handleChange = (search) => {
     setCurrentSearch(search);
-    setSearchQuery(search);
+   
+    setSearchQuery(search)
 
-    debouncedGetResources(search, userData)
+    debouncedGetResources(search, userData);
    
   }
 
   const handleSubmit = () => {
-    getResources({  searchQuery: currentSearch, userData })
-    if (resources.length > 0 && currentSearch !== '')  {
+    getResources({ searchQuery, userData })
+    if (resources.length > 0 && currentSearch !== '') {
       storeRecentSearch(userData?.id, currentSearch);
-      
+
     }
-    
+
   }
 
   const clearResults = () => {
@@ -124,7 +124,7 @@ export default function SearchScreen() {
 
   const resourcesArray = resources || [];
   const isResourcesEmpty = resourcesArray.length === 0;
-const isRecentSearchesEmpty = recentSearches.length === 0;
+  const isRecentSearchesEmpty = recentSearches.length === 0;
   return (
     <View style={styles.container}>
       <StatusBar style='dark' backgroundColor='white' />
@@ -185,11 +185,11 @@ const isRecentSearchesEmpty = recentSearches.length === 0;
         </View>
       )}
       {isResourcesEmpty && searchQuery === '' && isRecentSearchesEmpty && (
-      <View style={styles.searchResultsContainer}>
-        <QueryResultEmpty searchQuery={searchQuery} />
-      </View>
-    )}
-          {isResourcesEmpty && searchQuery !== '' && (
+        <View style={styles.searchResultsContainer}>
+          <QueryResultEmpty searchQuery={searchQuery} />
+        </View>
+      )}
+      {isResourcesEmpty && searchQuery !== '' && (
         <View style={styles.searchResultsContainer}>
           <QueryResultEmpty searchQuery={searchQuery} />
         </View>
