@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useState, useEffect } from 'react'
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native'
-import { MaterialIcons } from '@expo/vector-icons'
+import { FontAwesome, MaterialIcons } from '@expo/vector-icons'
 import Constants from 'expo-constants'
 import debounce from 'just-debounce-it'
 
@@ -8,18 +8,21 @@ import { COLORS } from '../constants'
 import { StatusBar } from 'expo-status-bar'
 import { AuthContext } from '../context/AuthContext'
 import { useQuery } from '../hooks/useQuery'
-import QueryResult from './QueryResult'
-import QueryResultEmpty from './QueryResult'
+import QueryResult, { QueryResultEmpty } from './QueryResult'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SearchScreen() {
   const [searchQuery, setSearchQuery] = useState('')
   const [focus, setFocus] = useState()
-
   const { userData } = useContext(AuthContext)
   const { resources, loading, getResources, clearResources } = useQuery({ searchQuery })
   const [recentSearches, setRecentSearches] = useState([]);
   const [currentSearch, setCurrentSearch] = useState('');
+  const RECENT_SEARCHES_KEY = '@MyApp:recentSearches';
+  const resourcesArray = resources || [];
+  const isResourcesEmpty = resourcesArray.length === 0;
+  const isRecentSearchesEmpty = recentSearches.length === 0;
+
   useEffect(() => {
     if (userData?.id) {
       const getRecentSearchesAsync = async () => {
@@ -37,9 +40,6 @@ export default function SearchScreen() {
     }
   }, [userData, resources]);
 
-  const RECENT_SEARCHES_KEY = '@MyApp:recentSearches';
-
-
 
   const storeRecentSearch = async (userId, query) => {
     try {
@@ -49,58 +49,53 @@ export default function SearchScreen() {
       if (existingSearch) {
         return; // No hacemos nada si la búsqueda ya existe
       }
-      const id = Date.now().toString(); 
-  
-      
+      const id = Date.now().toString();
+
+
       const recentSearch = { id, userId, query };
-  
-      
+
+
       recentSearches.push(recentSearch);
-  
-      
+
+
       await AsyncStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(recentSearches));
-  
-      
-      setRecentSearches(recentSearches); 
+
+
+      setRecentSearches(recentSearches);
     } catch (error) {
       console.error('Error al almacenar la búsqueda reciente:', error);
     }
   };
 
-
-
-
-
-
-
-
   const debouncedGetResources = useCallback(
     debounce((searchQuery, userData) => {
-      getResources({ searchQuery, userData })
+      getResources({ searchQuery, userData });
     }, 500),
-    [getResources]
+    [searchQuery]
   )
 
   const handleChange = (search) => {
     setCurrentSearch(search);
-    setSearchQuery(search);
 
-    debouncedGetResources(search, userData)
-   
+    setSearchQuery(search)
+
+    debouncedGetResources(search, userData);
+
   }
 
   const handleSubmit = () => {
-    getResources({  searchQuery: currentSearch, userData })
-    if (resources.length > 0 && currentSearch !== '')  {
+    getResources({ searchQuery, userData })
+    if (resources.length > 0 && currentSearch !== '') {
       storeRecentSearch(userData?.id, currentSearch);
-      
+
     }
-    
+
   }
 
   const clearResults = () => {
     setSearchQuery('')
-    clearResources()
+    debouncedGetResources('', userData);
+
   }
 
   const onFocus = () => {
@@ -122,9 +117,7 @@ export default function SearchScreen() {
     }
   };
 
-  const resourcesArray = resources || [];
-  const isResourcesEmpty = resourcesArray.length === 0;
-const isRecentSearchesEmpty = recentSearches.length === 0;
+
   return (
     <View style={styles.container}>
       <StatusBar style='dark' backgroundColor='white' />
@@ -151,29 +144,39 @@ const isRecentSearchesEmpty = recentSearches.length === 0;
       </View>
       {resourcesArray.length === 0 && searchQuery === '' && recentSearches.length > 0 && (
         <View style={styles.recentSearchesContainer}>
-
-          <Text style={styles.recentSearchesTitle}>Búsquedas Recientes</Text>
+          <View style={{ flexDirection: 'row', height: 30, borderBottomWidth:1, borderColor: COLORS.GRAY,width: "100%", marginBottom:"5%"}}>
+            <View style={styles.principal}>
+              <Text style={styles.recentSearchesTitle}>Recientes</Text>
+            </View>
+            <View style={styles.secondary}>
+              <TouchableOpacity
+                style={styles.clearAllButton}
+                onPress={clearAllRecentSearches}
+              >
+                {/* <FontAwesome name='trash' size={14} /> */}
+                <Text style={{color: COLORS.ORANGE}}>Borrar Todo</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
           {recentSearches.length > 0 ? (
             recentSearches.map((recentSearch) => (
+              <View key={recentSearch.id} style={flexDirection = 'row'}>
 
-              <TouchableOpacity
-                key={recentSearch.id}
-                onPress={() => handleChange(recentSearch.query)}
-                style={styles.recentSearchItem}
-              >
-                <Text>{recentSearch.query}</Text>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  key={recentSearch.id}
+                  onPress={() => handleChange(recentSearch.query)}
+                  style={styles.recentSearchItem}
+                >
+                  <FontAwesome name='undo' size={15} color='black' />
+                  <Text style={styles.recentText}>{recentSearch.query}</Text>
+                </TouchableOpacity>
+              </View>
 
             ))
           ) : (
             <Text style={styles.noRecentSearchesText}>No hay búsquedas recientes</Text>
           )}
-          <TouchableOpacity
-            style={styles.clearAllButton}
-            onPress={clearAllRecentSearches}
-          >
-            <Text style={styles.clearAllButtonText}>Borrar Búsquedas</Text>
-          </TouchableOpacity>
+
         </View>
       )}
 
@@ -185,11 +188,11 @@ const isRecentSearchesEmpty = recentSearches.length === 0;
         </View>
       )}
       {isResourcesEmpty && searchQuery === '' && isRecentSearchesEmpty && (
-      <View style={styles.searchResultsContainer}>
-        <QueryResultEmpty searchQuery={searchQuery} />
-      </View>
-    )}
-          {isResourcesEmpty && searchQuery !== '' && (
+        <View style={styles.searchResultsContainer}>
+          <QueryResultEmpty searchQuery={searchQuery} />
+        </View>
+      )}
+      {isResourcesEmpty && searchQuery !== '' && (
         <View style={styles.searchResultsContainer}>
           <QueryResultEmpty searchQuery={searchQuery} />
         </View>
@@ -247,21 +250,41 @@ const styles = StyleSheet.create({
     marginLeft: 25,
     fontSize: 14
   },
+
   recentSearchesContainer: {
     flex: 1,
     alignSelf: 'stretch',
     marginTop: 20,
-    paddingHorizontal: 20 // Agregamos un padding horizontal para que coincida con los resultados
+    paddingHorizontal: 20,
+    position: 'relative',
+  },
+  principal: {
+
+    flexDirection: 'row',
+    gap: 10,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    width: '70%'
+  },
+  secondary: {
+    width:"30%",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   recentSearchesTitle: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: 'bold',
-    marginBottom: 10,
+    paddingVertical: 5,
+
   },
   recentSearchItem: {
+    flexDirection: 'row',
     paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.GRAY_EXTRA_SOFT,
+
+  },
+  recentText: {
+    marginLeft: "2%"
+
   },
   noRecentSearchesText: {
     fontSize: 14,
@@ -269,13 +292,15 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   clearAllButton: {
-    marginTop: 10,
-    alignSelf: 'flex-end',
-    paddingVertical: 8,
+
+    marginLeft: "3%",
+    flexDirection: 'row',
+    justifyContent: 'flex-end'
   },
   clearAllButtonText: {
     fontSize: 14,
     color: COLORS.ORANGE,
+    marginLeft: "2%"
   },
 
 })

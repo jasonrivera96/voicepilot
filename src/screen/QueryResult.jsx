@@ -35,7 +35,7 @@ const notFound = {
   )
 }
 
-const QueryResultEmpty = ({ searchQuery }) => {
+export const QueryResultEmpty = ({ searchQuery }) => {
   const isEmpty = searchQuery.trim() === '';
   const message = isEmpty ? emptySearch : notFound;
   return (
