@@ -116,7 +116,7 @@ const SummaryItemScreen = ({ route }) => {
               <View style={styles.secondColumn}>
                 <Text style={[styles.subtitleP, { color: COLORS.GREEN_MINT_PASTEL_TEXT }]}>Definiciones</Text>
                 <View style={styles.row}>
-                  <Text style={[styles.texto, { color: COLORS.GREEN_MINT_PASTEL_TEXT }]}>Temas, conceptos y definiciones con mayor relevancia y mención en le texto</Text>
+                  <Text style={[styles.texto, { color: COLORS.GREEN_MINT_PASTEL_TEXT }]}>Temas, conceptos y definiciones con mayor relevancia en el texto</Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -142,7 +142,7 @@ const SummaryItemScreen = ({ route }) => {
               <View style={styles.secondColumn}>
                 <Text style={[styles.subtitleP, { color: COLORS.CIAN_PASTEL_TEXT }]}>Nombres destacados</Text>
                 <View style={styles.row}>
-                  <Text style={[styles.texto, { color: COLORS.CIAN_PASTEL_TEXT }]}>Nombres de personas relevantes para el enriquecimiento del texto. </Text>
+                  <Text style={[styles.texto, { color: COLORS.CIAN_PASTEL_TEXT }]}>Nombres de personas en general que se mencionan en el texto</Text>
                 </View>
               </View>
             </TouchableOpacity>
