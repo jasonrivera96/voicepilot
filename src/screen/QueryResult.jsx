@@ -119,7 +119,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: '5%',
     marginBottom: 10,
-    width: '100%'
   },
   resultTextContainer: {
     flexDirection: 'row',
@@ -130,7 +129,8 @@ const styles = StyleSheet.create({
     marginRight: 10,
     padding: 10,
     backgroundColor: COLORS.GRAY,
-    borderRadius: 20
+    borderRadius: 20,
+    overflow: 'hidden'
   },
   searchResultText: {
     width: '80%'
@@ -144,16 +144,19 @@ const styles = StyleSheet.create({
     color: COLORS.GREEN,
     textAlign: 'center',
     backgroundColor: COLORS.GREEN_SOFT,
-    borderRadius: 15,
-    paddingVertical: 2
+    borderRadius: 10,
+    paddingVertical: 2,
+    overflow: 'hidden'
+
   },
   estado1: {
     width: '100%',
     color: '#876500FF',
     textAlign: 'center',
     backgroundColor: '#FFF9E9FF',
-    borderRadius: 15,
-    paddingVertical: 2
+    borderRadius: 10,
+    paddingVertical: 2,
+    overflow:'hidden'
   },
   noResultsText: {
     marginLeft: 25,

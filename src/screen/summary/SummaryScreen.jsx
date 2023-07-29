@@ -103,7 +103,9 @@ const SummaryScreen = ({ route }) => {
   return (
     <View style={styles.container}>
       <StatusBar style='dark' backgroundColor='white' />
-      <NavigatorPath route={route} />
+      <View style={styles.containerPath}>
+        <NavigatorPath route={route} />
+      </View>
       <View style={styles.contentContainer}>
         <View style={styles.text}>
           <Text style={styles.titlePage}>Resúmenes</Text>
@@ -129,11 +131,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.WHITE,
-    alignItems: 'center',
+    alignItems: 'center'
   },
   containerPath: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    width: '100%'
   },
   textPath: {
     color: COLORS.ORANGE

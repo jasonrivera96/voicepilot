@@ -24,9 +24,9 @@ const styles = StyleSheet.create({
     paddingBottom: 10
   },
   tit: {
-    textAlign: 'justify',
     color: COLORS.GRAY_SOFT,
-    width: '95%'
+    width: '95%',
+    fontWeight: 'bold'
   },
   preguntasContainer: {
     flexDirection: 'row',

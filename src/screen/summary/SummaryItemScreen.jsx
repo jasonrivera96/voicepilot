@@ -13,6 +13,7 @@ import Preguntas from './post/Preguntas'
 import Tareas from './post/Tareas'
 import { Icon } from 'react-native-elements'
 import Ejemplos from './post/Ejemplos'
+import Nombres from './post/Nombres'
 
 const SummaryItemScreen = ({ route }) => {
   const { summaryId } = route.params
@@ -46,7 +47,7 @@ const SummaryItemScreen = ({ route }) => {
     setIsModalVisible(true)
   }
 
-  const { titulo, resumen, subArticuloList, palabras, temas, fechas, preguntas, tareas, ejemplos } = summary
+  const { titulo, resumen, subArticuloList, palabras, temas, fechas, preguntas, tareas, ejemplos, nombres } = summary
 
   return (
     <View style={styles.container}>
@@ -66,7 +67,7 @@ const SummaryItemScreen = ({ route }) => {
 
           {
             (palabras && palabras.length) > 0 &&
-            (<Text style={styles.title}>Tópicos destacados</Text>)
+              <Text style={[styles.title, { fontSize: 18 }]}>Tópicos destacados</Text>
           }
 
           {/* Palabras */}
@@ -100,7 +101,7 @@ const SummaryItemScreen = ({ route }) => {
             <TouchableOpacity
               onPress={() =>
                 handleOpenModal(
-                  'Temas destacados',
+                  'Definiciones',
                   COLORS.GRAY,
                   'message-text-outline',
                   'material-community',
@@ -113,9 +114,35 @@ const SummaryItemScreen = ({ route }) => {
                 <Icon type='material-community' name='message-text-outline' size={40} color={COLORS.GREEN_MINT_PASTEL_TEXT} />
               </View>
               <View style={styles.secondColumn}>
-                <Text style={[styles.subtitleP, { color: COLORS.GREEN_MINT_PASTEL_TEXT }]}>Temas destacados</Text>
+                <Text style={[styles.subtitleP, { color: COLORS.GREEN_MINT_PASTEL_TEXT }]}>Definiciones</Text>
                 <View style={styles.row}>
                   <Text style={[styles.texto, { color: COLORS.GREEN_MINT_PASTEL_TEXT }]}>Temas, conceptos y definiciones con mayor relevancia y mención en le texto</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          )}
+
+          {/* NOMBRES   */}
+          {nombres && nombres.length > 0 && (
+            <TouchableOpacity
+              onPress={() =>
+                handleOpenModal(
+                  'Nombres destacados',
+                  COLORS.CIAN_PASTEL_TEXT,
+                  'person',
+                  'octions',
+                  COLORS.CIAN_PASTEL_TEXT,
+                  <Nombres data={nombres} />
+                )}
+              style={[styles.post, { backgroundColor: COLORS.CIAN_PASTEL_FONT }]}
+            >
+              <View style={styles.firstColumn}>
+                <Icon type='octions' name='person' size={40} color={COLORS.CIAN_PASTEL_TEXT} />
+              </View>
+              <View style={styles.secondColumn}>
+                <Text style={[styles.subtitleP, { color: COLORS.CIAN_PASTEL_TEXT }]}>Nombres destacados</Text>
+                <View style={styles.row}>
+                  <Text style={[styles.texto, { color: COLORS.CIAN_PASTEL_TEXT }]}>Nombres de personas relevantes para el enriquecimiento del texto. </Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -152,7 +179,7 @@ const SummaryItemScreen = ({ route }) => {
             <TouchableOpacity
               onPress={() =>
                 handleOpenModal(
-                  'Fechas importantes',
+                  'Eventos',
                   COLORS.ORANGE_PASTEL_TEXT,
                   'calendar-o',
                   'font-awesome',
@@ -165,14 +192,13 @@ const SummaryItemScreen = ({ route }) => {
                 <Icon type='font-awesome' name='calendar-o' size={40} color={COLORS.ORANGE_PASTEL_TEXT} />
               </View>
               <View style={styles.secondColumn}>
-                <Text style={[styles.subtitleP, { color: COLORS.ORANGE_PASTEL_TEXT }]}>Fechas importantes</Text>
+                <Text style={[styles.subtitleP, { color: COLORS.ORANGE_PASTEL_TEXT }]}>Eventos</Text>
                 <View style={styles.row}>
                   <Text style={[styles.texto, { color: COLORS.ORANGE_PASTEL_TEXT }]}>Fechas, eventos y sucesos considerados clave dentro del texto </Text>
                 </View>
               </View>
             </TouchableOpacity>
           )}
-
           {/* Preguntas */}
           {preguntas && preguntas.length > 0 && (
             <TouchableOpacity
@@ -219,7 +245,7 @@ const SummaryItemScreen = ({ route }) => {
               <View style={styles.secondColumn}>
                 <Text style={[styles.subtitleP, { color: COLORS.VIOLET_PASTEL_TEXT }]}>Ejemplos</Text>
                 <View style={styles.row}>
-                  <Text style={[styles.texto, { color: COLORS.VIOLET_PASTEL_TEXT }]}>Ejemplos para enriquecer el tema analizado</Text>
+                  <Text style={[styles.texto, { color: COLORS.VIOLET_PASTEL_TEXT }]}>Ejemplos identificados en el texto que enriquecen el resumen</Text>
                 </View>
               </View>
             </TouchableOpacity>
