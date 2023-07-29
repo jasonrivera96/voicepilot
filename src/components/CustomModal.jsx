@@ -1,12 +1,20 @@
 import { Modal, View, StyleSheet, TouchableWithoutFeedback, KeyboardAvoidingView, Keyboard, Platform } from 'react-native'
-import React from 'react'
-import Constants from 'expo-constants'
+import React, { useEffect } from 'react'
 import { COLORS } from '../constants'
+import { StatusBar } from 'expo-status-bar'
 
 export default function CustomModal ({ isVisible, children }) {
-  return (
+  useEffect(() => {
+    return () => {
+      <StatusBar style='dark' backgroundColor='white' />
+    }
+  }, [])
 
+  return (
     <View style={styles.container}>
+      {isVisible
+        ? <StatusBar style='dark' backgroundColor='#1110108d' />
+        : <StatusBar style='dark' backgroundColor='white' />}
       <Modal animationType='slide' transparent visible={isVisible}>
         <KeyboardAvoidingView
           style={styles.modalContainer}
@@ -31,7 +39,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: Constants.statusBarHeight,
     backgroundColor: COLORS.WHITE
   },
   modalContainer: {

@@ -1,5 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { StyleSheet, Text, View, FlatList, Alert } from 'react-native'
+import { StatusBar } from 'expo-status-bar'
+import socket from '../../config/socket'
 
 import { COLORS } from '../../constants'
 import NavigatorPath from '../../components/NavigatorPath'
@@ -9,7 +11,6 @@ import EditModal from '../home/EditModal'
 import { deleteSummary, loadSummaries, updateSummary } from '../../services/SummaryService'
 import { AuthContext } from '../../context/AuthContext'
 import SummaryItem from './SummaryItem'
-import { StatusBar } from 'expo-status-bar'
 
 const SummaryScreen = ({ route }) => {
   const [summaries, setSummaries] = useState([])
@@ -30,6 +31,19 @@ const SummaryScreen = ({ route }) => {
   useEffect(() => {
     fetchData()
   }, [fetchData])
+
+  useEffect(() => {
+    socket.on('completed', (data) => {
+      console.log(data)
+    })
+    socket.on('processing', (data) => {
+      console.log(data)
+    })
+    return () => {
+      socket.off('completed')
+      socket.off('processing')
+    }
+  }, [])
 
   const closeModal = () => {
     setIsModalVisible(false)
@@ -142,8 +156,7 @@ const styles = StyleSheet.create({
   summaryListContainer: {
     alignSelf: 'flex-start',
     marginTop: 30,
-    marginHorizontal: 30,
-    height: '70%'
+    marginHorizontal: 30
   },
   contentContainer: {
     alignItems: 'center',

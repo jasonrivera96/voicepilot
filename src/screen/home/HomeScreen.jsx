@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { View, StyleSheet, FlatList, Alert } from 'react-native'
+import { View, StyleSheet, FlatList, Alert, Keyboard } from 'react-native'
 import Constants from 'expo-constants'
 
 import CustomModal from '../../components/CustomModal'
@@ -37,8 +37,9 @@ const HomeScreen = () => {
   }
 
   const addFolderItem = async (folderName) => {
-    addFolder(folderName)
-    folders.length > 0 && await flatList.current.scrollToEnd({ animated: true })
+    Keyboard.dismiss()
+    await addFolder(folderName)
+    flatList.current.scrollToEnd({ animated: true })
     setIsModalVisible(false)
   }
 
@@ -46,6 +47,7 @@ const HomeScreen = () => {
     updateFolde(folderItem)
     setFolder({})
     setIsModalVisible(false)
+    setIsEditModal(false)
   }
 
   const deleteFolderItem = async ({ item: folderItem }) => {
@@ -120,8 +122,7 @@ const styles = StyleSheet.create({
   folderListContainer: {
     alignSelf: 'flex-start',
     marginTop: 30,
-    marginHorizontal: 30,
-    height: '50%'
+    marginHorizontal: 30
   }
 })
 
