@@ -34,5 +34,4 @@ export const COLORS = {
   VIOLET_PASTEL_FONT: 'rgba(236, 201, 253, 0.4)',
   VIOLET_PASTEL_TEXT: '#9544BB'
 
-
 }

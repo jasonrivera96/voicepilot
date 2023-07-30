@@ -8,7 +8,7 @@ import NavigatorPath from '../../components/NavigatorPath'
 import EmptySummary from './EmpySummary'
 import CustomModal from '../../components/CustomModal'
 import EditModal from '../home/EditModal'
-import { deleteSummary, loadSummaries, updateSummary } from '../../services/SummaryService'
+import { deleteSummary, getSummaryResponse, loadSummaries, updateSummary } from '../../services/SummaryService'
 import { AuthContext } from '../../context/AuthContext'
 import SummaryItem from './SummaryItem'
 
@@ -33,17 +33,44 @@ const SummaryScreen = ({ route }) => {
   }, [fetchData])
 
   useEffect(() => {
-    socket.on('completed', (data) => {
-      console.log(data)
-    })
-    socket.on('processing', (data) => {
-      console.log(data)
-    })
+    socket.on('completed', handleCompletedEvent)
+    socket.on('processing', handleProcessingEvent)
     return () => {
       socket.off('completed')
       socket.off('processing')
     }
-  }, [])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [summaries])
+
+  const handleProcessingEvent = (data) => {
+    console.log('Processing event')
+    const { summaryId, transcriptionId } = data
+    const newSummary = {
+      titulo: 'Procesando resumen',
+      completed: false,
+      id: summaryId,
+      transcriptionId
+    }
+    setSummaries((summaries) => [...summaries, newSummary])
+  }
+
+  const handleCompletedEvent = async (data) => {
+    console.log('Completed event')
+    const { summaryId } = data
+    const { titulo, completed } = await getSummaryResponse(userData, summaryId)
+
+    const summariesUpdated = summaries.map((summary) => {
+      if (summary.id === summaryId) {
+        return {
+          ...summary,
+          completed,
+          titulo
+        }
+      }
+      return summary
+    })
+    setSummaries(summariesUpdated)
+  }
 
   const closeModal = () => {
     setIsModalVisible(false)

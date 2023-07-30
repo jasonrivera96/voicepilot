@@ -34,6 +34,23 @@ export async function getSummary (userData, summaryId) {
   return []
 }
 
+export async function getSummaryResponse (userData, summaryId) {
+  const { id: userId, token } = userData
+  try {
+    const response = await VoicePilotApi.get(`/api/summary/${summaryId}/response`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    })
+    const responseData = await response.data
+    return responseData
+  } catch (error) {
+    console.log(`Error al recuperar el summary con id ${userId}`, error.response.data)
+  }
+  return []
+}
+
 export async function updateSummary (userData, summaryItem) {
   const { token } = userData
   const { id, name } = summaryItem
