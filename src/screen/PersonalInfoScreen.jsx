@@ -1,71 +1,97 @@
-import React from 'react'
-import { View, Text, StyleSheet, ScrollView } from 'react-native'
+import React, { useContext } from 'react'
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native'
 import Constants from 'expo-constants'
 import { COLORS } from '../constants'
 import { Ionicons } from '@expo/vector-icons'
 import { StatusBar } from 'expo-status-bar'
+import { AuthContext } from '../context/AuthContext'
 
 const statusBarHeight = Constants.statusBarHeight
 
 const ProfileScreen = () => {
+  const { userData } = useContext(AuthContext)
+  const userEmail = userData?.email;
+  const userName = userData?.username;
+  
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <StatusBar style='dark' backgroundColor='white' />
       <View style={styles.contentContainer}>
+        
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Perfil</Text>
         </View>
         <View style={styles.circle}>
           <Ionicons name='person-outline' size={40} color={COLORS.ORANGE} />
         </View>
-        <View style={styles.section}>
-          <Text style={styles.user}>Nombres Completos</Text>
-        </View>
+        <TouchableOpacity>
+            <View style={styles.section}>
+                <Text style={styles.user}>{userName}</Text>
+            </View>
+        </TouchableOpacity>
         <View style={styles.section}>
           <Text style={styles.texto}>User</Text>
         </View>
 
         <View style={styles.buttonsContainer}>
-          <View style={styles.button}>
-            <Ionicons name='chatbox-outline' size={20} color={COLORS.WHITE} />
-          </View>
-          <View style={styles.button}>
-            <Ionicons name='call-outline' size={20} color={COLORS.WHITE} />
-          </View>
-          <View style={styles.button}>
-            <Ionicons name='share-social-outline' size={20} color={COLORS.WHITE} />
-          </View>
-          <View style={styles.button}>
-            <Ionicons name='ellipsis-vertical-outline' size={20} color={COLORS.WHITE} />
-          </View>
+            <TouchableOpacity>
+                <View style={styles.button}>
+                    <Ionicons name='chatbox-outline' size={20} color={COLORS.WHITE} />
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity>
+                <View style={styles.button}>
+                    <Ionicons name='call-outline' size={20} color={COLORS.WHITE} />
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity>
+                <View style={styles.button}>
+                    <Ionicons name='share-social-outline' size={20} color={COLORS.WHITE} />
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity>
+                <View style={styles.button}>
+                    <Ionicons name='ellipsis-vertical-outline' size={20} color={COLORS.WHITE} />
+                </View>
+            </TouchableOpacity>
         </View>
 
         <View style={styles.table}>
-            <View style={styles.tableRowInfo}>
-                <Ionicons name='business-outline' marginHorizontal={20} size={20} color={COLORS.ORANGE} />
-                <Text style={styles.tableCell}>(123) 456-7890</Text>
-            </View>
-            <View style={styles.tableRowInfo}>
-                <Ionicons name='at-outline' marginHorizontal={20} size={20} color={COLORS.ORANGE} />
-                <Text style={styles.tableCell}>user@mail.com</Text>
-            </View>
-            <View style={styles.tableRowInfo}>
-                <Ionicons name='location-outline' marginHorizontal={20} size={20} color={COLORS.ORANGE} />
-                <Text style={styles.tableCell}>La Vicentina. Quito-Ecuador.</Text>
-            </View>
+            <TouchableOpacity>
+                <View style={styles.tableRowInfo}>
+                    <Ionicons name='business-outline' marginHorizontal={20} size={20} color={COLORS.ORANGE} />
+                    <Text style={styles.tableCell}>(123) 456-7890</Text>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity>
+                <View style={styles.tableRowInfo}>
+                    <Ionicons name='at-outline' marginHorizontal={20} size={20} color={COLORS.ORANGE} />
+                    <Text style={styles.tableCell}>{userEmail}</Text>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity>
+                <View style={styles.tableRowInfo}>
+                    <Ionicons name='location-outline' marginHorizontal={20} size={20} color={COLORS.ORANGE} />
+                    <Text style={styles.tableCell}>La Vicentina. Quito-Ecuador.</Text>
+                </View>
+            </TouchableOpacity>
         </View>
 
         <Text style={styles.tit}>Redes Sociales</Text>
         
         <View style={styles.table}>
-            <View style={styles.tableRowSocial}>
-                <Text style={styles.tableCell}>Instagram</Text>
-                <Ionicons name='logo-instagram' marginHorizontal={20} size={20} color={COLORS.ORANGE} />
-            </View>
-            <View style={styles.tableRowSocial}>
-                <Text style={styles.tableCell}>Facebook</Text>
-                <Ionicons name='logo-facebook' marginHorizontal={20} size={20} color={COLORS.ORANGE} />
-            </View>
+            <TouchableOpacity>
+                <View style={styles.tableRowSocial}>
+                    <Text style={styles.tableCell}>Instagram</Text>
+                    <Ionicons name='logo-instagram' marginHorizontal={20} size={20} color={COLORS.ORANGE} />
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity>
+                <View style={styles.tableRowSocial}>
+                    <Text style={styles.tableCell}>Facebook</Text>
+                    <Ionicons name='logo-facebook' marginHorizontal={20} size={20} color={COLORS.ORANGE} />
+                </View>
+            </TouchableOpacity>
         </View>
 
       </View>
