@@ -5,6 +5,7 @@ import { COLORS } from '../constants'
 import { Ionicons } from '@expo/vector-icons'
 import { AuthContext } from '../context/AuthContext'
 import { StatusBar } from 'expo-status-bar'
+import { useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window')
 const statusBarHeight = Constants.statusBarHeight
@@ -12,6 +13,11 @@ const statusBarHeight = Constants.statusBarHeight
 const ProfileScreen = () => {
   const [isDarkModeEnabled, setIsDarkModeEnabled] = useState(true)
   const [fontSize, setFontSize] = useState(16)
+  const navigation = useNavigation();
+
+  const handleInformacionPersonalPress = () => {
+    navigation.navigate('PersonalInfo');
+  };
 
   const toggleDarkMode = () => {
     setIsDarkModeEnabled((prev) => !prev)
@@ -37,7 +43,7 @@ const ProfileScreen = () => {
 
         {/* ACCOUNT */}
         <Text style={styles.tit}>Cuenta</Text>
-        <TouchableOpacity style={styles.izq}>
+        <TouchableOpacity style={styles.izq} onPress={() => navigation.navigate('PersonalInfoScreen')}>
           <View style={styles.account}>
             <View style={styles.square}>
               <Ionicons name='person-outline' size={20} color={COLORS.ORANGE} />
@@ -145,6 +151,8 @@ const ProfileScreen = () => {
     </ScrollView>
   )
 }
+
+export default ProfileScreen
 
 const styles = StyleSheet.create({
   container: {
@@ -291,4 +299,3 @@ const styles = StyleSheet.create({
   }
 })
 
-export default ProfileScreen
