@@ -18,7 +18,7 @@ import Dropdown from 'react-native-select-dropdown'
 import Constants from 'expo-constants'
 
 import CustomRecorderButton from '../components/CustomRecorderButton'
-import CustomAlert from '../components/CustomAlert';
+import CustomAlert from '../components/CustomAlert'
 
 import { COLORS } from '../constants'
 import { StatusBar } from 'expo-status-bar'
@@ -41,7 +41,7 @@ export default function RecorderScreen ({ toggleShowNotification }) {
   const [modalVisible, setModalVisible] = useState(false)
   const [selectedItem, setSelectedItem] = useState(null)
   const [isLoading, setisLoading] = useState(false)
-  const [isRecording, setIsRecording] = useState(false);
+  const [isRecording, setIsRecording] = useState(false)
 
   const { state } = useFolder()
   const { userData } = useContext(AuthContext)
@@ -64,8 +64,8 @@ export default function RecorderScreen ({ toggleShowNotification }) {
           allowsRecordingIOS: true,
           playsInSilentModeIOS: true
         })
-        
-        setIsRecording(true);
+
+        setIsRecording(true)
 
         const { recording } = await Audio.Recording.createAsync(
           Audio.RecordingOptionsPresets.HIGH_QUALITY
@@ -103,7 +103,7 @@ export default function RecorderScreen ({ toggleShowNotification }) {
           allowsRecordingIOS: false
         }
       )
-      setIsRecording(false);
+      setIsRecording(false)
       setRecording(recording.getURI())
       handleSendRecordings()
       clearInterval(customInterval)

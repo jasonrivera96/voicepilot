@@ -127,7 +127,7 @@ const SummaryItemScreen = ({ route }) => {
             <TouchableOpacity
               onPress={() =>
                 handleOpenModal(
-                  'Nombres destacados',
+                  'Personas',
                   COLORS.CIAN_PASTEL_TEXT,
                   'person',
                   'octions',
@@ -140,7 +140,7 @@ const SummaryItemScreen = ({ route }) => {
                 <Icon type='octions' name='person' size={40} color={COLORS.CIAN_PASTEL_TEXT} />
               </View>
               <View style={styles.secondColumn}>
-                <Text style={[styles.subtitleP, { color: COLORS.CIAN_PASTEL_TEXT }]}>Nombres destacados</Text>
+                <Text style={[styles.subtitleP, { color: COLORS.CIAN_PASTEL_TEXT }]}>Personas</Text>
                 <View style={styles.row}>
                   <Text style={[styles.texto, { color: COLORS.CIAN_PASTEL_TEXT }]}>Nombres de personas en general que se mencionan en el texto</Text>
                 </View>

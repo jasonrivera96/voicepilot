@@ -103,6 +103,9 @@ const HomeScreen = () => {
       <StatusBar style='dark' backgroundColor='white' />
       <Header openModal={openModal} data={folders} />
       {renderContent()}
+      {isModalVisible
+        ? <StatusBar style='dark' backgroundColor='#1110108d' />
+        : <StatusBar style='dark' backgroundColor='white' />}
       <CustomModal isVisible={isModalVisible}>
         {!isEditModal
           ? <ModalContent onClose={closeModal} addFolderItem={addFolderItem} setShowAlert={setShowAlert} />
