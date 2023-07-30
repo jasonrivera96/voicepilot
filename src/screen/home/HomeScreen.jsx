@@ -12,8 +12,11 @@ import { StatusBar } from 'expo-status-bar'
 import { COLORS } from '../../constants'
 import { useFolder } from '../../hooks/useFolder'
 
+import { useAppContext } from '../../context/AppContext'
+
 const HomeScreen = () => {
   const { state, getFolders, addFolder, updateFolde, removeFolder } = useFolder()
+  const { showAlert, setShowAlert } = useAppContext()
   const [folder, setFolder] = useState({})
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [isEditModal, setIsEditModal] = useState(false)
@@ -38,14 +41,16 @@ const HomeScreen = () => {
 
   const addFolderItem = async (folderName) => {
     addFolder(folderName)
-    folders.length > 0 && await flatList.current.scrollToEnd({ animated: true })
+    folders.length > 0 && (await flatList.current.scrollToEnd({ animated: true }))
     setIsModalVisible(false)
+    setShowAlert('Carpeta creada.')
   }
 
   const updateFolderItem = async ({ item: folderItem }) => {
     updateFolde(folderItem)
     setFolder({})
     setIsModalVisible(false)
+    setShowAlert('Carpeta actualizada');
   }
 
   const deleteFolderItem = async ({ item: folderItem }) => {
@@ -57,6 +62,7 @@ const HomeScreen = () => {
           text: 'Sí',
           onPress: async () => {
             removeFolder(folderItem)
+            setShowAlert('Carpeta eliminada');
           }
         },
         { text: 'No' }
@@ -97,7 +103,7 @@ const HomeScreen = () => {
       {renderContent()}
       <CustomModal isVisible={isModalVisible}>
         {!isEditModal
-          ? <ModalContent onClose={closeModal} addFolderItem={addFolderItem} />
+          ? <ModalContent onClose={closeModal} addFolderItem={addFolderItem} setShowAlert={setShowAlert}/>
           : <EditModal
               titleButton='carpeta'
               onClose={closeModal}

@@ -11,6 +11,7 @@ export const summaryItemScreenName = 'SummaryItem'
 
 export const COLORS = {
   ORANGE: '#FF7700FF',
+  ORANGE_SOFT: '#FFD9B6',
   GRAY: '#F3F4F6FF',
   GRAY_LIGHT: '#FAFAFBFF',
   GRAY_SOFT: '#353536',

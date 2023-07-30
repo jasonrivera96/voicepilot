@@ -61,7 +61,7 @@ const CustomRecorderButton = ({ stopRecording, startRecording }) => {
           type='font-awesome-5'
           name='microphone'
           size={150}
-          color={isAnimating ? COLORS.WHITE : COLORS.ORANGE}
+          color={isAnimating ? COLORS.WHITE : COLORS.ORANGE_SOFT}
         />
       </Animated.View>
     </TouchableOpacity>

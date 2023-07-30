@@ -1,12 +1,16 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
+import { useAppContext } from '../../context/AppContext';
+import CustomAlert from '../../components/CustomAlert'
 
 import { COLORS } from '../../constants'
 
 const addIcon = <Ionicons name='add' size={30} color='white' />
 
 const Header = ({ openModal, data }) => {
+  const { showAlert, setShowAlert } = useAppContext();
+
   return (
     <View style={styles.contentContainer}>
       {data && data.length
@@ -19,6 +23,12 @@ const Header = ({ openModal, data }) => {
       <View style={styles.text}>
         <Text style={styles.titlePage}>Portafolio</Text>
       </View>
+      {showAlert && (
+        <CustomAlert
+          message={showAlert}
+          onClose={() => setShowAlert(false)}
+        />
+      )}
     </View>
   )
 }
