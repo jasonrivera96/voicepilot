@@ -1,16 +1,21 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { StyleSheet, Text, View, FlatList, Alert } from 'react-native'
+import { StatusBar } from 'expo-status-bar'
+import socket from '../../config/socket'
 
 import { COLORS } from '../../constants'
 import NavigatorPath from '../../components/NavigatorPath'
 import EmptySummary from './EmpySummary'
 import CustomModal from '../../components/CustomModal'
 import EditModal from '../home/EditModal'
-import { deleteSummary, loadSummaries, updateSummary } from '../../services/SummaryService'
+import { deleteSummary, getSummaryResponse, loadSummaries, updateSummary } from '../../services/SummaryService'
 import { AuthContext } from '../../context/AuthContext'
 import SummaryItem from './SummaryItem'
+<<<<<<< HEAD
 import { StatusBar } from 'expo-status-bar'
 import Constants from 'expo-constants'
+=======
+>>>>>>> feature/sockets
 
 const SummaryScreen = ({ route }) => {
   const [summaries, setSummaries] = useState([])
@@ -31,6 +36,46 @@ const SummaryScreen = ({ route }) => {
   useEffect(() => {
     fetchData()
   }, [fetchData])
+
+  useEffect(() => {
+    socket.on('completed', handleCompletedEvent)
+    socket.on('processing', handleProcessingEvent)
+    return () => {
+      socket.off('completed')
+      socket.off('processing')
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [summaries])
+
+  const handleProcessingEvent = (data) => {
+    console.log('Processing event')
+    const { summaryId, transcriptionId } = data
+    const newSummary = {
+      titulo: 'Procesando resumen',
+      completed: false,
+      id: summaryId,
+      transcriptionId
+    }
+    setSummaries((summaries) => [...summaries, newSummary])
+  }
+
+  const handleCompletedEvent = async (data) => {
+    console.log('Completed event')
+    const { summaryId } = data
+    const { titulo, completed } = await getSummaryResponse(userData, summaryId)
+
+    const summariesUpdated = summaries.map((summary) => {
+      if (summary.id === summaryId) {
+        return {
+          ...summary,
+          completed,
+          titulo
+        }
+      }
+      return summary
+    })
+    setSummaries(summariesUpdated)
+  }
 
   const closeModal = () => {
     setIsModalVisible(false)
@@ -147,8 +192,7 @@ const styles = StyleSheet.create({
   summaryListContainer: {
     alignSelf: 'flex-start',
     marginTop: 30,
-    marginHorizontal: 30,
-    height: '70%'
+    marginHorizontal: 30
   },
   contentContainer: {
     alignItems: 'center',

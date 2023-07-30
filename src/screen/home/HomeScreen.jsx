@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { View, StyleSheet, FlatList, Alert } from 'react-native'
+import { View, StyleSheet, FlatList, Alert, Keyboard } from 'react-native'
 import Constants from 'expo-constants'
 
 import CustomModal from '../../components/CustomModal'
@@ -40,8 +40,9 @@ const HomeScreen = () => {
   }
 
   const addFolderItem = async (folderName) => {
-    addFolder(folderName)
-    folders.length > 0 && (await flatList.current.scrollToEnd({ animated: true }))
+    Keyboard.dismiss()
+    await addFolder(folderName)
+    flatList.current.scrollToEnd({ animated: true }) // !!! TODO ojito
     setIsModalVisible(false)
     setShowAlert('Carpeta creada.')
   }
@@ -50,7 +51,8 @@ const HomeScreen = () => {
     updateFolde(folderItem)
     setFolder({})
     setIsModalVisible(false)
-    setShowAlert('Carpeta actualizada');
+    setShowAlert('Carpeta actualizada')
+    setIsEditModal(false)
   }
 
   const deleteFolderItem = async ({ item: folderItem }) => {
@@ -62,7 +64,7 @@ const HomeScreen = () => {
           text: 'Sí',
           onPress: async () => {
             removeFolder(folderItem)
-            setShowAlert('Carpeta eliminada');
+            setShowAlert('Carpeta eliminada')
           }
         },
         { text: 'No' }
@@ -103,7 +105,7 @@ const HomeScreen = () => {
       {renderContent()}
       <CustomModal isVisible={isModalVisible}>
         {!isEditModal
-          ? <ModalContent onClose={closeModal} addFolderItem={addFolderItem} setShowAlert={setShowAlert}/>
+          ? <ModalContent onClose={closeModal} addFolderItem={addFolderItem} setShowAlert={setShowAlert} />
           : <EditModal
               titleButton='carpeta'
               onClose={closeModal}
@@ -126,8 +128,7 @@ const styles = StyleSheet.create({
   folderListContainer: {
     alignSelf: 'flex-start',
     marginTop: 30,
-    marginHorizontal: 30,
-    height: '50%'
+    marginHorizontal: 30
   }
 })
 

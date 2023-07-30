@@ -1,40 +1,40 @@
-import React, { useRef, useEffect } from 'react';
-import { View, Text, Animated, TouchableOpacity, StyleSheet } from 'react-native';
-import { COLORS } from '../constants';
+import React, { useRef, useEffect } from 'react'
+import { View, Text, Animated, TouchableOpacity, StyleSheet } from 'react-native'
+import { COLORS } from '../constants'
 
 const CustomAlert = ({ message, onClose }) => {
-  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current
 
-  if (message == '') return null;
+  if (message == '') return null
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 500,
-      useNativeDriver: true,
-    }).start();
+      useNativeDriver: true
+    }).start()
 
     const timer = setTimeout(() => {
-      closeAlert();
-    }, 2000);
+      closeAlert()
+    }, 2000)
 
-    return () => clearTimeout(timer);
-  }, [fadeAnim]);
+    return () => clearTimeout(timer)
+  }, [fadeAnim])
 
   const closeAlert = () => {
     Animated.timing(fadeAnim, {
       toValue: 0,
       duration: 500,
-      useNativeDriver: true,
+      useNativeDriver: true
     }).start(() => {
-      onClose();
-    });
-  };
+      onClose()
+    })
+  }
 
   const containerStyle = {
     opacity: fadeAnim,
-    transform: [{ scale: fadeAnim }],
-  };
+    transform: [{ scale: fadeAnim }]
+  }
 
   return (
     <Animated.View style={[styles.container, containerStyle]}>
@@ -42,10 +42,10 @@ const CustomAlert = ({ message, onClose }) => {
         <Text style={styles.messageText}>{message}</Text>
       </TouchableOpacity>
     </Animated.View>
-  );
-};
+  )
+}
 
-export default CustomAlert;
+export default CustomAlert
 
 const styles = StyleSheet.create({
   container: {
@@ -59,10 +59,10 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 8,
-    opacity: 0.33,
+    opacity: 0.33
   },
   messageText: {
     color: COLORS.BLACK,
-    fontSize: 13,
-  },
-});
+    fontSize: 13
+  }
+})

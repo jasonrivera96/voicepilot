@@ -4,23 +4,25 @@ import { Ionicons } from '@expo/vector-icons'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { COLORS, summaryItemScreenName } from '../../constants'
 
-const folderIconEmpty = <Ionicons name='file-tray-full-outline' size={25} />
-
 const SummaryItem = ({ item, openModal, folderName }) => {
   const navigation = useNavigation()
-  const { id, titulo: name } = item
+  const { id, titulo: name, completed } = item
+  const title = name || 'Procesando resumen'
   return (
     <TouchableOpacity
       key={id} style={styles.summaryContainer}
+      disabled={!completed}
       onPress={() => navigation.navigate(summaryItemScreenName, { folderName, summaryName: name, summaryId: id })}
       onLongPress={() => openModal({ id, name })}
     >
       <View style={styles.principal}>
-        <View style={styles.icon}>{folderIconEmpty}</View>
-        <Text style={styles.summaryName}>{name.length > 50 ? name.substring(0, 50) + '...' : name}</Text>
+        <View style={[styles.icon, { backgroundColor: completed ? COLORS.GRAY : COLORS.WHITE, borderWidth: completed ? 0 : 1, borderColor: completed ? COLORS.GRAY : COLORS.ORANGE }]}>
+          <Ionicons name='file-tray-full-outline' size={25} color={completed ? 'black' : COLORS.ORANGE} />
+        </View>
+        <Text style={[styles.summaryName, { color: completed ? 'black' : COLORS.ORANGE }]}>{title.length > 50 ? title.substring(0, 50) + '...' : title}</Text>
       </View>
-      <View style={styles.secondary}>
-        <Text style={styles.estado}>Leer</Text>
+      <View style={[styles.secondary, { backgroundColor: completed ? COLORS.GREEN_SOFT : '#FFF7F0FF' }]}>
+        <Text style={[styles.estado, { color: completed ? COLORS.GREEN : COLORS.ORANGE }]}>{completed ? 'Leer' : 'En curso'}</Text>
       </View>
     </TouchableOpacity>
   )

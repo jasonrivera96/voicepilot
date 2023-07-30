@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { BASE_URL_SPEECH } from '../config'
+import { BASE_URL_SPEECH } from '../config/config'
 
 export const SpeechApi = axios.create({
   baseURL: BASE_URL_SPEECH,
