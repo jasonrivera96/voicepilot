@@ -11,11 +11,6 @@ import EditModal from '../home/EditModal'
 import { deleteSummary, getSummaryResponse, loadSummaries, updateSummary } from '../../services/SummaryService'
 import { AuthContext } from '../../context/AuthContext'
 import SummaryItem from './SummaryItem'
-<<<<<<< HEAD
-import { StatusBar } from 'expo-status-bar'
-import Constants from 'expo-constants'
-=======
->>>>>>> feature/sockets
 
 const SummaryScreen = ({ route }) => {
   const [summaries, setSummaries] = useState([])
@@ -51,7 +46,7 @@ const SummaryScreen = ({ route }) => {
     console.log('Processing event')
     const { summaryId, transcriptionId } = data
     const newSummary = {
-      titulo: 'Procesando resumen',
+      titulo: `Procesando resumen - ${transcriptionId.substring(0, 7)}`,
       completed: false,
       id: summaryId,
       transcriptionId

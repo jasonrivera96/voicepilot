@@ -36,23 +36,22 @@ const notFound = {
 }
 
 export const QueryResultEmpty = ({ searchQuery }) => {
-  const isEmpty = searchQuery.trim() === '';
-  const message = isEmpty ? emptySearch : notFound;
+  const isEmpty = searchQuery.trim() === ''
+  const message = isEmpty ? emptySearch : notFound
   return (
     <View style={stylesEmpty.container}>
       <View style={stylesEmpty.iconEmpty}>
         <Icon type={message.type} name={message.icon} size={50} />
       </View>
       <Text style={stylesEmpty.message}>{message.titulo}</Text>
-      {message.detail && message.detail()
-      }
-          </View>
+      {message.detail && message.detail()}
+    </View>
   )
 }
 
 const ListQueryResult = ({ resources }) => {
   const navigation = useNavigation()
-  
+
   return (
     <View style={{ height: '80%' }}>
       <FlatList
@@ -107,7 +106,7 @@ const ListQueryResult = ({ resources }) => {
 }
 
 const QueryResult = ({ resources, searchQuery }) => {
-  const resourcesArray = resources || [];
+  const resourcesArray = resources || []
   const hasData = resourcesArray.length > 0
   return hasData ? <ListQueryResult resources={resourcesArray} /> : <QueryResultEmpty searchQuery={searchQuery} />
 }
@@ -118,7 +117,7 @@ const styles = StyleSheet.create({
   searchResultContainer: {
     flexDirection: 'row',
     paddingHorizontal: '5%',
-    marginBottom: 10,
+    marginBottom: 10
   },
   resultTextContainer: {
     flexDirection: 'row',
@@ -156,7 +155,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF9E9FF',
     borderRadius: 10,
     paddingVertical: 2,
-    overflow:'hidden'
+    overflow: 'hidden'
   },
   noResultsText: {
     marginLeft: 25,
