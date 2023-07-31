@@ -166,12 +166,12 @@ export default function SearchScreen () {
         </View>
       )}
       {isResourcesEmpty && searchQuery === '' && isRecentSearchesEmpty && (
-        <View style={styles.searchResultsContainer}>
+        <View style={[styles.searchResultsContainer, { flex: 1 }]}>
           <QueryResultEmpty searchQuery={searchQuery} />
         </View>
       )}
       {isResourcesEmpty && searchQuery !== '' && (
-        <View style={styles.searchResultsContainer}>
+        <View style={[styles.searchResultsContainer, { flex: 1 }]}>
           <QueryResultEmpty searchQuery={searchQuery} />
         </View>
       )}
@@ -214,7 +214,6 @@ const styles = StyleSheet.create({
     borderRadius: 50
   },
   searchResultsContainer: {
-    flex: 1,
     alignSelf: 'stretch',
     marginTop: 20
   },

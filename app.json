@@ -4,12 +4,12 @@
     "slug": "voicepilot",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/voicito.png",
+    "icon": "./assets/icon_voice_orange.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/voicepilot.png",
+      "image": "./assets/splash_voice.png",
       "resizeMode": "cover",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#000000"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -20,7 +20,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/voicito.png"
+        "foregroundImage": "./assets/adaptative-icon-orange.png",
+        "backgroundColor": "#ffffff"
       },
       "package": "com.alpalasaul.voicepilot"
     },
