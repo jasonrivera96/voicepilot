@@ -18,7 +18,7 @@ import Dropdown from 'react-native-select-dropdown'
 import Constants from 'expo-constants'
 
 import CustomRecorderButton from '../components/CustomRecorderButton'
-import CustomAlert from '../components/CustomAlert'
+import CustomAlert from '../components/CustomNotification'
 
 import { COLORS } from '../constants'
 import { StatusBar } from 'expo-status-bar'

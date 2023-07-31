@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { useNotificationContext } from '../../context/NotificationContext'
-import CustomAlert from '../../components/CustomAlert'
+import CustomAlert from '../../components/CustomNotification'
 
 import { COLORS } from '../../constants'
 

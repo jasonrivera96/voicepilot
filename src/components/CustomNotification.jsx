@@ -4,7 +4,7 @@ import { COLORS } from '../constants'
 import Constants from 'expo-constants'
 import { Icon } from 'react-native-elements'
 
-const CustomAlert = ({ data, onClose }) => {
+const CustomAlert = ({ notification, onClose }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current
 
   const closeAlert = useCallback(() => {
@@ -37,7 +37,7 @@ const CustomAlert = ({ data, onClose }) => {
     textColor: ''
   }
 
-  const { message, level } = data
+  const { message, level } = notification
 
   if (level === 'info' || level === undefined) {
     alert.icon = 'information-circle-outline'

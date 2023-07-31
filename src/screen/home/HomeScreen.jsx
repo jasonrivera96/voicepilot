@@ -15,7 +15,7 @@ import { useNotificationContext } from '../../context/NotificationContext'
 
 const HomeScreen = () => {
   const { state, getFolders, addFolder, updateFolde, removeFolder } = useFolder()
-  const { setData } = useNotificationContext()
+  const { setNotification } = useNotificationContext()
   const [folder, setFolder] = useState({})
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [isEditModal, setIsEditModal] = useState(false)
@@ -43,7 +43,7 @@ const HomeScreen = () => {
     await addFolder(folderName)
     flatList.current.scrollToEnd({ animated: true }) // !!! TODO ojito
     setIsModalVisible(false)
-    setData({
+    setNotification({
       message: 'Carpeta creada',
       level: 'success'
     })
@@ -53,7 +53,7 @@ const HomeScreen = () => {
     updateFolde(folderItem)
     setFolder({})
     setIsModalVisible(false)
-    setData({
+    setNotification({
       message: 'Carpeta actualizada',
       level: 'success'
     })
@@ -69,9 +69,9 @@ const HomeScreen = () => {
           text: 'Sí',
           onPress: async () => {
             removeFolder(folderItem)
-            setData({
+            setNotification({
               message: 'Carpeta eliminada',
-              level: 'sucess'
+              level: 'success'
             })
           }
         },

@@ -9,7 +9,7 @@ export function AuthProvider ({ children }) {
   const [isLoading, setIsLoading] = useState(false)
   const [userToken, setUserToken] = useState(null)
   const [userData, setUserData] = useState(null)
-  const { setData } = useNotificationContext()
+  const { setNotification } = useNotificationContext()
 
   const login = async ({ username, password }) => {
     setIsLoading(true)
@@ -30,12 +30,12 @@ export function AuthProvider ({ children }) {
       AsyncStorage.setItem('userToken', token)
     } catch (error) {
       if (error.response.status === 401) {
-        setData({
+        setNotification({
           message: 'Credenciales incorrectas',
           level: 'error'
         })
       } else {
-        setData({
+        setNotification({
           message: 'Error al iniciar la sesión',
           level: 'error'
         })
@@ -84,18 +84,18 @@ export function AuthProvider ({ children }) {
       const data = await request.data
 
       console.log(data)
-      setData({
+      setNotification({
         message: 'Usuario registrado',
         level: 'success'
       })
     } catch (error) {
       if (error.response.status === 400) {
-        setData({
+        setNotification({
           message: 'Usuario ya registrado',
           level: 'error'
         })
       } else {
-        setData({
+        setNotification({
           message: 'Error al registrar el usuario',
           level: 'error'
         })
