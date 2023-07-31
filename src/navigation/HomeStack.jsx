@@ -4,7 +4,8 @@ import HomeScreen from '../screen/home/HomeScreen'
 import { COLORS, homeScreenName, homeStackName, summaryItemScreenName, summaryScreenName } from '../constants'
 import SummaryScreen from '../screen/summary/SummaryScreen'
 import SummaryItemScreen from '../screen/summary/SummaryItemScreen'
-import { AppProvider } from '../context/AppContext'; // Importar AppProvider desde el contexto
+import PersonalInfoScreen from '../screen/PersonalInfoScreen';
+import { AppProvider } from '../context/AppContext';
 
 const HomeStackNavigator = createStackNavigator()
 
@@ -54,6 +55,8 @@ const HomeStack = () => {
             }
           }}
         />
+        <HomeStackNavigator.Screen name="PersonalInfoScreen" component={PersonalInfoScreen} />
+      
       </HomeStackNavigator.Navigator>
     </AppProvider>
   );
