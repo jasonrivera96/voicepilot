@@ -9,7 +9,7 @@
     "splash": {
       "image": "./assets/splash_voice.png",
       "resizeMode": "cover",
-      "backgroundColor": "#000000"
+      "backgroundColor": "#FF7700"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -21,7 +21,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptative-icon-orange.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#FF7700"
       },
       "package": "com.alpalasaul.voicepilot"
     },
