@@ -18,7 +18,6 @@ import Dropdown from 'react-native-select-dropdown'
 import Constants from 'expo-constants'
 
 import CustomRecorderButton from '../components/CustomRecorderButton'
-import CustomAlert from '../components/CustomNotification'
 
 import { COLORS } from '../constants'
 import { StatusBar } from 'expo-status-bar'
@@ -28,6 +27,7 @@ import { AuthContext } from '../context/AuthContext'
 import { Icon } from 'react-native-elements'
 import { uploadFile } from '../services/UploadService'
 import { useFolder } from '../hooks/useFolder'
+import { useNotificationContext } from '../context/NotificationContext'
 
 export default function RecorderScreen ({ toggleShowNotification }) {
   const [recording, setRecording] = useState()
@@ -41,7 +41,7 @@ export default function RecorderScreen ({ toggleShowNotification }) {
   const [modalVisible, setModalVisible] = useState(false)
   const [selectedItem, setSelectedItem] = useState(null)
   const [isLoading, setisLoading] = useState(false)
-  const [isRecording, setIsRecording] = useState(false)
+  const { setNotification } = useNotificationContext()
 
   const { state } = useFolder()
   const { userData } = useContext(AuthContext)
@@ -65,8 +65,6 @@ export default function RecorderScreen ({ toggleShowNotification }) {
           playsInSilentModeIOS: true
         })
 
-        setIsRecording(true)
-
         const { recording } = await Audio.Recording.createAsync(
           Audio.RecordingOptionsPresets.HIGH_QUALITY
         )
@@ -89,21 +87,32 @@ export default function RecorderScreen ({ toggleShowNotification }) {
             })
           }, 1000)
         )
+        setNotification({
+          message: 'Iniciando grabación',
+          level: 'info'
+        })
       }
     } catch (error) {
       console.error('Failed to start recording', error)
+      setNotification({
+        message: 'Error al iniciar grabación',
+        level: 'error'
+      })
     }
   }
 
   const stopRecording = async () => {
     if (recording) {
+      setNotification({
+        message: 'Deteniendo grabación',
+        level: 'info'
+      })
       await recording.stopAndUnloadAsync()
       await Audio.setAudioModeAsync(
         {
           allowsRecordingIOS: false
         }
       )
-      setIsRecording(false)
       setRecording(recording.getURI())
       handleSendRecordings()
       clearInterval(customInterval)
@@ -195,7 +204,6 @@ export default function RecorderScreen ({ toggleShowNotification }) {
       <View style={styles.containerSpace} />
 
       <CustomRecorderButton stopRecording={stopRecording} startRecording={startRecording} />
-      {isRecording && <CustomAlert message={isRecording ? 'Grabando' : 'Grabación detenida'} onClose={() => setIsRecording(false)} />}
 
       <Modal visible={modalVisible} animationType='slide' transparent>
         <KeyboardAvoidingView
