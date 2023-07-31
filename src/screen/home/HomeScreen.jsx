@@ -11,12 +11,11 @@ import FolderItem from './FolderItem'
 import { StatusBar } from 'expo-status-bar'
 import { COLORS } from '../../constants'
 import { useFolder } from '../../hooks/useFolder'
-
-import { useAppContext } from '../../context/AppContext'
+import { useNotificationContext } from '../../context/NotificationContext'
 
 const HomeScreen = () => {
   const { state, getFolders, addFolder, updateFolde, removeFolder } = useFolder()
-  const { showAlert, setShowAlert } = useAppContext()
+  const { setData } = useNotificationContext()
   const [folder, setFolder] = useState({})
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [isEditModal, setIsEditModal] = useState(false)
@@ -44,14 +43,20 @@ const HomeScreen = () => {
     await addFolder(folderName)
     flatList.current.scrollToEnd({ animated: true }) // !!! TODO ojito
     setIsModalVisible(false)
-    setShowAlert('Carpeta creada.')
+    setData({
+      message: 'Carpeta creada',
+      level: 'success'
+    })
   }
 
   const updateFolderItem = async ({ item: folderItem }) => {
     updateFolde(folderItem)
     setFolder({})
     setIsModalVisible(false)
-    setShowAlert('Carpeta actualizada')
+    setData({
+      message: 'Carpeta actualizada',
+      level: 'success'
+    })
     setIsEditModal(false)
   }
 
@@ -64,7 +69,10 @@ const HomeScreen = () => {
           text: 'Sí',
           onPress: async () => {
             removeFolder(folderItem)
-            setShowAlert('Carpeta eliminada')
+            setData({
+              message: 'Carpeta eliminada',
+              level: 'sucess'
+            })
           }
         },
         { text: 'No' }
@@ -108,7 +116,7 @@ const HomeScreen = () => {
         : <StatusBar style='dark' backgroundColor='white' />}
       <CustomModal isVisible={isModalVisible}>
         {!isEditModal
-          ? <ModalContent onClose={closeModal} addFolderItem={addFolderItem} setShowAlert={setShowAlert} />
+          ? <ModalContent onClose={closeModal} addFolderItem={addFolderItem} />
           : <EditModal
               titleButton='carpeta'
               onClose={closeModal}

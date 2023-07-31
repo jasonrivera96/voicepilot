@@ -7,27 +7,27 @@ import HomeStack from './HomeStack'
 import NotificationScreen from '../screen/NotificationScreen'
 import { useNavigation } from '@react-navigation/native'
 
-import ProfileScreen from '../screen/ProfileScreen'
 import SearchScreen from '../screen/SearchScreen'
 import RecorderScreen from '../screen/RecorderScreen'
 import UploadScreen from '../screen/upload/UploadScreen'
 
 import {
   COLORS,
-  homeScreenName,
-  profileScreenName,
+  homeStackName,
+  profileStackName,
   recorderScreenName,
   searchScreenName,
   summaryScreenName,
   uploadScreenName
 } from '../constants'
 import { FolderProvider } from '../context/FolderContext'
+import ProfileStack from './ProfileStack'
 
 const Tab = createBottomTabNavigator()
 
 const getIcon = (routeName, focused) => {
   switch (routeName) {
-    case homeScreenName:
+    case homeStackName:
       return {
         name: 'home',
         type: 'octicon'
@@ -47,7 +47,7 @@ const getIcon = (routeName, focused) => {
         name: 'upload-cloud',
         type: 'feather'
       }
-    case profileScreenName:
+    case profileStackName:
       return {
         name: 'person',
         type: 'octicon'
@@ -105,7 +105,7 @@ const AuthStack = () => {
   return (
     <FolderProvider>
       <Tab.Navigator
-        initialRouteName={homeScreenName}
+        initialRouteName={homeStackName}
         screenOptions={({ route }) => ({
           headerShown: false,
           tabBarShowLabel: false,
@@ -115,7 +115,7 @@ const AuthStack = () => {
             renderTabBarIcon({ route, focused, color, size })
         })}
       >
-        <Tab.Screen name={homeScreenName} component={HomeStack} />
+        <Tab.Screen name={homeStackName} component={HomeStack} />
         <Tab.Screen name={searchScreenName} component={SearchScreen} />
         <Tab.Screen
           name={recorderScreenName}
@@ -125,7 +125,7 @@ const AuthStack = () => {
           name={uploadScreenName}
           children={() => <UploadScreen toggleShowNotification={toggleShowNotification} />}
         />
-        <Tab.Screen name={profileScreenName} component={ProfileScreen} />
+        <Tab.Screen name={profileStackName} component={ProfileStack} />
 
       </Tab.Navigator>
       {

@@ -21,7 +21,7 @@ const SummaryItem = ({ item, openModal, folderName }) => {
         </View>
         <Text style={[styles.summaryName, { color: completed ? 'black' : COLORS.ORANGE }]}>{title.length > 50 ? title.substring(0, 50) + '...' : title}</Text>
       </View>
-      <View style={[styles.secondary, { backgroundColor: completed ? COLORS.GREEN_SOFT : '#FFF7F0FF' }]}>
+      <View style={[styles.secondary, { backgroundColor: completed ? COLORS.GREEN_SOFT : COLORS.ORANGE_EXTRA_SOFT }]}>
         <Text style={[styles.estado, { color: completed ? COLORS.GREEN : COLORS.ORANGE }]}>{completed ? 'Leer' : 'En curso'}</Text>
       </View>
     </TouchableOpacity>

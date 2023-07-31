@@ -1,11 +1,10 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { View, Text, StyleSheet, Switch, TouchableOpacity, Dimensions, ScrollView } from 'react-native'
 import Constants from 'expo-constants'
-import { COLORS } from '../constants'
+import { COLORS, personalInforScreenName } from '../constants'
 import { Ionicons } from '@expo/vector-icons'
-import { AuthContext } from '../context/AuthContext'
 import { StatusBar } from 'expo-status-bar'
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native'
 
 const { width } = Dimensions.get('window')
 const statusBarHeight = Constants.statusBarHeight
@@ -13,11 +12,7 @@ const statusBarHeight = Constants.statusBarHeight
 const ProfileScreen = () => {
   const [isDarkModeEnabled, setIsDarkModeEnabled] = useState(true)
   const [fontSize, setFontSize] = useState(16)
-  const navigation = useNavigation();
-
-  const handleInformacionPersonalPress = () => {
-    navigation.navigate('PersonalInfo');
-  };
+  const navigation = useNavigation()
 
   const toggleDarkMode = () => {
     setIsDarkModeEnabled((prev) => !prev)
@@ -31,8 +26,6 @@ const ProfileScreen = () => {
     setFontSize((prevSize) => prevSize - 1)
   }
 
-  const { logout } = useContext(AuthContext)
-
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <StatusBar style='dark' backgroundColor='white' />
@@ -43,7 +36,7 @@ const ProfileScreen = () => {
 
         {/* ACCOUNT */}
         <Text style={styles.tit}>Cuenta</Text>
-        <TouchableOpacity style={styles.izq} onPress={() => navigation.navigate('PersonalInfoScreen')}>
+        <TouchableOpacity style={styles.izq} onPress={() => navigation.navigate(personalInforScreenName)}>
           <View style={styles.account}>
             <View style={styles.square}>
               <Ionicons name='person-outline' size={20} color={COLORS.ORANGE} />
@@ -140,11 +133,6 @@ const ProfileScreen = () => {
               <Ionicons name='chevron-forward-outline' size={20} color={COLORS.GRAY_EXTRA_SOFT} />
             </View>
           </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => logout()} style={styles.logoutButton}>
-          <Ionicons name='log-out-outline' size={20} color='white' />
-          <Text style={styles.logoutButtonText}> Cerrar Sesión</Text>
         </TouchableOpacity>
 
       </View>
@@ -274,28 +262,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-end',
     paddingRight: 20
-  },
-  logoutButton: {
-    flexDirection: 'row',
-    backgroundColor: COLORS.ORANGE,
-    height: 48,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: '5%',
-    marginBottom: '40%',
-    shadowColor: COLORS.ORANGE,
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 10
-  },
-  logoutButtonText: {
-    color: '#fff'
-    // fontSize: 16
   }
 })
-

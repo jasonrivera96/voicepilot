@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import React, { createContext, useEffect, useState } from 'react'
 import { VoicePilotApi } from '../api/VoicePilotApi'
-import CustomAlert from '../components/CustomAlert';
+import { useNotificationContext } from './NotificationContext'
 
 export const AuthContext = createContext()
 
@@ -9,7 +9,7 @@ export function AuthProvider ({ children }) {
   const [isLoading, setIsLoading] = useState(false)
   const [userToken, setUserToken] = useState(null)
   const [userData, setUserData] = useState(null)
-  const [showAlert, setShowAlert] = useState('');
+  const { setData } = useNotificationContext()
 
   const login = async ({ username, password }) => {
     setIsLoading(true)
@@ -29,10 +29,16 @@ export function AuthProvider ({ children }) {
       AsyncStorage.setItem('userInfo', JSON.stringify(userInfo))
       AsyncStorage.setItem('userToken', token)
     } catch (error) {
-      if(error.response.status == 401){
-        setShowAlert('Credenciales incorrectas');
-      }else{
-        setShowAlert('Error al iniciar la sesión');
+      if (error.response.status === 401) {
+        setData({
+          message: 'Credenciales incorrectas',
+          level: 'error'
+        })
+      } else {
+        setData({
+          message: 'Error al iniciar la sesión',
+          level: 'error'
+        })
       }
     } finally {
       setIsLoading(false)
@@ -78,12 +84,21 @@ export function AuthProvider ({ children }) {
       const data = await request.data
 
       console.log(data)
-      setShowAlert('¡Usuario registrado con éxito!');
+      setData({
+        message: 'Usuario registrado',
+        level: 'success'
+      })
     } catch (error) {
-      if(error.response.status == 400){
-        setShowAlert('Correo ya existente');
-      }else{
-        setShowAlert('Error al procesar el registro');
+      if (error.response.status === 400) {
+        setData({
+          message: 'Usuario ya registrado',
+          level: 'error'
+        })
+      } else {
+        setData({
+          message: 'Error al registrar el usuario',
+          level: 'error'
+        })
       }
     } finally {
       setIsLoading(false)
@@ -97,12 +112,6 @@ export function AuthProvider ({ children }) {
   return (
     <AuthContext.Provider value={{ login, logout, register, isLoading, userToken, userData }}>
       {children}
-      {showAlert && (
-        <CustomAlert
-          message={showAlert}
-          onClose={() => setShowAlert('')}
-        />
-      )}
     </AuthContext.Provider>
   )
 }

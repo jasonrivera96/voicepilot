@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
-import { useAppContext } from '../../context/AppContext';
+import { useNotificationContext } from '../../context/NotificationContext'
 import CustomAlert from '../../components/CustomAlert'
 
 import { COLORS } from '../../constants'
@@ -9,7 +9,7 @@ import { COLORS } from '../../constants'
 const addIcon = <Ionicons name='add' size={30} color='white' />
 
 const Header = ({ openModal, data }) => {
-  const { showAlert, setShowAlert } = useAppContext();
+  const { showAlert, setShowAlert } = useNotificationContext()
 
   return (
     <View style={styles.contentContainer}>

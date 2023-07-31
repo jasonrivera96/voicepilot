@@ -4,6 +4,7 @@ import * as NavigationBar from 'expo-navigation-bar'
 import { AuthProvider } from './src/context/AuthContext'
 import AppNavigator from './src/navigation/AppNavigator'
 import { StatusBar } from 'expo-status-bar'
+import { NotificationProvider } from './src/context/NotificationContext'
 
 export default function App () {
   useEffect(() => {
@@ -15,9 +16,11 @@ export default function App () {
   }, [])
 
   return (
-    <AuthProvider>
+    <NotificationProvider>
       <StatusBar style='dark' backgroundColor='white' />
-      <AppNavigator />
-    </AuthProvider>
+      <AuthProvider>
+        <AppNavigator />
+      </AuthProvider>
+    </NotificationProvider>
   )
 }

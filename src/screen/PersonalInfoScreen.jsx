@@ -1,118 +1,110 @@
 import React, { useContext } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native'
-import Constants from 'expo-constants'
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native'
 import { COLORS } from '../constants'
 import { Ionicons } from '@expo/vector-icons'
 import { StatusBar } from 'expo-status-bar'
 import { AuthContext } from '../context/AuthContext'
 
-const statusBarHeight = Constants.statusBarHeight
+const PersonalInfoScreen = () => {
+  const { userData, logout } = useContext(AuthContext)
+  const userEmail = userData?.email
+  const userName = userData?.username
 
-const ProfileScreen = () => {
-  const { userData } = useContext(AuthContext)
-  const userEmail = userData?.email;
-  const userName = userData?.username;
-  
+  const closeSession = () => {
+    Alert.alert(
+      null,
+      '¿Estás seguro de que quieres cerrar sesión?',
+      [
+        {
+          text: 'No',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel'
+        },
+        { text: 'Cerrar sesión', onPress: () => logout() }
+      ],
+      { cancelable: false }
+    )
+  }
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.container}>
       <StatusBar style='dark' backgroundColor='white' />
       <View style={styles.contentContainer}>
-        
+
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Perfil</Text>
         </View>
         <View style={styles.circle}>
-          <Ionicons name='person-outline' size={40} color={COLORS.ORANGE} />
+          <Ionicons name='person-outline' size={60} color='black' />
         </View>
         <TouchableOpacity>
-            <View style={styles.section}>
-                <Text style={styles.user}>{userName}</Text>
-            </View>
+          <View style={styles.section}>
+            <Text style={styles.user}>{userName}</Text>
+          </View>
         </TouchableOpacity>
         <View style={styles.section}>
-          <Text style={styles.texto}>User</Text>
+          <Text style={styles.texto}>Cuenta gratuita</Text>
         </View>
 
         <View style={styles.buttonsContainer}>
-            <TouchableOpacity>
-                <View style={styles.button}>
-                    <Ionicons name='chatbox-outline' size={20} color={COLORS.WHITE} />
-                </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-                <View style={styles.button}>
-                    <Ionicons name='call-outline' size={20} color={COLORS.WHITE} />
-                </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-                <View style={styles.button}>
-                    <Ionicons name='share-social-outline' size={20} color={COLORS.WHITE} />
-                </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-                <View style={styles.button}>
-                    <Ionicons name='ellipsis-vertical-outline' size={20} color={COLORS.WHITE} />
-                </View>
-            </TouchableOpacity>
+          <TouchableOpacity>
+            <View style={styles.button}>
+              <Ionicons name='logo-facebook' size={20} color={COLORS.WHITE} />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <View style={styles.button}>
+              <Ionicons name='logo-instagram' size={20} color={COLORS.WHITE} />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <View style={styles.button}>
+              <Ionicons name='share-social-outline' size={20} color={COLORS.WHITE} />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <View style={styles.button}>
+              <Ionicons name='ellipsis-vertical-outline' size={20} color={COLORS.WHITE} />
+            </View>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.table}>
-            <TouchableOpacity>
-                <View style={styles.tableRowInfo}>
-                    <Ionicons name='business-outline' marginHorizontal={20} size={20} color={COLORS.ORANGE} />
-                    <Text style={styles.tableCell}>(123) 456-7890</Text>
-                </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-                <View style={styles.tableRowInfo}>
-                    <Ionicons name='at-outline' marginHorizontal={20} size={20} color={COLORS.ORANGE} />
-                    <Text style={styles.tableCell}>{userEmail}</Text>
-                </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-                <View style={styles.tableRowInfo}>
-                    <Ionicons name='location-outline' marginHorizontal={20} size={20} color={COLORS.ORANGE} />
-                    <Text style={styles.tableCell}>La Vicentina. Quito-Ecuador.</Text>
-                </View>
-            </TouchableOpacity>
+          <TouchableOpacity style={styles.tableRowInfo}>
+            <Ionicons name='at-outline' marginHorizontal={20} size={20} color={COLORS.ORANGE} />
+            <Text style={styles.tableCell}>{userEmail}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.tableRowInfo}>
+            <Ionicons name='phone-portrait-outline' marginHorizontal={20} size={20} color={COLORS.ORANGE} />
+            <Text style={styles.tableCell}>(+593) 99 998 7744</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.tableRowInfo, { borderBottomWidth: 0 }]}>
+            <Ionicons name='location-outline' marginHorizontal={20} size={20} color={COLORS.ORANGE} />
+            <Text style={styles.tableCell}>Quito - Ecuador</Text>
+          </TouchableOpacity>
         </View>
 
-        <Text style={styles.tit}>Redes Sociales</Text>
-        
-        <View style={styles.table}>
-            <TouchableOpacity>
-                <View style={styles.tableRowSocial}>
-                    <Text style={styles.tableCell}>Instagram</Text>
-                    <Ionicons name='logo-instagram' marginHorizontal={20} size={20} color={COLORS.ORANGE} />
-                </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-                <View style={styles.tableRowSocial}>
-                    <Text style={styles.tableCell}>Facebook</Text>
-                    <Ionicons name='logo-facebook' marginHorizontal={20} size={20} color={COLORS.ORANGE} />
-                </View>
-            </TouchableOpacity>
-        </View>
-
+        <TouchableOpacity onPress={() => closeSession()} style={styles.logoutButton}>
+          <Ionicons name='log-out-outline' size={20} color='white' />
+          <Text style={styles.logoutButtonText}> Cerrar Sesión</Text>
+        </TouchableOpacity>
       </View>
-    </ScrollView>
+    </View>
   )
 }
 
-export default ProfileScreen
+export default PersonalInfoScreen
 
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     backgroundColor: COLORS.WHITE,
-    paddingTop: statusBarHeight,
     justifyContent: 'center',
     alignItems: 'center'
   },
   contentContainer: {
     width: '90%',
     flex: 1,
-    paddingTop: Constants.statusBarHeight,
     backgroundColor: COLORS.WHITE,
     alignItems: 'center'
   },
@@ -163,13 +155,12 @@ const styles = StyleSheet.create({
     margin: 25
   },
   tableRowInfo: {
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 0.2,
-    borderBottomColor: COLORS.GRAY_EXTRA_SOFT,
+    borderBottomColor: COLORS.GRAY_EXTRA_SOFT
   },
   tableRowSocial: {
     flex: 1,
@@ -178,27 +169,47 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 0.2,
-    borderBottomColor: COLORS.GRAY_EXTRA_SOFT,
+    borderBottomColor: COLORS.GRAY_EXTRA_SOFT
   },
   tableCell: {
     fontSize: 14,
     color: COLORS.GRAY_SOFT,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   circle: {
     marginTop: '5%',
-    width: 100,
-    height: 100,
-    borderWidth: 2,
-    borderColor: COLORS.ORANGE,
+    width: 128,
+    height: 128,
+    backgroundColor: COLORS.GRAY,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 100
+    borderRadius: 150
   },
   texto: {
     padding: 15,
     color: COLORS.GRAY_SOFT
+  },
+  logoutButton: {
+    flexDirection: 'row',
+    backgroundColor: COLORS.ORANGE,
+    height: 48,
+    width: '90%',
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: '5%',
+    marginBottom: '40%',
+    shadowColor: COLORS.ORANGE,
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 10
+  },
+  logoutButtonText: {
+    color: '#fff'
   }
 })
-

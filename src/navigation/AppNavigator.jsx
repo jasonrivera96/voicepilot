@@ -6,9 +6,12 @@ import AuthStack from './AuthStack'
 import { AuthContext } from '../context/AuthContext'
 import { COLORS } from '../constants'
 import MainStack from './MainStack'
+import CustomAlert from '../components/CustomAlert'
+import { useNotificationContext } from '../context/NotificationContext'
 
 const AppNavigator = () => {
   const { isLoading, userToken } = useContext(AuthContext)
+  const { data, setData } = useNotificationContext()
 
   if (isLoading) {
     return (
@@ -21,6 +24,12 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       {userToken !== null ? <AuthStack /> : <MainStack />}
+      {data && (
+        <CustomAlert
+          data={data}
+          onClose={() => setData('')}
+        />
+      )}
     </NavigationContainer>
   )
 }
