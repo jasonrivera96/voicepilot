@@ -54,7 +54,7 @@ const SummaryItemScreen = ({ route }) => {
       <View style={styles.containerPath}>
         <NavigatorPath route={route} />
       </View>
-      <StatusBar style='dark' backgroundColor='white' />
+      
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <Text style={styles.title}>{titulo}</Text>
 
@@ -250,6 +250,10 @@ const SummaryItemScreen = ({ route }) => {
               </View>
             </TouchableOpacity>
           )}
+
+          {isModalVisible
+          ? <StatusBar style='dark' backgroundColor='#1110108d' />
+          : <StatusBar style='dark' backgroundColor='white' />}
 
           <Modal visible={isModalVisible} animationType='fade' transparent>
 
