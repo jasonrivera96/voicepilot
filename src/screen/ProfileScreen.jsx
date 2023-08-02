@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, StyleSheet, Switch, TouchableOpacity, Dimensions, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, Switch, TouchableOpacity, Dimensions } from 'react-native'
 import Constants from 'expo-constants'
 import { COLORS, personalInforScreenName } from '../constants'
 import { Ionicons } from '@expo/vector-icons'
@@ -27,7 +27,7 @@ const ProfileScreen = () => {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.container}>
       <StatusBar style='dark' backgroundColor='white' />
       <View style={styles.contentContainer}>
         <View style={styles.section}>
@@ -136,7 +136,7 @@ const ProfileScreen = () => {
         </TouchableOpacity>
 
       </View>
-    </ScrollView>
+    </View>
   )
 }
 
@@ -144,10 +144,9 @@ export default ProfileScreen
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
+    flex: 1,
     backgroundColor: COLORS.WHITE,
     paddingTop: statusBarHeight,
-    justifyContent: 'center',
     alignItems: 'center'
   },
   contentContainer: {

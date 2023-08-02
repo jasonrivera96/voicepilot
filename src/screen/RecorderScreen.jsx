@@ -205,6 +205,10 @@ export default function RecorderScreen ({ toggleShowNotification }) {
 
       <CustomRecorderButton stopRecording={stopRecording} startRecording={startRecording} />
 
+      {modalVisible
+        ? <StatusBar style='dark' backgroundColor='#1110108d' />
+        : <StatusBar style='dark' backgroundColor='white' />}
+
       <Modal visible={modalVisible} animationType='slide' transparent>
         <KeyboardAvoidingView
           style={styles.modalContainer}

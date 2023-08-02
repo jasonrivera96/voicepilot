@@ -40,7 +40,7 @@ const CustomAlert = ({ notification, onClose }) => {
   const { message, level } = notification
 
   if (level === 'info' || level === undefined) {
-    alert.icon = 'information-circle-outline'
+    alert.icon = 'notifications-outline'
     alert.backgroundColor = COLORS.ORANGE_EXTRA_SOFT
     alert.textColor = COLORS.ORANGE
   } else if (level === 'success') {

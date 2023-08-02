@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { COLORS } from '../constants'
 import { MaterialIcons, Feather } from '@expo/vector-icons'
 import { StatusBar } from 'expo-status-bar'

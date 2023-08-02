@@ -4,14 +4,14 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Alert,
   Modal,
   KeyboardAvoidingView,
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
   TextInput,
-  ActivityIndicator
+  ActivityIndicator,
+  Alert
 } from 'react-native'
 import { Icon } from 'react-native-elements'
 import Constants from 'expo-constants'
@@ -26,6 +26,7 @@ import { uploadFile } from '../../services/UploadService'
 import { AuthContext } from '../../context/AuthContext'
 import Dropdown from 'react-native-select-dropdown'
 import { useFolder } from '../../hooks/useFolder'
+import { useNotificationContext } from '../../context/NotificationContext'
 
 const UploadScreen = ({ toggleShowNotification }) => {
   const [file, setFile] = useState(null)
@@ -34,6 +35,7 @@ const UploadScreen = ({ toggleShowNotification }) => {
   const [selectedItem, setSelectedItem] = useState(null)
   const [isLoading, setisLoading] = useState(false)
   const { state } = useFolder()
+  const { setNotification } = useNotificationContext()
 
   const { folders } = state
 
@@ -49,17 +51,49 @@ const UploadScreen = ({ toggleShowNotification }) => {
       setMimeType(mimeType)
     } catch (error) {
       console.log(error)
+      setNotification({
+        message: 'Error al cargar el archivo',
+        level: 'error'
+      })
     }
   }
 
-  const handleCancel = () => {
-    setFile(null)
-    setMimeType()
+  const handleCancelUpload = () => {
+    if (isLoading) {
+      Alert.alert(
+        'Cancelar subida',
+        '¿Estás seguro de cancelar la subida del archivo?',
+        [
+          {
+            text: 'Sí',
+            onPress: () => {
+              setFile(null)
+              setMimeType()
+              setisLoading(false)
+              setIsModalVisible(false)
+              setSelectedItem(null)
+              setNotification({
+                message: 'Transcripción cancelada',
+                level: 'error'
+              })
+            },
+            style: 'destructive'
+          },
+          {
+            text: 'No',
+            onPress: () => {},
+            style: 'cancel'
+          }
+        ])
+    } else {
+      setIsModalVisible(false)
+      setSelectedItem(null)
+    }
   }
 
-  const closeModal = () => {
+  const handleRemoveFilePicker = () => {
     setIsModalVisible(false)
-    setSelectedItem(null)
+    setFile(null)
   }
 
   const openModal = () => {
@@ -67,9 +101,8 @@ const UploadScreen = ({ toggleShowNotification }) => {
   }
 
   const handleUpload = async () => {
-    if (!selectedItem) {
-      return
-    }
+    if (!selectedItem) return
+
     const formData = new FormData()
     formData.append('file', file)
     formData.append('folderId', selectedItem.id)
@@ -84,10 +117,10 @@ const UploadScreen = ({ toggleShowNotification }) => {
       setIsModalVisible(false)
       return
     }
-    Alert.alert(
-      'Error al subir el archivo',
-      'Por favor intente nuevamente, si el error persiste comuníquese con soporte'
-    )
+    setNotification({
+      message: 'Error al subir el archivo',
+      level: 'error'
+    })
     setisLoading(false)
   }
 
@@ -109,7 +142,7 @@ const UploadScreen = ({ toggleShowNotification }) => {
       {mimeType?.includes('video') && file && (<Mp4Template file={file} />)}
       {file && (
         <View style={{ flexDirection: 'row' }}>
-          <TouchableOpacity style={styles.uploadButton1} onPress={handleCancel}>
+          <TouchableOpacity style={styles.uploadButton1} onPress={handleRemoveFilePicker}>
             <Text style={styles.buttonText2}>Cancelar</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.uploadButton} onPress={() => openModal()}>
@@ -117,6 +150,11 @@ const UploadScreen = ({ toggleShowNotification }) => {
           </TouchableOpacity>
         </View>
       )}
+
+      {isModalVisible
+        ? <StatusBar style='dark' backgroundColor='#1110108d' />
+        : <StatusBar style='dark' backgroundColor='white' />}
+
       <Modal visible={isModalVisible} animationType='slide' transparent>
         <KeyboardAvoidingView
           style={styles.modalContainer}
@@ -163,9 +201,8 @@ const UploadScreen = ({ toggleShowNotification }) => {
                 <View style={styles.transcribir}>
                   <TouchableOpacity
                     style={[styles.buttonModal, { backgroundColor: '#F3F4F6FF' }]}
-                    onPress={() => closeModal()}
+                    onPress={() => handleCancelUpload()}
                     color='#353536'
-                    disabled={isLoading}
                   >
                     <Text style={styles.buttonTextModal}>Cancelar</Text>
                   </TouchableOpacity>

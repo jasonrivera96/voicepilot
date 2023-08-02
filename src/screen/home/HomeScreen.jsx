@@ -11,11 +11,9 @@ import FolderItem from './FolderItem'
 import { StatusBar } from 'expo-status-bar'
 import { COLORS } from '../../constants'
 import { useFolder } from '../../hooks/useFolder'
-import { useNotificationContext } from '../../context/NotificationContext'
 
 const HomeScreen = () => {
   const { state, getFolders, addFolder, updateFolde, removeFolder } = useFolder()
-  const { setNotification } = useNotificationContext()
   const [folder, setFolder] = useState({})
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [isEditModal, setIsEditModal] = useState(false)
@@ -41,22 +39,14 @@ const HomeScreen = () => {
   const addFolderItem = async (folderName) => {
     Keyboard.dismiss()
     await addFolder(folderName)
-    flatList.current.scrollToEnd({ animated: true }) // !!! TODO ojito
+    flatList.current.scrollToEnd({ animated: true })
     setIsModalVisible(false)
-    setNotification({
-      message: 'Carpeta creada',
-      level: 'success'
-    })
   }
 
   const updateFolderItem = async ({ item: folderItem }) => {
     updateFolde(folderItem)
     setFolder({})
     setIsModalVisible(false)
-    setNotification({
-      message: 'Carpeta actualizada',
-      level: 'success'
-    })
     setIsEditModal(false)
   }
 
@@ -69,10 +59,6 @@ const HomeScreen = () => {
           text: 'Sí',
           onPress: async () => {
             removeFolder(folderItem)
-            setNotification({
-              message: 'Carpeta eliminada',
-              level: 'success'
-            })
           }
         },
         { text: 'No' }
