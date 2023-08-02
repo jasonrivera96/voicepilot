@@ -94,7 +94,6 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar style='dark' backgroundColor='white' />
       <Header openModal={openModal} data={folders} />
       {renderContent()}
       {isModalVisible

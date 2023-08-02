@@ -11,12 +11,14 @@ import EditModal from '../home/EditModal'
 import { deleteSummary, getSummaryResponse, loadSummaries, updateSummary } from '../../services/SummaryService'
 import { AuthContext } from '../../context/AuthContext'
 import SummaryItem from './SummaryItem'
+import { useNotificationContext } from '../../context/NotificationContext'
 
 const SummaryScreen = ({ route }) => {
   const [summaries, setSummaries] = useState([])
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [summary, setSummary] = useState({})
   const { userData } = useContext(AuthContext)
+  const { setNotification } = useNotificationContext()
   const { folderId, folderName } = route.params
 
   const fetchData = useCallback(async () => {
@@ -94,6 +96,10 @@ const SummaryScreen = ({ route }) => {
       setSummaries(summariesUpdated)
     }
     setIsModalVisible(false)
+    setNotification({
+      message: 'Resumen actualizado',
+      level: 'success'
+    })
   }
 
   const deleteSummaryItem = async ({ item: summaryItem }) => {
@@ -120,6 +126,10 @@ const SummaryScreen = ({ route }) => {
     )
     setSummary({})
     setIsModalVisible(false)
+    setNotification({
+      message: 'Resumen actualizado',
+      level: 'success'
+    })
   }
 
   const renderContent = () => {
