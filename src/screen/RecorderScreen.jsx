@@ -19,13 +19,13 @@ import Constants from 'expo-constants'
 
 import CustomRecorderButton from '../components/CustomRecorderButton'
 
-import { COLORS } from '../constants'
+import { COLORS, recorderScreenName } from '../constants'
 import { StatusBar } from 'expo-status-bar'
 import * as FileSystem from 'expo-file-system'
 
 import { AuthContext } from '../context/AuthContext'
 import { Icon } from 'react-native-elements'
-import { uploadFile } from '../services/UploadService'
+import { uploadFile, cancelUpload } from '../services/UploadService'
 import { useFolder } from '../hooks/useFolder'
 import { useNotificationContext } from '../context/NotificationContext'
 
@@ -153,50 +153,87 @@ export default function RecorderScreen ({ toggleShowNotification }) {
     formData.append('file', file)
     formData.append('folderId', selectedItem.id)
     setisLoading(true)
-    const response = await uploadFile(userData, formData)
-    if (response) {
-      toggleShowNotification({ folder: selectedItem })
+    try {
+      const response = await uploadFile(userData, formData)
+      if (response) {
+        toggleShowNotification({ folder: selectedItem })
+      } else {
+        setNotification({
+          message: 'Transcripción cancelada',
+          level: 'error'
+        })
+      }
+    } catch (error) {
+      console.log(`Error al subir el archivo desde ${recorderScreenName}}`, error)
+      setNotification({
+        message: 'Error al subir el archivo',
+        level: 'error'
+      })
+    } finally {
       setRecordingName('')
       setRecording(null)
       setSelectedItem(null)
       setModalVisible(false)
-      setSeconds(0)
-      setMinutes(0)
-      setHours(0)
+      clearTimer()
       setisLoading(false)
-      return
     }
-    Alert.alert(
-      'Error al subir el archivo',
-      'Por favor intente nuevamente, si el error persiste comuníquese con soporte'
-    )
-    setisLoading(false)
   }
 
-  const closeModal = () => {
-    Alert.alert(
-      '¿Estás seguro?',
-      'Si cancelas, perderás la grabación',
-      [
-        {
-          text: 'Sí',
-          onPress: () => {
-            setModalVisible(false)
-            setSelectedItem(null)
-            setSeconds(0)
-            setMinutes(0)
-            setHours(0)
+  const clearTimer = () => {
+    setSeconds(0)
+    setMinutes(0)
+    setHours(0)
+  }
+
+  const handleCancelUpload = () => {
+    if (isLoading) {
+      Alert.alert(
+        '¿Estás seguro?',
+        'Si cancelas, perderás la grabación',
+        [
+          {
+            text: 'Sí',
+            onPress: () => {
+              cancelUpload()
+            },
+            style: 'destructive'
           },
-          style: 'cancel'
-        },
-        { text: 'No' }
-      ],
-      { cancelable: false }
-    )
+          {
+            text: 'No',
+            onPress: () => {},
+            style: 'cancel'
+          }
+        ],
+        { cancelable: false }
+      )
+    } else {
+      Alert.alert(
+        '¿Estás seguro?',
+        'Si cancelas, perderás la grabación',
+        [
+          {
+            text: 'Sí',
+            onPress: () => {
+              setModalVisible(false)
+              setSelectedItem(null)
+              clearTimer()
+              setRecordingName('')
+              setRecording(null)
+            },
+            style: 'destructive'
+          },
+          {
+            text: 'No',
+            onPress: () => {},
+            style: 'cancel'
+          }
+        ],
+        { cancelable: false }
+      )
+    }
   }
 
   return (
-
     <View style={styles.container}>
       <StatusBar style='dark' backgroundColor='white' />
       <Text style={styles.timer}>{`${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`}</Text>
@@ -258,9 +295,8 @@ export default function RecorderScreen ({ toggleShowNotification }) {
                 <View style={styles.transcribir}>
                   <TouchableOpacity
                     style={[styles.buttonModal, { backgroundColor: '#F3F4F6FF' }]}
-                    onPress={() => closeModal()}
+                    onPress={() => handleCancelUpload()}
                     color='#353536'
-                    disabled={isLoading}
                   >
                     <Text style={styles.buttonTextModal}>Cancelar</Text>
                   </TouchableOpacity>

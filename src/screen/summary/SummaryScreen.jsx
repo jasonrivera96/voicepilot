@@ -127,7 +127,7 @@ const SummaryScreen = ({ route }) => {
     setSummary({})
     setIsModalVisible(false)
     setNotification({
-      message: 'Resumen actualizado',
+      message: 'Resumen eliminado',
       level: 'success'
     })
   }

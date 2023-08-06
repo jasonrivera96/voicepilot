@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { View, Text, TextInput, StyleSheet, Pressable, TouchableOpacity, Keyboard, Alert } from 'react-native'
+import { View, Text, TextInput, StyleSheet, Pressable, Keyboard } from 'react-native'
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons'
 import { Icon, CheckBox } from 'react-native-elements'
 import Constants from 'expo-constants'
@@ -10,7 +10,7 @@ import { useTogglePasswordVisibility } from '../hooks/useTogglePassVisibility'
 import { COLORS } from '../constants'
 import { AuthContext } from '../context/AuthContext'
 import { StatusBar } from 'expo-status-bar'
-import { useState } from 'react'
+import CustomButton from '../components/CustomButton'
 
 const validationSchema = yup.object().shape({
   username: yup.string().required('El usuario es requerido'),
@@ -20,7 +20,6 @@ const validationSchema = yup.object().shape({
 
 const RegisterScreen = ({ setRegisterUser }) => {
   const { register } = useContext(AuthContext)
-  const [isSelected, setSelection] = useState(true)
   const formik = useFormik({
     initialValues: {
       username: '',
@@ -29,14 +28,12 @@ const RegisterScreen = ({ setRegisterUser }) => {
       isSelected: true
     },
     validationSchema,
-    onSubmit: values => {
-      register(
-        {
-          username: values.username,
-          email: values.email,
-          password: values.password
-        }
-      )
+    onSubmit: ({ username, email, password }) => {
+      register({
+        username,
+        email,
+        password
+      })
     }
   })
 
@@ -50,10 +47,9 @@ const RegisterScreen = ({ setRegisterUser }) => {
 
   const handleRegisterButtonPress = () => {
     Keyboard.dismiss()
-    if(isSelected){
-      formik. handleSubmit()
+    if (values.isSelected) {
+      handleSubmit()
     }
-   
   }
 
   return (
@@ -125,9 +121,12 @@ const RegisterScreen = ({ setRegisterUser }) => {
           />
         </View>
 
-        <TouchableOpacity style={[styles.bregistrarse, {opacity: values.isSelected ? 1 :0.5}]} onPress={handleRegisterButtonPress} disabled={!values.isSelected}>
-          <Text style={{ color: 'white' }}>Registrarse</Text>
-        </TouchableOpacity>
+        <CustomButton
+          title='Registrarse'
+          onPress={handleRegisterButtonPress}
+          disabled={!values.isSelected}
+          style={{ opacity: values.isSelected ? 1 : 0.5 }}
+        />
       </View>
 
       <View style={styles.errorContainer}>
@@ -192,28 +191,7 @@ const styles = StyleSheet.create({
     paddingRight: 0
   },
   terminos: {
-    // flexDirection: 'row',
-    // alignItems: 'center',
     marginTop: 20
-  },
-  bregistrarse: {
-    marginTop: 20,
-    backgroundColor: COLORS.ORANGE,
-    width: '100%',
-    height: 48,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 20,
-    shadowColor: COLORS.ORANGE,
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 10
-
   },
   searchIcon: {
     padding: 10

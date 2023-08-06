@@ -54,7 +54,7 @@ const SummaryItemScreen = ({ route }) => {
       <View style={styles.containerPath}>
         <NavigatorPath route={route} />
       </View>
-      
+
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <Text style={styles.title}>{titulo}</Text>
 
@@ -252,8 +252,8 @@ const SummaryItemScreen = ({ route }) => {
           )}
 
           {isModalVisible
-          ? <StatusBar style='dark' backgroundColor='#1110108d' />
-          : <StatusBar style='dark' backgroundColor='white' />}
+            ? <StatusBar style='dark' backgroundColor='#1110108d' />
+            : <StatusBar style='dark' backgroundColor='white' />}
 
           <Modal visible={isModalVisible} animationType='fade' transparent>
 
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     marginTop: 7,
-    marginHorizontal: 25
+    marginHorizontal: 20
   },
   title: {
     fontSize: 25,

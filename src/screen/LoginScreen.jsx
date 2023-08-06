@@ -10,6 +10,7 @@ import { AuthContext } from '../context/AuthContext'
 import { useTogglePasswordVisibility } from '../hooks/useTogglePassVisibility'
 import { COLORS } from '../constants'
 import { StatusBar } from 'expo-status-bar'
+import CustomButton from '../components/CustomButton'
 
 const validationSchema = yup.object().shape({
   username: yup.string().required('El usuario es requerido'),
@@ -28,18 +29,19 @@ export default function LoginScreen ({ setRegisterUser }) {
       password: ''
     },
     validationSchema,
-
-    onSubmit: (values) => {
-      login({ username: values.username, password: values.password })
+    onSubmit: ({ username, password }) => {
+      login({
+        username,
+        password
+      })
     }
   })
 
+  const { handleChange, handleBlur, handleSubmit, values, errors, touched } = formik
+
   const handleLoginButtonPress = () => {
     Keyboard.dismiss()
-    if(isSelected){
-      formik.handleSubmit()
-    }
-    
+    handleSubmit()
   }
 
   return (
@@ -53,9 +55,9 @@ export default function LoginScreen ({ setRegisterUser }) {
           <TextInput
             style={styles.input}
             placeholder='Ingrese su usuario'
-            onChangeText={formik.handleChange('username')}
-            onBlur={formik.handleBlur('username')}
-            value={formik.values.username}
+            onChangeText={handleChange('username')}
+            onBlur={handleBlur('username')}
+            value={values.username}
           />
         </View>
 
@@ -68,9 +70,9 @@ export default function LoginScreen ({ setRegisterUser }) {
             autoCapitalize='none'
             autoCorrect={false}
             secureTextEntry={passwordVisibility}
-            onChangeText={formik.handleChange('password')}
-            onBlur={formik.handleBlur('password')}
-            value={formik.values.password}
+            onChangeText={handleChange('password')}
+            onBlur={handleBlur('password')}
+            value={values.password}
           />
           <Pressable style={styles.iconEyeButton} onPress={handlePasswordVisibility}>
             <MaterialCommunityIcons name={rightIcon} size={22} style={styles.icono} color='#232323' />
@@ -96,14 +98,16 @@ export default function LoginScreen ({ setRegisterUser }) {
           </View>
         </View>
 
-        <TouchableOpacity style={[styles.biniciar, {opacity: isSelected ? 1 :0.5}]} onPress={handleLoginButtonPress} disabled={!isSelected}>
-          <Text style={{ color: 'white' }}>Iniciar Sesión</Text>
-        </TouchableOpacity>
+        <CustomButton
+          title='Iniciar Sesión'
+          onPress={handleLoginButtonPress}
+        />
+
       </View>
 
       <View style={styles.errorContainer}>
-        {formik.touched.username && formik.errors.username ? (<Text style={styles.error}>* {formik.errors.username}</Text>) : null}
-        {formik.touched.password && formik.errors.password ? (<Text style={styles.error}>* {formik.errors.password}</Text>) : null}
+        {touched.username && errors.username ? (<Text style={styles.error}>* {errors.username}</Text>) : null}
+        {touched.password && errors.password ? (<Text style={styles.error}>* {errors.password}</Text>) : null}
       </View>
 
       <View style={styles.separatorContainer}>
@@ -194,24 +198,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
     fontSize: 14,
     color: COLORS.GRAY_EXTRA_SOFT
-  },
-  biniciar: {
-    marginTop: 20,
-    backgroundColor: COLORS.ORANGE,
-    width: '100%',
-    height: 48,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 20,
-    shadowColor: COLORS.ORANGE,
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 10
   },
   searchIcon: {
     padding: 10

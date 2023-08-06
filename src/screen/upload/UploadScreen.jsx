@@ -18,11 +18,11 @@ import Constants from 'expo-constants'
 import * as DocumentPicker from 'expo-document-picker'
 import { Feather } from '@expo/vector-icons'
 
-import { COLORS } from '../../constants'
+import { COLORS, uploadScreenName } from '../../constants'
 import { StatusBar } from 'expo-status-bar'
 import Mp3Template from './Mp3Template'
 import Mp4Template from './Mp4Template'
-import { uploadFile } from '../../services/UploadService'
+import { uploadFile, cancelUpload } from '../../services/UploadService'
 import { AuthContext } from '../../context/AuthContext'
 import Dropdown from 'react-native-select-dropdown'
 import { useFolder } from '../../hooks/useFolder'
@@ -67,15 +67,7 @@ const UploadScreen = ({ toggleShowNotification }) => {
           {
             text: 'Sí',
             onPress: () => {
-              setFile(null)
-              setMimeType()
-              setisLoading(false)
-              setIsModalVisible(false)
-              setSelectedItem(null)
-              setNotification({
-                message: 'Transcripción cancelada',
-                level: 'error'
-              })
+              cancelUpload()
             },
             style: 'destructive'
           },
@@ -84,7 +76,9 @@ const UploadScreen = ({ toggleShowNotification }) => {
             onPress: () => {},
             style: 'cancel'
           }
-        ])
+        ],
+        { cancelable: false }
+      )
     } else {
       setIsModalVisible(false)
       setSelectedItem(null)
@@ -107,21 +101,29 @@ const UploadScreen = ({ toggleShowNotification }) => {
     formData.append('file', file)
     formData.append('folderId', selectedItem.id)
     setisLoading(true)
-    const response = await uploadFile(userData, formData)
-    if (response) {
-      toggleShowNotification({ folder: selectedItem })
-      setFile(null)
+    try {
+      const response = await uploadFile(userData, formData)
+      if (response) {
+        toggleShowNotification({ folder: selectedItem })
+      } else {
+        setNotification({
+          message: 'Transcripción cancelada',
+          level: 'error'
+        })
+      }
+    } catch (error) {
+      console.log(`Error al subir el archivo desde ${uploadScreenName}}`, error)
+      setNotification({
+        message: 'Error al subir el archivo',
+        level: 'error'
+      })
+    } finally {
       setisLoading(false)
+      setFile(null)
       setMimeType()
       setSelectedItem(null)
       setIsModalVisible(false)
-      return
     }
-    setNotification({
-      message: 'Error al subir el archivo',
-      level: 'error'
-    })
-    setisLoading(false)
   }
 
   return (
