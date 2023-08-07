@@ -103,6 +103,7 @@ const SummaryScreen = ({ route }) => {
   }
 
   const deleteSummaryItem = async ({ item: summaryItem }) => {
+    setIsModalVisible(false)
     Alert.alert(
       'Eliminar archivo',
       `Esta acción es irreversible, ¿estás seguro de eliminar el archivo "${summaryItem.name}"?`,
@@ -115,6 +116,16 @@ const SummaryScreen = ({ route }) => {
             if (response.status === 200) {
               const summariesUpdated = summaries.filter((summary) => summary.id !== summaryItem.id)
               setSummaries(summariesUpdated)
+              setSummary({})
+              setNotification({
+                message: 'Resumen eliminado',
+                level: 'success'
+              })
+            } else {
+              setNotification({
+                message: 'Error al eliminar el resumen',
+                level: 'error'
+              })
             }
           }
         },
@@ -124,12 +135,6 @@ const SummaryScreen = ({ route }) => {
         cancelable: false
       }
     )
-    setSummary({})
-    setIsModalVisible(false)
-    setNotification({
-      message: 'Resumen eliminado',
-      level: 'success'
-    })
   }
 
   const renderContent = () => {

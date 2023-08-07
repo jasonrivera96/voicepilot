@@ -1,4 +1,5 @@
 import { io } from 'socket.io-client'
+// import { SERVER_URL } from '../config/config'
 import { BASE_URL_SPEECH } from '../config/config'
 const socket = io(BASE_URL_SPEECH, {
   autoConnect: false
