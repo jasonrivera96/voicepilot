@@ -1,8 +1,8 @@
 import axios from 'axios'
-import { SERVER_URL } from '../config/config'
+import { BASE_URL_SPEECH } from '../config/config'
 
 export const SpeechApi = axios.create({
-  baseURL: SERVER_URL,
+  baseURL: BASE_URL_SPEECH,
   headers: {
     'Content-Type': 'multipart/form-data'
   }
