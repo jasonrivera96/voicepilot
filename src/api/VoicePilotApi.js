@@ -1,8 +1,8 @@
 import axios from 'axios'
-import { SERVER_URL } from '../config/config'
+import { BASE_URL_VOICEPILOT } from '../config/config'
 
 export const VoicePilotApi = axios.create({
-  baseURL: SERVER_URL,
+  baseURL: BASE_URL_VOICEPILOT,
   headers: {
     'Content-Type': 'application/json'
   }
